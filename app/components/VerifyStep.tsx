@@ -72,12 +72,13 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             className="mb-4"
           />
           <div className='flex justify-between mt-4'>
-          <Button onClick={generateOtp}>
-            Generate OTP
-          </Button>
           <Button onClick={onBack} variant="outline">
               Back
           </Button>
+          <Button onClick={generateOtp}>
+            Generate OTP
+          </Button>
+          
           </div>
         </>
       ) : (

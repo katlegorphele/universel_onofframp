@@ -11,16 +11,16 @@ import { Value } from '@radix-ui/react-select';
 const currencyOptions = [
   // EDIT HERE TO ADD MORE CURRENCIES 
   { value: 'ZAR', label: 'South African Rand' },
-  { value: 'KES', label: 'Kenyan Shillings' },
-  { value: 'GHS', label: 'Ghanaian Cedi' },
-  { value: 'ZMW', label: 'Zambian Kwacha' },
-  { value: 'XOF', label: 'W African CFA Franc' },
-  { value: 'XAF', label: 'C African CFA Franc' },
   { value: 'CDF', label: 'Congolese Franc' },
-  { value: 'TZS', label: 'Tanzanian Shilling' },
+  { value: 'GHS', label: 'Ghanaian Cedi' },
+  { value: 'KES', label: 'Kenyan Shillings' },
   { value: "MWK", label: "Malawian Kwacha" },
-  { value: 'UGX', label: 'Ugandan Shilling' },
   { value: 'RWF', label: 'Rwandan Franc' },
+  { value: 'TZS', label: 'Tanzanian Shilling' },
+  { value: 'UGX', label: 'Ugandan Shilling' },
+  { value: 'XAF', label: 'C African CFA Franc' },
+  { value: 'XOF', label: 'W African CFA Franc' },
+  { value: 'ZMW', label: 'Zambian Kwacha' },
 
   // { value: 'NGN', label: 'Nigerian Naira' },
 
@@ -44,6 +44,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const { formData, setFormData } = useOnOffRampContext();
   const [amount, setAmount] = useState(formData.amount);
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
+  const [buttonActive, setButtonActive] = useState(false)
 
   useEffect(() => {
     if (formData.exchangeRate && amount > 0) {
@@ -64,10 +65,18 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     onNext();
   };
 
-  
+  useEffect(() => {
+    if (receiveAmount > 0 && amount > 0) {
+      setButtonActive(true)
+    } else {
+      setButtonActive(false)
+    }
+  }, [receiveAmount, amount])
+
+
 
   return (
-    <div className="">
+    <div className="p-6 rounded-lg shadow-md bg-gray-100">
       {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
       <div className='flex flex-row gap-10 justify-items-start'>
         <div className='flex flex-col flex-nowrap'>
@@ -142,14 +151,15 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       <Input
         type="number"
         id="receiveAmount"
-        // VALUE IS 0 by default id the amount is 0
-        value={Number((receiveAmount).toFixed(2))}
+        value={amount > 0 ? Number((receiveAmount).toFixed(2)) : 0}
         readOnly
         className="mb-4"
         disabled={true}
       />
       <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
-      <Button onClick={handleSubmit} className="mt-4">
+      {/* disabled if the amount is 0 */}
+
+      <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
         Next
       </Button>
       <div className='flex justify-center mt-2'>
@@ -157,17 +167,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       </div>
 
       <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-        Total to Pay
+        Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2))*(3/100)} {formData.currency}</span>
       </label>
-      <Input
-        type="number"
-        id="feeAmount"
-        // VALUE IS 0 by default id the amount is 0
-        value={(Number((amount).toFixed(2)) * 0.03) + amount}
-        readOnly
-        className="mb-4"
-        disabled={true}
-      />
+      
     </div>
   );
 }

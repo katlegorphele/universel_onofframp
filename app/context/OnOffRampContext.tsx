@@ -10,6 +10,7 @@ interface FormData {
   receiveAmount: number;
   exchangeRate: number;
   totalFee: number;
+  walletAddress: string;
   mobileWallet: {
     phoneNumber: string;
     network: string;
@@ -42,8 +43,8 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
   const [formData, setFormData] = useState({
     amount: 0,
     currency: 'KES',
-    chain: 'Celo',
-    receiveCurrency: 'USDC',
+    chain: 'Lisk',
+    receiveCurrency: 'UZAR',
     receiveAmount: 0,
     exchangeRate: 0,
     totalFee: 0,
@@ -80,6 +81,12 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
 
     fetchExchangeRates();
   }, [formData.receiveCurrency, formData.currency]);
+
+  //useEffect to set total fee which is 3% of amount
+  useEffect(() => {
+    const fee = (formData.amount * 3) / 100;
+    setFormData((prev) => ({ ...prev, totalFee: fee }));
+  }, [formData.amount]);
 
   return (
     <OnOffRampContext.Provider value={{ formData, setFormData }}>
