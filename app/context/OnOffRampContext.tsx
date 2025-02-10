@@ -10,6 +10,18 @@ interface FormData {
   receiveAmount: number;
   exchangeRate: number;
   totalFee: number;
+  mobileWallet: {
+    phoneNumber: string;
+    network: string;
+    accountName: string;
+  };
+  bankDetails: {
+    fullname: string;
+    phoneNumber: string;
+    paymentMethod: string;
+  };
+  otpCode: string;
+  email: string;
 }
 
 interface OnOffRampContextType {
@@ -36,6 +48,18 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
     exchangeRate: 0,
     totalFee: 0,
     walletAddress: '',
+    mobileWallet: {
+      phoneNumber: '',
+      network: '',
+      accountName: ''
+    },
+    bankDetails: {
+      fullname: '',
+      phoneNumber: '',
+      paymentMethod: '',
+    },
+    otpCode: '',
+    email: ''
 
   } as FormData);
 

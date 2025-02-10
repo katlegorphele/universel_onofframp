@@ -16,7 +16,7 @@ const OnOffRampForm = () => {
   const handleBack = () => setStep((prev) => prev - 1);
 
   return (
-    <div className="on-off-ramp-form p-6 rounded-lg shadow-md bg-gray-100 w-2/3 h-2/3 md:w-full mx-4">
+    <div className="on-off-ramp-form p-6 rounded-lg shadow-md bg-gray-200 w-auto max-h-screen mt-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Universal</h1>
       <div className="steps flex justify-center mb-4 w-full">
         <StepIndicator currentStep={step} />

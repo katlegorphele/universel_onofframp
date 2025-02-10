@@ -1,52 +1,197 @@
-import React, { useState } from 'react';
+'use client'
+
+import React, { useState, useEffect } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 
+const currencyProviders: { [key: string]: string[] } = {
+  KES: ['MPESA'],
+  GHS: ['MTN', 'VODAFONE'],
+  ZMW: ['MTN', 'AIRTEL', ],
+  XOF: ['MTN', 'ORANGE'],
+  XAF: ['MTN', 'ORANGE'],
+  CDF: ['AIRTEL', 'ORANGE'],
+  TZS: ['AIRTEL', 'TIGO'],
+  MWK: ['AIRTEL', 'TNM'],
+  UGX: ['MTN'],
+  RWF: ['MTN', 'AIRTEL'], 
+};
+
+const paymentMethodsZAR = ['CARD', 'BANK'];
+
 const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const { setFormData } = useOnOffRampContext();
-  const [walletAddress, setWalletAddress] = useState('');
+  const { formData, setFormData }: { formData: { currency: keyof typeof currencyProviders }, setFormData: any } = useOnOffRampContext();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [network, setNetwork] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [walletAddress, setWalletAddress] = useState('');
+
+  useEffect(() => {
+    setFormData((prev: any) => ({
+      ...prev,
+      mobileWallet: {
+      phoneNumber,
+      network,
+      accountName
+      },
+      bankDetails: {
+      fullname,
+      phoneNumber,
+      paymentMethod
+      },
+      walletAddress
+    }));
+  }, [phoneNumber, network, accountName, fullname, paymentMethod, walletAddress]);
+
 
   const handleSubmit = () => {
-    setFormData((prev) => ({
-      ...prev,
-      walletAddress,
-      phoneNumber, // Set phoneNumber here
-    }));
     onNext();
   };
 
   return (
-    <div className="wallet-step">
+    <div className="wallet-step p-6 rounded-lg shadow-md bg-gray-100 ">
+      {formData.currency === 'ZAR' ? (
+        <h2 className="text-xl font-bold mb-4">Please provide your crypto wallet address and details for the transaction.</h2>
+      ) : (
+        <h2 className="text-xl font-bold mb-4">Please provide your crypto wallet address and mobile money
+phone number for the transaction.</h2>
+      )  
+      }
       <label htmlFor="walletAddress" className="block mb-2 text-sm font-medium text-gray-900">
-        Wallet Address
+        Web3 Wallet Address
       </label>
-      <input
+      <Input
         type="text"
         id="walletAddress"
         value={walletAddress}
         onChange={(e) => setWalletAddress(e.target.value)}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        className="mb-4"
       />
-      <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
-        Phone Number
-      </label>
-      <input
-        type="text"
-        id="phoneNumber"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-      />
+      {currencyProviders[formData.currency] ? (
+        <>
+          <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
+            Account Name
+          </label>
+          <Input
+            type="text"
+            id="accountName"
+            value={accountName}
+            onChange={(e) => setAccountName(e.target.value)}
+            className="mb-4"
+          />
+          <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+            Phone Number
+          </label>
+          <Input
+            type="text"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="mb-4"
+          />
+          <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
+            Network
+          </label>
+          <Select onValueChange={setNetwork} defaultValue={network}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Network" />
+            </SelectTrigger>
+            <SelectContent>
+              {currencyProviders[formData.currency].map((provider) => (
+                <SelectItem key={provider} value={provider}>
+                  {provider}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </>
+      ) : formData.currency === 'ZAR' ? (
+        <>
+          <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
+            Full Name
+          </label>
+          <Input
+            type="text"
+            id="fullname"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            className="mb-4"
+          />
+          <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+            Phone Number
+          </label>
+          <Input
+            type="text"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="mb-4"
+          />
+          <label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
+            Payment Method
+          </label>
+          <Select onValueChange={setPaymentMethod} defaultValue={paymentMethod}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Payment Method" />
+            </SelectTrigger>
+            <SelectContent>
+              {paymentMethodsZAR.map((method) => (
+                <SelectItem key={method} value={method}>
+                  {method}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </>
+      ) : (
+        <>
+          <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
+            Full Name
+          </label>
+          <Input
+            type="text"
+            id="fullname"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            className="mb-4"
+          />
+          <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+            Phone Number
+          </label>
+          <Input
+            type="text"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="mb-4"
+          />
+          <label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
+            Payment Method
+          </label>
+          <Input
+            type="text"
+            id="paymentMethod"
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            className="mb-4"
+          />
+        </>
+      )}
       <div className="flex justify-between mt-4">
-        <button onClick={onBack} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        <Button onClick={onBack} variant="outline">
           Back
-        </button>
-        <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        </Button>
+        <Button onClick={handleSubmit}>
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );
+
 };
 
 export default WalletStep;
