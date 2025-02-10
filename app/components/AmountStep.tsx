@@ -9,6 +9,7 @@ import { Value } from '@radix-ui/react-select';
 
 
 const currencyOptions = [
+  // EDIT HERE TO ADD MORE CURRENCIES 
   { value: 'KES', label: 'Kenyan Shillings' },
   { value: 'ZAR', label: 'South African Rand' },
   { value: 'NGN', label: 'Nigerian Naira' },
@@ -19,16 +20,17 @@ const currencyOptions = [
   { value: 'TZS', label: 'Tanzanian Shilling' },
   { value: 'RWF', label: 'Rwandan Franc' },
   { value: 'CDF', label: 'Congolese Franc' },
-  // Add other currencies here
 ];
 
 const chainOptions = [
+  // ALL SUPPORTED CHAINS
   { value: 'Celo', label: 'Celo' },
   { value: 'Lisk', label: 'Lisk' },
   { value: 'Ethereum', label: 'Ethereum' },
 ];
 
 const receiveCurrencyOptions = [
+  // AVAILABLE TOKENS
   { value: 'UZAR', label: 'UZAR' },
   { value: 'USDC', label: 'USDC' },
   { value: 'USDT', label: 'USDT' },
@@ -61,7 +63,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   return (
     <div className="">
       {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
-      <div className='flex flex-row w-2/3 gap-5 justify-items-start'>
+      <div className='flex flex-row w-2/3 gap-10 justify-items-start'>
         <div className='flex flex-col'>
           <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
             Currency
@@ -96,9 +98,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             </SelectContent>
           </Select>
         </div>
-      </div>
-      <label htmlFor="receiveCurrency" className="block mb-2 text-sm font-medium text-gray-900">
-        You Buy
+        <div>
+        <label htmlFor="receiveCurrency" className="block mb-2 text-sm font-medium text-gray-900">
+        Token
       </label>
       <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, receiveCurrency: value }))} defaultValue={formData.receiveCurrency}>
         <SelectTrigger>
@@ -112,21 +114,34 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
           ))}
         </SelectContent>
       </Select>
+      </div>
+      </div>
+
+      <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+        Enter Payment Amount (in {formData.currency})
+      </label>
+      
       <Input
         type="number"
         id="amount"
+        // value with currency symbols
         value={amount}
         onChange={handleInputChange}
         className="mb-4"
       />
+
+      <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+        You Recieve (in {formData.receiveCurrency})
+      </label>
       <Input
         type="number"
         id="receiveAmount"
+        // VALUE IS 0 by default id the amount is 0
         value={receiveAmount}
         readOnly
         className="mb-4"
       />
-      <p>1 USD = {formData.exchangeRate} {formData.currency}</p>
+      <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {(formData.exchangeRate)} {formData.currency}</p>
       <Button onClick={handleSubmit} className="mt-4">
         Next
       </Button>

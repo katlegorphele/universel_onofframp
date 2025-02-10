@@ -41,13 +41,21 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
 
   useEffect(() => {
     const fetchExchangeRates = async () => {
-      const response = await fetch('https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR');
+      let url = '';
+      if (formData.receiveCurrency === 'UZAR') {
+        url = 'https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR';
+      } else {
+        url = 'https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/USD';
+      }
+      const response = await fetch(url);
       const data = await response.json();
-      setFormData((prev) => ({ ...prev, exchangeRate: data.conversion_rates.KES }));
+      console.log(data);
+      const rate = data.conversion_rates[formData.currency];
+      setFormData((prev) => ({ ...prev, exchangeRate: rate }));
     };
 
     fetchExchangeRates();
-  }, []);
+  }, [formData.receiveCurrency, formData.currency]);
 
   return (
     <OnOffRampContext.Provider value={{ formData, setFormData }}>
