@@ -11,14 +11,21 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [timeRemaining, setTimeRemaining] = useState(60);
+  const [isOtpGenerated, setIsOtpGenerated] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining((prevTime) => prevTime - 1);
+      if (timeRemaining > 0 && isOtpGenerated) {
+        setTimeRemaining((prevTime) => prevTime - 1);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [timeRemaining, isOtpGenerated]);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOtp(e.target.value);
@@ -33,43 +40,71 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     }
   };
 
-  useEffect(() => {
-    // Simulate sending OTP code
-    const generateOtp = () => {
-      const code = Math.floor(100000 + Math.random() * 900000).toString();
-      setFormData((prev) => ({ ...prev, otpCode: code }));
-      console.log(`OTP sent: ${code}`);
-    };
+  
+  const generateOtp = () => {
+    if (!email) {
+      alert('Please enter your email address');
+      return;
+    }
 
-    generateOtp();
-  }, []);
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setFormData((prev) => ({ ...prev, otpCode: code }));
+    console.log(`OTP sent: ${code}`);
+    setIsOtpGenerated(true);
+  };
+
 
   
 
   return (
     <div className="verify-step p-6 rounded-lg shadow-md bg-gray-100">
       <h2 className="text-xl font-bold mb-4">Step 3: Verify</h2>
-      <p>Code sent</p>
-      <p>We sent you an OTP code to your email address {formData.email}</p>
-      <p>Time remaining: {timeRemaining}s</p>
-      <label htmlFor="otp" className="block mb-2 text-sm font-medium text-gray-900">
-        Enter OTP code
-      </label>
-      <Input
-        type="text"
-        id="otp"
-        value={otp}
-        onChange={handleOtpChange}
-        className="mb-4"
-      />
-      <div className="flex justify-between mt-4">
-        <Button onClick={onBack} variant="outline">
-          Back
-        </Button>
-        <Button onClick={handleSubmit}>
-          Next: Verify OTP
-        </Button>
-      </div>
+      {!isOtpGenerated ? (
+        <>
+          <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">
+            Enter Email Address
+          </label>
+          <Input
+            type="email"
+            id="email"
+            value={email}
+            onChange={handleEmailChange}
+            className="mb-4"
+          />
+          <div className='flex justify-between mt-4'>
+          <Button onClick={generateOtp}>
+            Generate OTP
+          </Button>
+          <Button onClick={onBack} variant="outline">
+              Back
+          </Button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p>Code sent</p>
+          <p>We sent you an OTP code to your email address {email}</p>
+          <p>Time remaining: {timeRemaining}s</p>
+          <label htmlFor="otp" className="block mb-2 text-sm font-medium text-gray-900">
+            Enter OTP code
+          </label>
+          <Input
+            type="text"
+            id="otp"
+            value={otp}
+            onChange={handleOtpChange}
+            className="mb-4"
+          />
+          <div className="flex justify-between mt-4">
+            <Button onClick={onBack} variant="outline">
+              Back
+            </Button>
+            <Button onClick={handleSubmit}>
+              Next: Verify OTP
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
