@@ -23,6 +23,7 @@ interface FormData {
   };
   otpCode: string;
   email: string;
+  action: 'buy' | 'sell' | 'transfer';
 }
 
 interface OnOffRampContextType {
@@ -42,7 +43,7 @@ interface OnOffRampProviderProps {
 export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }) => {
   const [formData, setFormData] = useState({
     amount: 0,
-    currency: 'KES',
+    currency: 'ZAR',
     chain: 'Lisk',
     receiveCurrency: 'UZAR',
     receiveAmount: 0,
@@ -60,7 +61,8 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       paymentMethod: '',
     },
     otpCode: '',
-    email: ''
+    email: '',
+    action: 'buy',
 
   } as FormData);
 

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendPaymentTransactionEmail } from "@/app/utils/sendMail";
+import { token } from "thirdweb/extensions/vote";
 
 const test_mode = true;
 let url_in_use:string;
@@ -15,19 +16,31 @@ if (test_mode) {
 
 
 export async function POST(req: Request) {
-  console.log(api_key_in_use);
   try {
     const {
       amount,
       currency,
-      mpesaNumber,
-      bankAccount,
+      chain,
+      receiveCurrency,
+      walletAddress,
+      mobileWallet,
+      bankDetails,
       email,
-      receiverAddress,
-      bankDetails
     } = await req.json();
+    let bankingCheckout = {}
+    let mobileCheckout = {}
+    // Generate transaction ID
+    const transactionId = "txn_" + Math.random().toString(36).substr(2, 9);
 
-    console.log('variables', amount, currency, mpesaNumber, bankAccount, email, receiverAddress, bankDetails);
+    
+
+    if (currency == 'ZAR') {
+      // CREATE BANK CHECKOUT OBJECT
+      bankingCheckout = {paymentMethod: bankDetails.paymentMethod, fullName: bankDetails.fullname, phoneNumber: bankDetails.phoneNumber}
+      // Execute 
+    } else {
+      mobileCheckout = {providerNetwork: mobileWallet.providerNetwork, phoneNumber: mobileWallet.phoneNumber, accountName: mobileWallet.accountName}
+    }
 
 
     // Validate required fields
@@ -52,29 +65,51 @@ export async function POST(req: Request) {
     }
 
 
-    // Generate transaction ID
-    const transactionId = "txn_" + Math.random().toString(36).substr(2, 9);
+    
     
 
     try {
       const url = `${url_in_use}/onramp`;
-      const options = {
-        method: 'POST',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          authorization: `Bearer ${api_key_in_use}`
-        },
-        body: JSON.stringify({
-          bankCheckout: {paymentMethod: 'CARD', fullName: bankDetails.name, phoneNumber: bankDetails.phoneNumber},
-          currency: 'ZAR',
-          chain: 'LISK',
-          token: 'USDT',
-          fiatAmount: amount,
-          receiverAddress: receiverAddress,
-          referenceId: transactionId
-        })
-      };
+      let options = {}
+
+      if (currency == 'ZAR') {
+        options = {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            authorization: `Bearer ${api_key_in_use}`
+          },
+          body: JSON.stringify({
+            bankCheckout: bankingCheckout,
+            currency: currency,
+            chain: chain,
+            token: receiveCurrency,
+            fiatAmount: amount,
+            receiverAddress: walletAddress,
+            referenceId: transactionId
+          })
+        };
+      } else {
+        options = {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            authorization: `Bearer ${api_key_in_use}`
+          },
+          body: JSON.stringify({
+            mobileMoney: mobileCheckout,
+            currency: currency,
+            chain: chain,
+            token: receiveCurrency,
+            fiatAmount: amount,
+            receiverAddress: walletAddress,
+            referenceId: transactionId
+          })
+        };
+      }
+      
 
       const KotaniPayResponse = await fetch(url, options)
       .then((res) => res.json())
@@ -99,8 +134,8 @@ export async function POST(req: Request) {
           email,
           amount,
           currency,
-          mpesaNumber,
-          bankAccount,
+          mobileWallet.phoneNumber,
+          bankDetails,
           transactionId
         );
       }
@@ -113,8 +148,8 @@ export async function POST(req: Request) {
         success: true,
         message: `Successfully initiated purchase of ${amount} UZAR using ${
           currency === "KES"
-            ? `M-Pesa (${mpesaNumber})`
-            : `bank account (${bankAccount})`
+            ? `Mobile Money (${mobileWallet.networkProvider})`
+            : `bank account (${bankDetails.paymentMethod})`
         }.`,
         transactionId,
         // kotaniPayReference: kotaniPayResponse.data?.reference,

@@ -76,7 +76,10 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
 
   return (
-    <div className="p-6 rounded-lg shadow-md bg-gray-100">
+    <>
+    {formData.action === 'buy' ? (
+      <>
+        <div className="p-6 rounded-lg shadow-md bg-gray-100">
       {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
       <div className='flex flex-row gap-10 justify-items-start'>
         <div className='flex flex-col flex-nowrap'>
@@ -171,7 +174,15 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       </label>
       
     </div>
+      </>
+    ) : (
+      <>
+        {/* Fields for selling */}
+      </>
+    )}
+    </>
   );
 }
+
 
 export default AmountStep;

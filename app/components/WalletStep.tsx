@@ -34,14 +34,31 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   useEffect(() => {
     if (formData.currency == 'ZAR') {
       if (
-        // phoneNumber == '' ||
-        paymentMethod == ''
+        phoneNumber == '' ||
+        paymentMethod == '' ||
+        fullname == '' ||
+        walletAddress == ''
       ) {
         setButtonActive(false)
+      } else {
+        setButtonActive(true)
+      }
+    } else {
+      if (
+        phoneNumber == '' ||
+        accountName == '' ||
+        phoneNumber == '' ||
+        walletAddress == '' ||
+        network == ''
+      ) {
+        
+        setButtonActive(false)
+      } else {
+        setButtonActive(true)
       }
 
     }
-  }, [phoneNumber])
+  }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName])
 
   useEffect(() => {
     setFormData((prev: any) => ({
@@ -198,7 +215,7 @@ phone number for the transaction.</h2>
         <Button onClick={onBack} variant="outline">
           Back
         </Button>
-        <Button onClick={handleSubmit}>
+        <Button disabled={!buttonActive} onClick={handleSubmit}>
           Next
         </Button>
       </div>
