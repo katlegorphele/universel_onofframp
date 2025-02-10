@@ -15,10 +15,12 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "next": "15.1.6",
+    "nodemailer": "^6.10.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "thirdweb": "^5.88.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

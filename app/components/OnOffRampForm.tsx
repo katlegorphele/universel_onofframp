@@ -9,7 +9,7 @@ import { useOnOffRampContext } from '../context/OnOffRampContext';
 import StepIndicator from './StepIndicator';
 
 const OnOffRampForm = () => {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const { formData, setFormData } = useOnOffRampContext();
 
   const handleNext = () => setStep((prev) => prev + 1);

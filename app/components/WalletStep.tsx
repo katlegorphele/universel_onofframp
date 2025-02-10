@@ -29,6 +29,19 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [fullname, setFullname] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
+  const [buttonActive, setButtonActive] = useState(false)
+
+  useEffect(() => {
+    if (formData.currency == 'ZAR') {
+      if (
+        // phoneNumber == '' ||
+        paymentMethod == ''
+      ) {
+        setButtonActive(false)
+      }
+
+    }
+  }, [phoneNumber])
 
   useEffect(() => {
     setFormData((prev: any) => ({
