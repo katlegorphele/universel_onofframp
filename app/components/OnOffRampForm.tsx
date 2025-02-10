@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 
 const OnOffRampForm = () => {
   const [step, setStep] = useState(1);
-  const { formData, setFormData } = useOnOffRampContext();
+  const { formData } = useOnOffRampContext();
 
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);

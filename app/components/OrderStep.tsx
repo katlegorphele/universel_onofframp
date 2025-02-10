@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, } from 'react';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import axios from 'axios';
@@ -35,34 +35,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     }
   }
 
-  const handleSubmit = async () => {
-    try {
-      console.log(formData)
-      const response = await axios.post('api/buy-token', {
-        bankDetails: formData.bankDetails,
-        amount: formData.amount,
-        currency: formData.currency,
-        chain: formData.chain,
-        token: formData.receiveCurrency,
-        fiatAmount: formData.amount,
-        receiverAddress: formData.walletAddress,
-        walletAddress: formData.walletAddress,
-        mobileWallet: formData.mobileWallet,
-        email: formData.email,
-      });
-
-      if (response.data.success) {
-        alert('Transaction successful!');
-      } else {
-        alert('Transaction failed');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  }
+  
 
   return (
     <div className="order-step p-6 rounded-lg shadow-md bg-gray-100">

@@ -58,7 +58,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       }
 
     }
-  }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName])
+  }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName, formData.currency])
 
   useEffect(() => {
     setFormData((prev: any) => ({
@@ -75,7 +75,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       },
       walletAddress
     }));
-  }, [phoneNumber, network, accountName, fullname, paymentMethod, walletAddress]);
+  }, [phoneNumber,setFormData, network, accountName, fullname, paymentMethod, walletAddress]);
 
 
   const handleSubmit = () => {

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { OnOffRampProvider } from "./context/OnOffRampContext";
 import OnOffRampForm from "./components/OnOffRampForm";
 

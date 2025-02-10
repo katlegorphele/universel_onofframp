@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { sendPaymentTransactionEmail } from "@/app/utils/sendMail";
-import { token } from "thirdweb/extensions/vote";
 
 const test_mode = true;
 let url_in_use:string;
