@@ -20,6 +20,10 @@ interface FormData {
     fullname: string;
     phoneNumber: string;
     paymentMethod: string;
+    bankCode: string;
+    address: string;
+    accountNumber: string;
+    country: string;
   };
   otpCode: string;
   email: string;
@@ -59,6 +63,10 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       fullname: '',
       phoneNumber: '',
       paymentMethod: '',
+      bankCode: '',
+      address: '',
+      accountNumber: '',
+      country: ''
     },
     otpCode: '',
     email: '',

@@ -46,10 +46,13 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [buttonActive, setButtonActive] = useState(false)
 
   useEffect(() => {
-    if (formData.exchangeRate && amount > 0) {
+    
+    if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
       setReceiveAmount(amount / formData.exchangeRate);
+    } else {
+      setReceiveAmount(amount * formData.exchangeRate);
     }
-  }, [amount, formData.exchangeRate]);
+  }, [amount, formData.exchangeRate, formData.action]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(Number(e.target.value));
@@ -76,109 +79,205 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
   return (
     <>
-    {formData.action === 'buy' ? (
-      <>
-        <div className="p-6 rounded-lg shadow-md bg-gray-100">
-      {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
-      <div className='flex flex-row gap-10 justify-items-start'>
-        <div className='flex flex-col flex-nowrap'>
-          <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-            Currency
-          </label>
-          <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Currency" />
-            </SelectTrigger>
-            <SelectContent>
-              {currencyOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <label htmlFor="chain" className="block mb-2 text-sm font-medium text-gray-900">
-            Chain
-          </label>
-          <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, chain: value }))} defaultValue={formData.chain}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Chain" />
-            </SelectTrigger>
-            <SelectContent>
-              {chainOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <label htmlFor="receiveCurrency" className="block mb-2 text-sm font-medium text-gray-900">
-            Token
-          </label>
-          <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, receiveCurrency: value }))} defaultValue={formData.receiveCurrency}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Receive Currency" />
-            </SelectTrigger>
-            <SelectContent>
-              {receiveCurrencyOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      {formData.action === 'buy' ? (
+        <>
+        {/* Fields for Buying */}
+          <div className="p-6 rounded-lg shadow-md bg-gray-100">
+            {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
+            <div className='flex flex-row gap-10 justify-items-start'>
+              <div className='flex flex-col flex-nowrap'>
+                <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+                  Currency
+                </label>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="chain" className="block mb-2 text-sm font-medium text-gray-900">
+                  Chain
+                </label>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, chain: value }))} defaultValue={formData.chain}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Chain" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {chainOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="receiveCurrency" className="block mb-2 text-sm font-medium text-gray-900">
+                  Token
+                </label>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, receiveCurrency: value }))} defaultValue={formData.receiveCurrency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Receive Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {receiveCurrencyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-      <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-        Enter Payment Amount (in {formData.currency})
-      </label>
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              Enter Payment Amount (in {formData.currency})
+            </label>
 
-      <Input
-        type="number"
-        id="amount"
-        // value with currency symbols
-        value={amount}
-        onChange={handleInputChange}
-        className="mb-4"
-      />
+            <Input
+              type="number"
+              id="amount"
+              // value with currency symbols
+              value={amount}
+              onChange={handleInputChange}
+              className="mb-4"
+            />
 
-      <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-        You Recieve (in {formData.receiveCurrency})
-      </label>
-      <Input
-        type="number"
-        id="receiveAmount"
-        value={amount > 0 ? Number((receiveAmount).toFixed(2)) : 0}
-        readOnly
-        className="mb-4"
-        disabled={true}
-      />
-      <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
-      {/* disabled if the amount is 0 */}
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              You Recieve (in {formData.receiveCurrency})
+            </label>
+            <Input
+              type="number"
+              id="receiveAmount"
+              value={amount > 0 ? Number((receiveAmount).toFixed(2)) : 0}
+              readOnly
+              className="mb-4"
+              disabled={true}
+            />
+            <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
+            {/* disabled if the amount is 0 */}
 
-      <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
-        Next
-      </Button>
-      <div className='flex justify-center mt-2'>
-        _______________________________
-      </div>
+            <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
+              Next
+            </Button>
+            <div className='flex justify-center mt-2'>
+              _______________________________
+            </div>
 
-      <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-        Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2))*(3/100)} {formData.currency}</span>
-      </label>
-      
-    </div>
-      </>
-    ) : (
-      <>
-        {/* Fields for selling */}
-      </>
-    )}
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2)) * (3 / 100)} {formData.currency}</span>
+            </label>
+
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Fields for selling */}
+          <div className="p-6 rounded-lg shadow-md bg-gray-100">
+            {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
+            <div className='flex flex-row gap-10 justify-items-start'>
+              <div className='flex flex-col flex-nowrap'>
+                <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+                  Currency
+                </label>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="chain" className="block mb-2 text-sm font-medium text-gray-900">
+                  Chain
+                </label>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, chain: value }))} defaultValue={formData.chain}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Chain" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {chainOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="receiveCurrency" className="block mb-2 text-sm font-medium text-gray-900">
+                  Token
+                </label>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, receiveCurrency: value }))} defaultValue={formData.receiveCurrency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Receive Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {receiveCurrencyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              Amount to sell (in {formData.receiveCurrency})
+            </label>
+
+            <Input
+              type="number"
+              id="amount"
+              // value with currency symbols
+              value={amount}
+              onChange={handleInputChange}
+              className="mb-4"
+            />
+
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              You Recieve (in {formData.currency})
+            </label>
+            <Input
+              type="number"
+              id="receiveAmount"
+              value={amount > 0 ? Number((receiveAmount).toFixed(2)) : 0}
+              readOnly
+              className="mb-4"
+              disabled={true}
+            />
+            <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
+            {/* disabled if the amount is 0 */}
+
+            <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
+              Next
+            </Button>
+            <div className='flex justify-center mt-2'>
+              _______________________________
+            </div>
+
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2)) * (3 / 100)} {formData.currency}</span>
+            </label>
+
+          </div>
+        </>
+      )}
     </>
   );
 }

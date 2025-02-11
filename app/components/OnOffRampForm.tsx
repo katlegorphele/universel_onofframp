@@ -8,13 +8,30 @@ import OrderStep from './OrderStep';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import StepIndicator from './StepIndicator';
 import { Button } from '@/components/ui/button';
+import TransferStep from './TransferStep';
 
 const OnOffRampForm = () => {
   const [step, setStep] = useState(1);
-  const { formData } = useOnOffRampContext();
+  const { formData, setFormData } = useOnOffRampContext();
 
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
+
+  const switchToBuy = () => {
+    setStep(1);
+    setFormData((prev) => ({ ...prev, action: 'buy' }));
+  }
+
+  const switchToSell = () => {
+    setStep(1);
+    setFormData((prev) => ({ ...prev, action: 'sell' }));
+  }
+
+  const switchToTransfer = () => {
+    setStep(5)
+    setFormData((prev) => ({ ...prev, action: 'transfer' }));
+  }
+
 
   return (
     <>
@@ -30,9 +47,10 @@ const OnOffRampForm = () => {
       {step === 2 && <WalletStep onNext={handleNext} onBack={handleBack} />}
       {step === 3 && <VerifyStep onNext={handleNext} onBack={handleBack} />}
       {step === 4 && <OrderStep onBack={handleBack} />}
-      <Button >BUY</Button>
-      <Button >SELL</Button>
-      <Button >TRANSFER</Button>
+      {step === 5 && <TransferStep/>}
+      <Button onClick={switchToBuy}>BUY</Button>
+      <Button onClick={switchToSell}>SELL</Button>
+      <Button onClick={switchToTransfer}>TRANSFER</Button>
     </div>
     
     </>
