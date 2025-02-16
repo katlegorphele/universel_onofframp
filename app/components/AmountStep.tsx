@@ -27,15 +27,18 @@ const currencyOptions = [
 
 const chainOptions = [
   // ALL SUPPORTED CHAINS
-  { value: 'Celo', label: 'Celo' },
-  { value: 'Lisk', label: 'Lisk' },
+  
+  { value: 'Arbitrum', label: 'Arbitrum' },
   { value: 'Ethereum', label: 'Ethereum' },
+  { value: 'Base', label: 'Base' },
+  { value: 'Lisk', label: 'Lisk' },
+  
 ];
 
 const receiveCurrencyOptions = [
   // AVAILABLE TOKENS
   { value: 'UZAR', label: 'UZAR' },
-  { value: 'USDC', label: 'USDC' },
+  // { value: 'USDC', label: 'USDC' },
   { value: 'USDT', label: 'USDT' },
 ];
 
