@@ -18,6 +18,7 @@ export async function sendPaymentTransactionEmail(
     mpesaNumber?: string | undefined,
     bankAccount?: string | undefined,
     transactionId?: string | undefined,
+    paymentURL?: string | undefined,
 
 ) {
     if (!recipientEmail) return;
@@ -31,12 +32,15 @@ export async function sendPaymentTransactionEmail(
       Dear valued customer,
       
       Your purchase of ${amount} UZAR has been initiated.
-      ${currency === "KES"
+      ${currency !== "ZAR"
                     ? `Payment method: M-Pesa (${mpesaNumber})`
                     : `Payment method: Bank Transfer (${bankAccount})`
                 }
       
       Transaction ID: ${transactionId}
+
+      To complete the transaction please visit the link provided
+        ${paymentURL}   
       
       Thank you for using our service!
       

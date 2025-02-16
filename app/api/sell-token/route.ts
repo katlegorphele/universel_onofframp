@@ -31,7 +31,6 @@ export async function POST(req: Request) {
       country: bankDetails.country,
     }
 
-    console.log(bankObject)
 
 
     if (!amount || amount <= 0) {
@@ -43,6 +42,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
 
     const transactionId = "txn_" + Math.random().toString(36).substr(2, 9);
     

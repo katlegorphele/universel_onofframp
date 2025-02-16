@@ -23,7 +23,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       });
 
       if (response.data.success) {
-        alert('Transaction successful!');
+        alert(response.data.message)
       } else {
         alert('Transaction failed');
       }
@@ -46,7 +46,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
         currency: formData.currency
       });
 
-      console.log(formData.bankDetails)
 
       if (response.data.success) {
         alert('Transaction successful!');

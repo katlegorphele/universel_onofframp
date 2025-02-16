@@ -86,6 +86,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       const data = await response.json();
       console.log(data);
       const rate = data.conversion_rates[formData.currency];
+      console.log(rate)
       setFormData((prev) => ({ ...prev, exchangeRate: rate }));
     };
 

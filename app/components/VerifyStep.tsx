@@ -25,6 +25,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    setFormData((prev) => ({ ...prev, email: e.target.value }));
   };
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
