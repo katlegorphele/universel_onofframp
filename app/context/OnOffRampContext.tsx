@@ -1,6 +1,69 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { defineChain, getContract, readContract, toEther } from "thirdweb";
+import { thirdwebClient } from '../config/client';
+import { networkConfig } from "../config/networkConfig";
+const { chainId, uZarContractAddress, rampContractAddress } = networkConfig;
+
+const uzarContract = getContract({
+  client: thirdwebClient,
+  chain: defineChain(chainId),
+  address: uZarContractAddress,
+
+});
+
+
+const transactionContract = getContract({
+  client: thirdwebClient,
+  chain: defineChain(chainId),
+  address: rampContractAddress,
+});
+
+const currencyProviders: { [key: string]: string[] } = {
+  KES: ['MPESA'],
+  GHS: ['MTN', 'VODAFONE'],
+  ZMW: ['MTN', 'AIRTEL',],
+  XOF: ['MTN', 'ORANGE'],
+  XAF: ['MTN', 'ORANGE'],
+  CDF: ['AIRTEL', 'ORANGE'],
+  TZS: ['AIRTEL', 'TIGO'],
+  MWK: ['AIRTEL', 'TNM'],
+  UGX: ['MTN'],
+  RWF: ['MTN', 'AIRTEL'],
+};
+
+const bankCodes = [
+  // AVAILABLE TOKENS
+  { value: '6320', label: 'ABSA' },
+  { value: '4300', label: 'African Bank'},
+  { value: '4620', label: 'BidVest Bank'},
+  { value: '4700', label: 'Capitec' },
+  { value: '4701', label: 'Capitec Business Bank'},
+  { value: '6799', label: 'Discovery Bank'},
+  { value: '2500', label: 'FNB' },
+  { value: '5800', label: 'Investec Bank Limited' },
+  { value: '1987', label: 'Nedbank' },
+  { value: '5100', label: 'Standard Bank' },
+  { value: '6789', label: 'TymeBank' },
+];
+
+const currencyOptions = [
+  // EDIT HERE TO ADD MORE CURRENCIES 
+  { value: 'ZAR', label: 'South African Rand (ZAR)' },
+  { value: 'CDF', label: 'Congolese Franc (CFD)' },
+  { value: 'GHS', label: 'Ghanaian Cedi (GHS)' },
+  { value: 'KES', label: 'Kenyan Shillings (KES)' },
+  { value: "MWK", label: "Malawian Kwacha ()" },
+  { value: 'RWF', label: 'Rwandan Franc (RWF)' },
+  { value: 'TZS', label: 'Tanzanian Shilling (TZS)' },
+  { value: 'UGX', label: 'Ugandan Shilling (UGX)' },
+  { value: 'XAF', label: 'C African CFA Franc (XAF)' },
+  { value: 'XOF', label: 'W African CFA Franc (XOF)' },
+  { value: 'ZMW', label: 'Zambian Kwacha (ZMW)' },
+  // { value: 'NGN', label: 'Nigerian Naira' },
+];
+
 
 interface FormData {
   amount: number;
@@ -25,19 +88,37 @@ interface FormData {
     accountNumber: string;
     country: string;
   };
+  crossBorder: {
+    sendCurrency: string;
+    receiveCurrency: string;
+    sendAmount: number;
+    receiveAmount: number;
+    exchangeRate: number;
+    totalFee: number;
+  }
   otpCode: string;
   email: string;
-  action: 'buy' | 'sell' | 'transfer';
+  action: 'buy' | 'sell' | 'transfer' | 'cross-border';
 }
 
 interface OnOffRampContextType {
   formData: FormData;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  uzarContract: typeof uzarContract;
+  transactionContract: typeof transactionContract;
+  currencyProviders : typeof currencyProviders;
+  bankCodes: typeof bankCodes;
+  currencyOptions: typeof currencyOptions
 }
 
 const OnOffRampContext = createContext<OnOffRampContextType>({
   formData: {} as FormData,
   setFormData: () => {},
+  uzarContract,
+  transactionContract,
+  currencyProviders,
+  bankCodes,
+  currencyOptions,
 });
 
 interface OnOffRampProviderProps {
@@ -45,10 +126,11 @@ interface OnOffRampProviderProps {
 }
 
 export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }) => {
+  
   const [formData, setFormData] = useState({
     amount: 0,
     currency: 'ZAR',
-    chain: 'Lisk',
+    chain: 'LISK',
     receiveCurrency: 'UZAR',
     receiveAmount: 0,
     exchangeRate: 0,
@@ -68,11 +150,20 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       accountNumber: '',
       country: ''
     },
+    crossBorder: {
+      sendCurrency: '',
+      receiveCurrency: '',
+      sendAmount: 0,
+      receiveAmount: 0,
+      exchangeRate: 0,
+      totalFee: 0,
+    },
     otpCode: '',
     email: '',
     action: 'buy',
 
   } as FormData);
+  uzarContract;
 
   useEffect(() => {
     const fetchExchangeRates = async () => {
@@ -100,7 +191,15 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
   }, [formData.amount]);
 
   return (
-    <OnOffRampContext.Provider value={{ formData, setFormData }}>
+    <OnOffRampContext.Provider value={{ 
+      formData, 
+      setFormData, 
+      uzarContract, 
+      transactionContract, 
+      currencyProviders,
+      bankCodes, 
+      currencyOptions,
+      }}>
       {children}
     </OnOffRampContext.Provider>
   );

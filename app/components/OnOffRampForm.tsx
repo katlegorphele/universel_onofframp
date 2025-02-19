@@ -32,6 +32,11 @@ const OnOffRampForm = () => {
     setFormData((prev) => ({ ...prev, action: 'transfer' }));
   }
 
+  const switchToCrossBorder = () => {
+    setStep(1);
+    setFormData((prev) => ({ ...prev, action: 'cross-border' }));
+  }
+
 
   return (
     <>
@@ -48,9 +53,12 @@ const OnOffRampForm = () => {
       {step === 3 && <VerifyStep onNext={handleNext} onBack={handleBack} />}
       {step === 4 && <OrderStep onBack={handleBack} />}
       {step === 5 && <TransferStep/>}
+      <div className='flex justify-between'>
       <Button onClick={switchToBuy}>BUY</Button>
       <Button onClick={switchToSell}>SELL</Button>
       <Button onClick={switchToTransfer}>TRANSFER</Button>
+      <Button onClick={switchToCrossBorder}>CROSS-BORDER</Button>
+      </div>
     </div>
     
     </>

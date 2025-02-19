@@ -6,41 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 
-const currencyProviders: { [key: string]: string[] } = {
-  KES: ['MPESA'],
-  GHS: ['MTN', 'VODAFONE'],
-  ZMW: ['MTN', 'AIRTEL',],
-  XOF: ['MTN', 'ORANGE'],
-  XAF: ['MTN', 'ORANGE'],
-  CDF: ['AIRTEL', 'ORANGE'],
-  TZS: ['AIRTEL', 'TIGO'],
-  MWK: ['AIRTEL', 'TNM'],
-  UGX: ['MTN'],
-  RWF: ['MTN', 'AIRTEL'],
-};
 
 
-const bankCodes = [
-  // AVAILABLE TOKENS
-  { value: '6320', label: 'ABSA' },
-  { value: '4300', label: 'African Bank'},
-  { value: '4620', label: 'BidVest Bank'},
-  { value: '4700', label: 'Capitec' },
-  { value: '4701', label: 'Capitec Business Bank'},
-  { value: '6799', label: 'Discovery Bank'},
-  { value: '2500', label: 'FNB' },
-  { value: '5800', label: 'Investec Bank Limited' },
-  { value: '1987', label: 'Nedbank' },
-  { value: '5100', label: 'Standard Bank' },
-  { value: '6789', label: 'TymeBank' },
-];
+
 
 
 
 const paymentMethodsZAR = ['CARD', 'BANK'];
 
 const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const { formData, setFormData } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, bankCodes } = useOnOffRampContext();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -118,7 +93,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
   return (
     <>
-      {formData.action === 'buy' ? (
+      {formData.action === 'buy' && (
         <>
           {/* Fields for buying */}
           <div className="wallet-step p-6 rounded-lg shadow-md bg-gray-100 ">
@@ -226,17 +201,13 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             </div>
           </div>
         </>
-      ) : (
+      )}
+
+      {formData.action === 'cross-border' && (
         <>
           {/* Fields for selling */}
           <div className="wallet-step p-6 rounded-lg shadow-md bg-gray-100 ">
-            {formData.currency === 'ZAR' ? (
-              <h2 className="text-xl font-bold mb-4">Please provide your crypto wallet address and details for the transaction.</h2>
-            ) : (
-              <h2 className="text-xl font-bold mb-4">Please provide your crypto wallet address and mobile money
-                phone number for the transaction.</h2>
-            )
-            }
+          <h2 className="text-xl font-bold mb-4">Please provide Recepient Details</h2>
             <label htmlFor="walletAddress" className="block mb-2 text-sm font-medium text-gray-900">
               Web3 Wallet Address
             </label>
