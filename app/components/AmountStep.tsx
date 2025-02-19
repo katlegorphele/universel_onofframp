@@ -50,20 +50,24 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   }, [receiveAmount, amount])
 
   useEffect(() => {
-      setFormData((prev) => ({
-        ...prev,
-        
-        crossBorder: {
+    setFormData((prev) => ({
+      ...prev,
+
+      crossBorder: {
         sendCurrency: crossBorderSender,
         receiveCurrency: '',
         sendAmount: 0,
         receiveAmount: 0,
         exchangeRate: 0,
         totalFee: 0,
-        },
-      }));
-    }, [setFormData, crossBorderSender]);
-  
+      },
+    }));
+  }, [setFormData, crossBorderSender]);
+
+  const logSender = () => {
+    console.log('Sender Country', crossBorderSender)
+  }
+
 
 
 
@@ -275,168 +279,30 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
       {formData.action === 'cross-border' && (
         <>
-          {formData.crossBorder.sendCurrency === 'ZAR' ?
-            (<>
-              <div className="p-6 rounded-lg shadow-md bg-gray-100">
-                <p className='font-extrabold mb-2'>Deposit Details</p>
-                <div className='flex flex-row gap-10 justify-items-start'>
-                  <div className='flex flex-col flex-nowrap'>
-                    <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-                      Currency
-                    </label>
-                    {/* <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}> */}
-                    <Select onValueChange={(value) => setCrossBorderSender(value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Currency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {currencyOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+          <div className="p-6 rounded-lg shadow-md bg-gray-100">
+            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+              Currency
+            </label>
+            <Select onValueChange={(value) => {
+              setCrossBorderSender(value)
+              logSender()
+            }} defaultValue={formData.currency}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-                <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                  {/* {formData.crossBorder.sendCurrency == '' ? (
-                    <p>How Much Do You Wish To Send</p>
-                  ) : (<p>How Much Do You Wish To Send (in {formData.crossBorder.sendCurrency})</p>)} */}
-                </label>
-
-                <Input
-                  type="number"
-                  id="amount"
-                  // value with currency symbols
-                  value={amount}
-                  onChange={handleInputChange}
-                  className="mb-4"
-                />
-
-                <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
-                  Full Name
-                </label>
-                <Input
-                  type="text"
-                  id="fullname"
-                  value={fullname}
-                  onChange={(e) => setFullname(e.target.value)}
-                  className="mb-4"
-                />
-                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
-                  Phone Number
-                </label>
-                <Input
-                  type="text"
-                  id="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4"
-                />
-                <label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
-                  Payment Method
-                </label>
-                <Select onValueChange={setPaymentMethod} defaultValue={paymentMethod}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Payment Method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {paymentMethodsZAR.map((method) => (
-                      <SelectItem key={method} value={method}>
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
-                  Next
-                </Button>
-                <div className='flex justify-center mt-2'>
-                  _______________________________
-                </div>
-
-                <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                  Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2)) * (3 / 100)} {formData.currency}</span>
-                </label>
-              </div>
-            </>)
-            :
-            (
-              <>
-                <div className="p-6 rounded-lg shadow-md bg-gray-100">
-                  <p className='font-extrabold mb-2'>Deposit Details</p>
-                  <div className='flex flex-row gap-10 justify-items-start'>
-                    <div className='flex flex-col flex-nowrap'>
-                      <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-                        Currency
-                      </label>
-                      <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Currency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {currencyOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                    How Much Do You Wish To Send (in {formData.currency})
-                  </label>
-
-                  <Input
-                    type="number"
-                    id="amount"
-                    // value with currency symbols
-                    value={amount}
-                    onChange={handleInputChange}
-                    className="mb-4"
-                  />
-
-                  <p className='font-extrabold mb-2'>Please Enter Your Mobile Money Details</p>
-                  <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
-                    Account Name
-                  </label>
-                  <Input
-                    type="text"
-                    id="accountName"
-                    value={accountName}
-                    onChange={(e) => setAccountName(e.target.value)}
-                    className="mb-4"
-                  />
-                  <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
-                    Phone Number
-                  </label>
-                  <Input
-                    type="text"
-                    id="phoneNumber"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="mb-4"
-                  />
-                  
-
-                  <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
-                    Next
-                  </Button>
-                  <div className='flex justify-center mt-2'>
-                    _______________________________
-                  </div>
-
-                  <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                    Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2)) * (3 / 100)} {formData.currency}</span>
-                  </label>
-                </div>
-              </>
+            {crossBorderSender == 'ZAR' && (
+              <></>
             )}
+          </div>
         </>
       )}
     </>

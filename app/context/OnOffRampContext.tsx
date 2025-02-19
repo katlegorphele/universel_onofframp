@@ -204,7 +204,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       console.log(data);
       const rate = data.conversion_rates[formData.currency];
       console.log(rate)
-      console.log(formData.crossBorder.sendCurrency)
+      console.log('Cross Border Sender Currency:',formData.crossBorder.sendCurrency)
       setFormData((prev) => ({ ...prev, exchangeRate: rate }));
     };
 
