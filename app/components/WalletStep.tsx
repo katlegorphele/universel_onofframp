@@ -10,7 +10,7 @@ import { useOnOffRampContext } from '../context/OnOffRampContext';
 
 
 const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const { formData, setFormData, currencyProviders, bankCodes, paymentMethodsZAR } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, bankCodes, currencyOptions, paymentMethodsZAR } = useOnOffRampContext();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -21,6 +21,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [address, setAddress] = useState('');
   const [bankCode, setBankCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
+  
 
 
 
@@ -73,17 +74,26 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         accountNumber,
         country: ''
       },
+      crossBorder: {
+      sendCurrency: '',
+      receiveCurrency: '',
+      sendAmount: 0,
+      receiveAmount: 0,
+      exchangeRate: 0,
+      totalFee: 0,
+      },
       walletAddress
     }));
   }, [phoneNumber, setFormData, network, accountName, fullname, paymentMethod, walletAddress]);
 
 
   const handleSubmit = () => {
-    if (formData.currency == 'ZAR' && formData.action == 'buy' || formData.action == 'sell') {
-      onNext();
-    } else {
-      alert('We only support ZAR currently. Please check back again')
-    }
+    // if (formData.currency == 'ZAR' && formData.action == 'buy' || formData.action == 'sell') {
+    //   onNext();
+    // } else {
+    //   alert('We only support ZAR currently. Please check back again')
+    // }
+    onNext();
   };
 
   return (
@@ -185,7 +195,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   </SelectContent>
                 </Select>
               </>
-            ) :(<></>)}
+            ) : (<></>)}
             <div className="flex justify-between mt-4">
               <Button onClick={onBack} variant="outline">
                 Back
@@ -202,17 +212,22 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         <>
           {/* Fields for selling */}
           <div className="wallet-step p-6 rounded-lg shadow-md bg-gray-100 ">
-          <h2 className="text-xl font-bold mb-4">Please provide Recepient Details</h2>
-            <label htmlFor="walletAddress" className="block mb-2 text-sm font-medium text-gray-900">
-              Web3 Wallet Address
+            <h2 className="text-xl font-bold mb-4">Please provide Recepient Details</h2>
+            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+              Country
             </label>
-            <Input
-              type="text"
-              id="walletAddress"
-              value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
-              className="mb-4"
-            />
+            <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {currencyProviders[formData.currency] ? (
               <>
                 <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
@@ -290,7 +305,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 <Select onValueChange={(value) => {
                   setFormData((prev) => ({ ...prev, bankCode: value }))
                 }
-                  } defaultValue={formData.bankDetails.bankCode}>
+                } defaultValue={formData.bankDetails.bankCode}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select Bank" />
                   </SelectTrigger>

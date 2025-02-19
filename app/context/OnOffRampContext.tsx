@@ -204,6 +204,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       console.log(data);
       const rate = data.conversion_rates[formData.currency];
       console.log(rate)
+      console.log(formData.crossBorder.sendCurrency)
       setFormData((prev) => ({ ...prev, exchangeRate: rate }));
     };
 
@@ -214,6 +215,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
   useEffect(() => {
     const fee = (formData.amount * 3) / 100;
     setFormData((prev) => ({ ...prev, totalFee: fee }));
+    
   }, [formData.amount]);
 
   return (

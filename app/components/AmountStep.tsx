@@ -17,6 +17,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [accountName, setAccountName] = useState('');
   const [fullname, setFullname] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [crossBorderSender, setCrossBorderSender] = useState(formData.crossBorder.sendCurrency)
 
   useEffect(() => {
 
@@ -47,6 +48,22 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       setButtonActive(false)
     }
   }, [receiveAmount, amount])
+
+  useEffect(() => {
+      setFormData((prev) => ({
+        ...prev,
+        
+        crossBorder: {
+        sendCurrency: crossBorderSender,
+        receiveCurrency: '',
+        sendAmount: 0,
+        receiveAmount: 0,
+        exchangeRate: 0,
+        totalFee: 0,
+        },
+      }));
+    }, [setFormData, crossBorderSender]);
+  
 
 
 
@@ -258,7 +275,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
       {formData.action === 'cross-border' && (
         <>
-          {formData.currency === 'ZAR' ?
+          {formData.crossBorder.sendCurrency === 'ZAR' ?
             (<>
               <div className="p-6 rounded-lg shadow-md bg-gray-100">
                 <p className='font-extrabold mb-2'>Deposit Details</p>
@@ -267,7 +284,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
                       Currency
                     </label>
-                    <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
+                    {/* <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}> */}
+                    <Select onValueChange={(value) => setCrossBorderSender(value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Currency" />
                       </SelectTrigger>
@@ -283,7 +301,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 </div>
 
                 <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                  How Much Do You Wish To Send (in {formData.currency})
+                  {/* {formData.crossBorder.sendCurrency == '' ? (
+                    <p>How Much Do You Wish To Send</p>
+                  ) : (<p>How Much Do You Wish To Send (in {formData.crossBorder.sendCurrency})</p>)} */}
                 </label>
 
                 <Input
@@ -402,21 +422,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     className="mb-4"
                   />
-                  <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
-                    Network
-                  </label>
-                  <Select onValueChange={setNetwork} defaultValue={network}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Network" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {currencyProviders[formData.currency].map((provider) => (
-                        <SelectItem key={provider} value={provider}>
-                          {provider}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  
 
                   <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
                     Next
