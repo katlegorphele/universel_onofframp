@@ -7,31 +7,16 @@ import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 
 
-const chainOptions = [
-  // ALL SUPPORTED CHAINS
-
-  { value: 'ARBITRUM', label: 'ARBITRUM' },
-  { value: 'ETHEREUM', label: 'ETHEREUM' },
-  { value: 'BASE', label: 'BASE' },
-  { value: 'LISK', label: 'LISK' },
-
-];
-
-const receiveCurrencyOptions = [
-  // AVAILABLE TOKENS
-  { value: 'UZAR', label: 'UZAR' },
-  // { value: 'USDC', label: 'USDC' },
-  { value: 'USDT', label: 'USDT' },
-];
-
 const AmountStep = ({ onNext }: { onNext: () => void }) => {
-  const { formData, setFormData, currencyProviders, currencyOptions } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, currencyOptions, chainOptions, receiveCurrencyOptions, paymentMethodsZAR } = useOnOffRampContext();
   const [amount, setAmount] = useState(formData.amount);
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
   const [buttonActive, setButtonActive] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState('');
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
 
   useEffect(() => {
 
@@ -310,6 +295,42 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   className="mb-4"
                 />
 
+                <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
+                  Full Name
+                </label>
+                <Input
+                  type="text"
+                  id="fullname"
+                  value={fullname}
+                  onChange={(e) => setFullname(e.target.value)}
+                  className="mb-4"
+                />
+                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="mb-4"
+                />
+                <label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
+                  Payment Method
+                </label>
+                <Select onValueChange={setPaymentMethod} defaultValue={paymentMethod}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Payment Method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {paymentMethodsZAR.map((method) => (
+                      <SelectItem key={method} value={method}>
+                        {method}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
                 <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
                   Next
                 </Button>
@@ -360,7 +381,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     className="mb-4"
                   />
 
-                    <p className='font-extrabold mb-2'>Please Enter Your Mobile Money Details</p>
+                  <p className='font-extrabold mb-2'>Please Enter Your Mobile Money Details</p>
                   <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
                     Account Name
                   </label>

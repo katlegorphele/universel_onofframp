@@ -9,13 +9,8 @@ import { useOnOffRampContext } from '../context/OnOffRampContext';
 
 
 
-
-
-
-const paymentMethodsZAR = ['CARD', 'BANK'];
-
 const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const { formData, setFormData, currencyProviders, bankCodes } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, bankCodes, paymentMethodsZAR } = useOnOffRampContext();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');

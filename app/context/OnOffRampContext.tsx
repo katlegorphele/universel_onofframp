@@ -64,6 +64,25 @@ const currencyOptions = [
   // { value: 'NGN', label: 'Nigerian Naira' },
 ];
 
+const chainOptions = [
+  // ALL SUPPORTED CHAINS
+
+  { value: 'ARBITRUM', label: 'ARBITRUM' },
+  { value: 'ETHEREUM', label: 'ETHEREUM' },
+  { value: 'BASE', label: 'BASE' },
+  { value: 'LISK', label: 'LISK' },
+
+];
+
+const receiveCurrencyOptions = [
+  // AVAILABLE TOKENS
+  { value: 'UZAR', label: 'UZAR' },
+  // { value: 'USDC', label: 'USDC' },
+  { value: 'USDT', label: 'USDT' },
+];
+
+const paymentMethodsZAR = ['CARD', 'BANK'];
+
 
 interface FormData {
   amount: number;
@@ -108,7 +127,11 @@ interface OnOffRampContextType {
   transactionContract: typeof transactionContract;
   currencyProviders : typeof currencyProviders;
   bankCodes: typeof bankCodes;
-  currencyOptions: typeof currencyOptions
+  currencyOptions: typeof currencyOptions;
+  chainOptions: typeof chainOptions;
+  receiveCurrencyOptions: typeof receiveCurrencyOptions;
+  paymentMethodsZAR: typeof paymentMethodsZAR;
+
 }
 
 const OnOffRampContext = createContext<OnOffRampContextType>({
@@ -119,6 +142,9 @@ const OnOffRampContext = createContext<OnOffRampContextType>({
   currencyProviders,
   bankCodes,
   currencyOptions,
+  chainOptions,
+  receiveCurrencyOptions,
+  paymentMethodsZAR,
 });
 
 interface OnOffRampProviderProps {
@@ -199,6 +225,9 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       currencyProviders,
       bankCodes, 
       currencyOptions,
+      chainOptions,
+      receiveCurrencyOptions,
+      paymentMethodsZAR
       }}>
       {children}
     </OnOffRampContext.Provider>
