@@ -22,7 +22,24 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [bankCode, setBankCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [crossBorderReceiver, setCrossBorderReceiver] = useState('ZAR')
-  const [crossBOrderSendAmount, setCrossBorderSendAmount] = useState(0)
+  const [crossBorderReceiveAmount, setcrossBorderReceiveAmount] = useState(0)
+
+  useEffect(() => {
+
+    if (formData.exchangeRate && formData.crossBorder.sendAmount > 0 && formData.action == 'cross-border') {
+      const zarAmount = formData.crossBorder.sendAmount / formData.exchangeRate;
+      const fetchTargetExchangeRate = async () => {
+        const url = `https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const targetRate = data.conversion_rates[formData.crossBorder.sendCurrency];
+        const finalAmount = zarAmount * targetRate;
+        setcrossBorderReceiveAmount(Number(finalAmount.toFixed(2)));
+      };
+
+      fetchTargetExchangeRate()
+    }
+  }, [formData.crossBorder.sendAmount, formData.exchangeRate, formData.action, formData.crossBorder.receiveCurrency]);
 
 
 
@@ -80,8 +97,8 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         sendCurrency: formData.crossBorder.sendCurrency,
         receiveCurrency: crossBorderReceiver,
         sendAmount: formData.crossBorder.sendAmount,
-        receiveAmount: 0,
-        exchangeRate: 0,
+        receiveAmount: crossBorderReceiveAmount,
+        exchangeRate: formData.exchangeRate,
         totalFee: 0,
       },
       walletAddress
@@ -102,9 +119,16 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
 
   const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setCrossBorderSendAmount(Number(e.target.value));
-  
-    };
+    setcrossBorderReceiveAmount(Number(e.target.value));
+    setFormData((prev) => ({
+      ...prev,
+      crossBorder: {
+        ...prev.crossBorder,
+        receiveAmount: Number(e.target.value),
+      },
+    }))
+
+  };
 
   return (
     <>
@@ -249,9 +273,10 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   type="number"
                   id="amount"
                   // value with currency symbols
-                  value={crossBOrderSendAmount }
+                  value={crossBorderReceiveAmount}
                   onChange={handleCrossBorderInputChange}
                   className="mb-4"
+                  disabled={true}
                 />
 
 
@@ -322,6 +347,20 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
             {crossBorderReceiver != 'ZAR' && (
               <>
+
+                <label htmlFor="amount" className="block mb-2 mt-4 text-sm  text-gray-900">
+                  Recepient Amount (in {crossBorderReceiver})
+                </label>
+
+                <Input
+                  type="number"
+                  id="amount"
+                  // value with currency symbols
+                  value={crossBorderReceiveAmount}
+                  onChange={handleCrossBorderInputChange}
+                  className="mb-4"
+                  disabled={true}
+                />
                 <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
                   Account Name
                 </label>
