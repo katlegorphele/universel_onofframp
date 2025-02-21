@@ -10,6 +10,7 @@ import StepIndicator from './StepIndicator';
 import { Button } from '@/components/ui/button';
 import TransferStep from './TransferStep';
 import Header from './Header';
+import { ArrowLeftRight, MapPinned } from 'lucide-react';
 
 const OnOffRampForm = () => {
   const [step, setStep] = useState(1);
@@ -41,30 +42,41 @@ const OnOffRampForm = () => {
 
   return (
     <>
-    <Header/>
-    <div className="p-6 rounded-lg shadow-md bg-[#68BEFF40] bg-opacity-0 max-h-screen mt-4 w-2/3 h-auto "
-    >
-      {/* <h1 className="text-2xl font-bold mb-4 text-center">Universal</h1> */}
-      <div className='justify-center rounded-lg border p-2 text-white font-bold text-center mb-4 bg-[#039FFF]'>
-        <p>{formData.action.toUpperCase()}</p>
+      <Header />
+      <div className="p-6 rounded-lg shadow-md bg-[#68BEFF40] bg-opacity-0 max-h-screen mt-4 w-2/3 h-auto "
+      >
+        {/* <h1 className="text-2xl font-bold mb-4 text-center">Universal</h1> */}
+        <div className='justify-center rounded-lg border p-2 text-white font-bold text-center mb-4 bg-[#039FFF]'>
+          <p>{formData.action.toUpperCase()}</p>
+        </div>
+        <div className="steps flex justify-center mb-4 w-full">
+          <StepIndicator currentStep={step} />
+        </div>
+        {step === 1 && <AmountStep onNext={handleNext} />}
+        {step === 2 && <WalletStep onNext={handleNext} onBack={handleBack} />}
+        {step === 3 && <VerifyStep onNext={handleNext} onBack={handleBack} />}
+        {step === 4 && <OrderStep onBack={handleBack} />}
+        {step === 5 && <TransferStep />}
+
       </div>
-      <div className="steps flex justify-center mb-4 w-full">
-        <StepIndicator currentStep={step} />
+      <div className='flex justify-between mt-2'>
+        <Button onClick={switchToBuy} className="bg-[#039FFF] hover:bg-[#94c7e7] text-white flex items-center mr-2">
+          <ArrowLeftRight size={16} /> BUY
+        </Button>
+        <Button onClick={switchToSell} className="bg-[#b160d6] hover:bg-[#0a3047af] text-white flex items-center mr-2">
+          <ArrowLeftRight size={16} /> SELL
+
+        </Button>
+        <Button onClick={switchToTransfer} className="bg-[#6066be] hover:bg-[#0a3047af] text-white flex items-center mr-2" >
+          <ArrowLeftRight size={16} /> TRANSFER
+        </Button>
+
+
+        <Button onClick={switchToCrossBorder} className="bg-[#176133] hover:bg-[#0a3047af] text-white flex items-center mr-2">
+        <MapPinned size={16} /> CROSS BORDER
+        </Button>
       </div>
-      {step === 1 && <AmountStep onNext={handleNext} />}
-      {step === 2 && <WalletStep onNext={handleNext} onBack={handleBack} />}
-      {step === 3 && <VerifyStep onNext={handleNext} onBack={handleBack} />}
-      {step === 4 && <OrderStep onBack={handleBack} />}
-      {step === 5 && <TransferStep/>}
-      
-    </div>
-    <div className='flex justify-between mt-2'>
-      <Button onClick={switchToBuy}>BUY</Button>
-      <Button onClick={switchToSell}>SELL</Button>
-      <Button onClick={switchToTransfer}>TRANSFER</Button>
-      <Button onClick={switchToCrossBorder}>CROSS-BORDER</Button>
-    </div>
-    
+
     </>
   );
 };
