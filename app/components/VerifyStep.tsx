@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
+import { sendOTP } from '../utils/sendMail';
 
 const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
   const { formData, setFormData} = useOnOffRampContext();
@@ -51,6 +52,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     setFormData((prev) => ({ ...prev, otpCode: code }));
     console.log(`OTP sent: ${code}`);
+    sendOTP(email, code);
     setIsOtpGenerated(true);
   };
 

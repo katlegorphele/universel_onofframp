@@ -11,6 +11,30 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+export async function sendOTP(email: string | undefined, otp: string | undefined) {
+    if (!email) return;
+
+    try {
+        await transporter.sendMail({
+            from: 'UZAR Team',
+            to: email,
+            subject: 'UZAR OTP',
+            text: `
+      Dear valued customer,
+      
+      Your OTP is ${otp}
+      
+      Thank you for using our service!
+      
+      Best regards,
+      The UZAR Team
+            `
+        });
+    } catch (error) {
+        console.error('Failed to send email notification:', error);
+    }
+}
+
 export async function sendPaymentTransactionEmail(
     recipientEmail: string | undefined,
     amount: number,
