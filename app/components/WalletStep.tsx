@@ -26,7 +26,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
   useEffect(() => {
 
-    if (formData.exchangeRate && formData.crossBorder.sendAmount > 0 && formData.action == 'cross-border') {
+    if (formData.crossBorder.sendAmount > 0 && formData.action == 'cross-border') {
       const zarAmount = formData.crossBorder.sendAmount / formData.exchangeRate;
       const fetchTargetExchangeRate = async () => {
         const url = `https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR`;
@@ -35,6 +35,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         const targetRate = data.conversion_rates[formData.crossBorder.sendCurrency];
         const finalAmount = zarAmount * targetRate;
         setcrossBorderReceiveAmount(Number(finalAmount.toFixed(2)));
+        console.log(finalAmount)
       };
 
       fetchTargetExchangeRate()
@@ -249,7 +250,10 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
               Currency
             </label>
-            <Select onValueChange={(value) => setCrossBorderReceiver(value)}>
+            <Select onValueChange={(value) => {
+              setCrossBorderReceiver(value)
+              setFormData((prev) => ({...prev, crossBorder: {...prev.crossBorder, receiveCurrency: value}}))
+              }}>
               <SelectTrigger>
                 <SelectValue placeholder="Select Currency" />
               </SelectTrigger>
