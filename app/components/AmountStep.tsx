@@ -8,7 +8,7 @@ import { useOnOffRampContext } from '../context/OnOffRampContext';
 
 
 const AmountStep = ({ onNext }: { onNext: () => void }) => {
-  const { formData, setFormData, currencyProviders, currencyOptions, chainOptions, receiveCurrencyOptions, paymentMethodsZAR, bankCodes } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, currencyOptions, chainOptions, receiveCurrencyOptions, bankCodes } = useOnOffRampContext();
   const [amount, setAmount] = useState(formData.amount);
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
   const [buttonActive, setButtonActive] = useState(false)
@@ -16,11 +16,11 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
   const [fullname, setFullname] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
+  // const [paymentMethod, setPaymentMethod] = useState('');
   const [crossBorderSender, setCrossBorderSender] = useState('ZAR')
   const [crossBorderSendAmount, setCrossBorderSendAmount] = useState(0)
   const [address, setAddress] = useState('');
-  const [bankCode, setBankCode] = useState('');
+  // const [bankCode, setBankCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
 
 
@@ -81,14 +81,14 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       bankDetails: {
         fullname,
         phoneNumber,
-        paymentMethod,
-        bankCode,
+        paymentMethod:'',
+        bankCode:'',
         address,
         accountNumber,
         country: ''
       },
     }));
-  }, [setFormData, crossBorderSender]);
+  }, [setFormData, crossBorderSender, accountName, address, bankCodes, formData.exchangeRate, fullname, network, phoneNumber, receiveAmount, amount, crossBorderSendAmount, accountNumber]);
 
   const logSender = () => {
     console.log('Sender Country', crossBorderSender)

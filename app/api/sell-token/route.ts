@@ -22,16 +22,6 @@ export async function POST(req: Request) {
       currency
     } = await req.json();
 
-    const bankObject = {
-      name: bankDetails.fullname,
-      address: bankDetails.address,
-      phoneNumber: bankDetails.phoneNumber,
-      bankCode: bankDetails.bankCode,
-      accountNumber: bankDetails.accountNumber,
-      country: bankDetails.country,
-    }
-
-
 
     if (!amount || amount <= 0) {
       return NextResponse.json(

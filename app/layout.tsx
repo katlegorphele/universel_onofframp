@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThirdwebProvider } from "thirdweb/react";
 import Header from "./components/Header";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,7 +29,7 @@ export default function RootLayout({
     <ThirdwebProvider>
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-center items-center h-screen ` }
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-center items-center h-screen bg-[/backgroundSwirls.png] ` }
       >
         <Header/>
 

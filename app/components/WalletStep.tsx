@@ -17,9 +17,9 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [fullname, setFullname] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
-  const [buttonActive, setButtonActive] = useState(true);
+  const [buttonActive, setButtonActive] = useState(false);
   const [address, setAddress] = useState('');
-  const [bankCode, setBankCode] = useState('');
+  const [bankCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [crossBorderReceiver, setCrossBorderReceiver] = useState('ZAR')
   const [crossBorderReceiveAmount, setcrossBorderReceiveAmount] = useState(0)
@@ -40,10 +40,98 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
       fetchTargetExchangeRate()
     }
-  }, [formData.crossBorder.sendAmount, formData.exchangeRate, formData.action, formData.crossBorder.receiveCurrency]);
+  }, [formData.crossBorder.sendAmount, formData.exchangeRate, formData.crossBorder.sendCurrency, formData.action, formData.crossBorder.receiveCurrency]);
 
 
 
+  useEffect(() => {
+    if (formData.action === 'buy') {
+      if (formData.currency === 'ZAR') {
+        if (
+          phoneNumber == '' ||
+          paymentMethod == '' ||
+          fullname == '' ||
+          walletAddress == ''
+        ) {
+          setButtonActive(false)
+        } else {
+          setButtonActive(true)
+        }
+      } else {
+        if (
+          phoneNumber == '' ||
+          accountName == '' ||
+          phoneNumber == '' ||
+          walletAddress == '' ||
+          network == ''
+        ) {
+
+          setButtonActive(false)
+        } else {
+          setButtonActive(true)
+        }
+      }
+    }
+
+    if (formData.action === 'sell') {
+      if (formData.currency === 'ZAR') {
+        if (
+          walletAddress == '' ||
+          fullname == '' ||
+          address == '' ||
+          phoneNumber == '' ||
+          bankCode == '' ||
+          accountNumber == ''
+          
+        ) {
+          setButtonActive(false)
+        } else {
+          setButtonActive(true)
+        }
+      } else {
+        if (
+          phoneNumber == '' ||
+          accountName == '' ||
+          walletAddress == '' ||
+          network == ''
+        ) {
+
+          setButtonActive(false)
+        } else {
+          setButtonActive(true)
+        }
+      }
+
+    }
+
+    if (formData.action === 'cross-border') {
+      if (formData.crossBorder.receiveCurrency === 'ZAR') {
+        if (
+          fullname == '' ||
+          address == '' ||
+          phoneNumber == '' ||
+          // bankCode == '' ||
+          accountNumber == ''
+        ) {
+          setButtonActive(false)
+        } else {
+          setButtonActive(true)
+        }
+      }
+
+      if (formData.crossBorder.receiveCurrency !== 'ZAR') {
+        if (
+          accountName == '' ||
+          phoneNumber == '' ||
+          network == ''
+        ) {
+          setButtonActive(false)
+        } else {
+          setButtonActive(true)
+        }
+      }
+    }
+  }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName, formData.currency, formData.action, address, bankCode, accountNumber, formData.crossBorder.receiveCurrency])
 
 
 

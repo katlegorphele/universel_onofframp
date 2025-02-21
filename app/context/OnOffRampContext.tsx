@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { defineChain, getContract, readContract, toEther } from "thirdweb";
+import { defineChain, getContract} from "thirdweb";
 import { thirdwebClient } from '../config/client';
 import { networkConfig } from "../config/networkConfig";
 const { chainId, uZarContractAddress, rampContractAddress } = networkConfig;
@@ -189,7 +189,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
     action: 'buy',
 
   } as FormData);
-  uzarContract;
+  
 
   useEffect(() => {
     const fetchExchangeRates = async () => {
@@ -209,7 +209,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
     };
 
     fetchExchangeRates();
-  }, [formData.receiveCurrency, formData.currency]);
+  }, [formData.receiveCurrency, formData.currency, formData.crossBorder.sendCurrency]);
 
   //useEffect to set total fee which is 3% of amount
   useEffect(() => {

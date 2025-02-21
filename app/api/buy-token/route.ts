@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendPaymentTransactionEmail } from "@/app/utils/sendMail";
-import { redirect } from "next/dist/server/api-utils";
+
 
 const test_mode = true;
 let url_in_use: string;
@@ -35,12 +35,12 @@ export async function POST(req: Request) {
     tx_id = generateTXNID('mobile');
   }
 
-  let bankingCheckout = {
+  const bankingCheckout = {
     fullName: "",
     phoneNumber: "",
     paymentMethod: ""
   }
-  let mobileCheckout = {
+  const mobileCheckout = {
     providerNetwork: "",
     phoneNumber: "",
     accountName: ""

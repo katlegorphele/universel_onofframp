@@ -6,8 +6,7 @@ import axios from 'axios';
 const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const { formData } = useOnOffRampContext();
   const [loading, setLoading] = useState(false);
-  const [senderCountry, setSenderCountry] = useState(formData.crossBorder.sendCurrency);
-  const [recieverCountry, setRecieverCountry] = useState(formData.crossBorder.receiveCurrency);
+
 
   
 

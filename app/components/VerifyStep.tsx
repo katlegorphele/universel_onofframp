@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
-import { sendOTP } from '../utils/sendMail';
+// import { sendOTP } from '../utils/sendMail';
 
 const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
   const { formData, setFormData} = useOnOffRampContext();

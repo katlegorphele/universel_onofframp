@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,16 +12,18 @@ import axios from 'axios';
 
 const TransferStep = () => {
     const {chainId, uZarContractAddress, rampContractAddress} = networkConfig;
-    const { formData, setFormData, uzarContract, transactionContract } = useOnOffRampContext();
+    const { uzarContract, transactionContract } = useOnOffRampContext();
     const [addressTo, setAddressTo] = useState('')
     const [amount, setAmount] = useState(0)
     const [email, setEmail] = useState('')
-    const [txHash, setTXHash] = useState('')
+    // const [txHash, setTXHash] = useState('')
     const [walletAddress, setWalletAddress] = useState('')
     const [loading, setLoading] = useState(false)
     const activeAccount = useActiveAccount()
 
     const account = useActiveAccount()
+
+    console.log('Wallet Address: ', walletAddress)
     
 
     const handleTransfer = async () => {
