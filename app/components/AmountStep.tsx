@@ -40,6 +40,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
   const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCrossBorderSendAmount(Number(e.target.value));
+    setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, sendAmount: Number(e.target.value) } }));
+    console.log(formData.crossBorder.sendAmount)
 
   };
 
@@ -341,8 +343,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   value={crossBorderSendAmount}
                   onChange={handleCrossBorderInputChange}
                   className="mb-4"
-
                 />
+
+                
                 <p className='font-bold mb-2'>Bank Details</p>
 
                 <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">

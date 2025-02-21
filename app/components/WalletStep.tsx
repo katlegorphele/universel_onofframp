@@ -22,6 +22,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [bankCode, setBankCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [crossBorderReceiver, setCrossBorderReceiver] = useState('ZAR')
+  const [crossBOrderSendAmount, setCrossBorderSendAmount] = useState(0)
 
 
 
@@ -78,7 +79,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       crossBorder: {
         sendCurrency: formData.crossBorder.sendCurrency,
         receiveCurrency: crossBorderReceiver,
-        sendAmount: formData.amount,
+        sendAmount: formData.crossBorder.sendAmount,
         receiveAmount: 0,
         exchangeRate: 0,
         totalFee: 0,
@@ -97,9 +98,13 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     onNext();
   };
 
-  const logRecepient = () => {
 
-  }
+
+
+  const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setCrossBorderSendAmount(Number(e.target.value));
+  
+    };
 
   return (
     <>
@@ -235,7 +240,22 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
             {crossBorderReceiver === 'ZAR' && (
               <>
-              <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
+
+                <label htmlFor="amount" className="block mb-2 mt-4 text-sm  text-gray-900">
+                  Recepient Amount (in {crossBorderReceiver})
+                </label>
+
+                <Input
+                  type="number"
+                  id="amount"
+                  // value with currency symbols
+                  value={crossBOrderSendAmount }
+                  onChange={handleCrossBorderInputChange}
+                  className="mb-4"
+                />
+
+
+                <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
                   Full Name
                 </label>
                 <Input
@@ -296,13 +316,13 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   className="mb-4"
                   placeholder={`Enter your account number`}
                 />
-                
+
               </>
             )}
 
             {crossBorderReceiver != 'ZAR' && (
               <>
-              <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
                   Account Name
                 </label>
                 <Input
@@ -330,7 +350,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                     <SelectValue placeholder="Select Network" />
                   </SelectTrigger>
                   <SelectContent>
-                    {currencyProviders[formData.currency].map((provider) => (
+                    {currencyProviders[crossBorderReceiver].map((provider) => (
                       <SelectItem key={provider} value={provider}>
                         {provider}
                       </SelectItem>
@@ -340,7 +360,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
               </>
             )}
-            
+
             <div className="flex justify-between mt-4">
               <Button onClick={onBack} variant="outline">
                 Back

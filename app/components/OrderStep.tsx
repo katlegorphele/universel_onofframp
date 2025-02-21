@@ -173,11 +173,11 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
               ) : (
                 <>
                   <div>
-                    <p className='font-bold'>Sender Country: </p>
-                    <p className='font-bold'>Recepient Country: </p>
-                    <p className='font-bold'>Send Amount: </p>
-                    <p className='font-bold'>Receive Amount: </p>
-                    <p className='font-bold'>Exchange Rate: </p>
+                    <p className='font-bold'>Sender Country: {formData.crossBorder.sendCurrency} </p>
+                    <p className='font-bold'>Recepient Country: {formData.crossBorder.receiveCurrency} </p>
+                    <p className='font-bold'>Send Amount: {formData.crossBorder.sendAmount}</p>
+                    <p className='font-bold'>Receive Amount: {formData.crossBorder.receiveAmount}</p>
+                    <p className='font-bold'>Exchange Rate: {formData.crossBorder.exchangeRate}</p>
                     
                   </div>
                 </>
