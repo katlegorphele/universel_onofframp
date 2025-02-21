@@ -9,6 +9,7 @@ import { useOnOffRampContext } from '../context/OnOffRampContext';
 import StepIndicator from './StepIndicator';
 import { Button } from '@/components/ui/button';
 import TransferStep from './TransferStep';
+import Header from './Header';
 
 const OnOffRampForm = () => {
   const [step, setStep] = useState(1);
@@ -40,10 +41,11 @@ const OnOffRampForm = () => {
 
   return (
     <>
-    <div className="p-6 rounded-lg shadow-md bg-[#68BEFF40] bg-opacity-80 max-h-screen mt-4 w-2/3 h-auto "
+    <Header/>
+    <div className="p-6 rounded-lg shadow-md bg-[#68BEFF40] bg-opacity-0 max-h-screen mt-4 w-2/3 h-auto "
     >
       {/* <h1 className="text-2xl font-bold mb-4 text-center">Universal</h1> */}
-      <div className='justify-center rounded-lg border p-2 text-white font-bold text-center '>
+      <div className='justify-center rounded-lg border p-2 text-white font-bold text-center mb-4 bg-[#039FFF]'>
         <p>{formData.action.toUpperCase()}</p>
       </div>
       <div className="steps flex justify-center mb-4 w-full">

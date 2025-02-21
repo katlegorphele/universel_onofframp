@@ -29,10 +29,8 @@ export default function RootLayout({
     <ThirdwebProvider>
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-center items-center h-screen bg-[/backgroundSwirls.png] ` }
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-center items-center h-screen bg-[url('/backgroundSwirls.png')] bg-cover bg-center bg-no-repeat` }
       >
-        <Header/>
-
         {children}
       </body>
     </html>
