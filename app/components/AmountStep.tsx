@@ -102,16 +102,16 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       {formData.action === 'buy' && (
         <>
           {/* Fields for Buying */}
-          <div className="p-6 rounded-lg shadow-md bg-gray-100">
+          <div className="md:p-6 flex flex-col sm:w-full">
 
             {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
-            <div className='flex flex-row gap-10 justify-items-start'>
+            <div className='flex flex-col md:flex-row gap-10 justify-items-between'>
               <div className='flex flex-col flex-nowrap'>
                 <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
                   Currency
                 </label>
                 <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -128,7 +128,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   Chain
                 </label>
                 <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, chain: value }))} defaultValue={formData.chain}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Chain" />
                   </SelectTrigger>
                   <SelectContent>
@@ -145,7 +145,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   Token
                 </label>
                 <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, receiveCurrency: value }))} defaultValue={formData.receiveCurrency}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Receive Currency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -169,7 +169,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               // value with currency symbols
               value={amount}
               onChange={handleInputChange}
-              className="mb-4"
+              className="mb-4 bg-white md:w-1/2"
             />
 
             <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
@@ -180,7 +180,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               id="receiveAmount"
               value={amount > 0 ? Number((receiveAmount).toFixed(2)) : 0}
               readOnly
-              className="mb-4"
+              className="mb-4 bg-white md:w-1/2"
               disabled={true}
             />
             <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>

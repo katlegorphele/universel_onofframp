@@ -32,7 +32,7 @@ export default function RootLayout({
           <link rel="icon" type="image/png" href="/squareUlogo.png" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-center items-center h-screen bg-[url('/backgroundSwirls.png')] bg-cover bg-center bg-no-repeat`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-items-center items-center h-screen bg-[url('/backgroundSwirls.png')] bg-cover bg-center bg-no-repeat`}
         >
           {children}
         </body>

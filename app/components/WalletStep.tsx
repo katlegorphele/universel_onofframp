@@ -224,7 +224,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       {formData.action === 'buy' && (
         <>
           {/* Fields for buying */}
-          <div className="wallet-step p-6 rounded-lg shadow-md bg-gray-100 ">
+          <div className="md:p-6 flex flex-col sm:m-5 ">
             {formData.currency === 'ZAR' ? (
               <h2 className="text-xl font-bold mb-4">Please provide your crypto wallet address and details for the transaction.</h2>
             ) : (
@@ -240,7 +240,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               id="walletAddress"
               value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
-              className="mb-4"
+              className="mb-4 bg-white"
             />
             {currencyProviders[formData.currency] ? (
               <>
@@ -252,7 +252,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="accountName"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -262,13 +262,13 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
                   Network
                 </label>
                 <Select onValueChange={setNetwork} defaultValue={network}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Network" />
                   </SelectTrigger>
                   <SelectContent>
@@ -290,7 +290,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="fullname"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -300,13 +300,13 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
                   Payment Method
                 </label>
                 <Select onValueChange={setPaymentMethod} defaultValue={paymentMethod}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Payment Method" />
                   </SelectTrigger>
                   <SelectContent>
