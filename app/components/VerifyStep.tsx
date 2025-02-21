@@ -52,7 +52,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     setFormData((prev) => ({ ...prev, otpCode: code }));
     console.log(`OTP sent: ${code}`);
-    sendOTP(email, code);
+    // sendOTP(email, code);
     setIsOtpGenerated(true);
   };
 
