@@ -7,49 +7,25 @@ import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 
 
-const currencyOptions = [
-  // EDIT HERE TO ADD MORE CURRENCIES 
-  { value: 'ZAR', label: 'South African Rand' },
-  { value: 'CDF', label: 'Congolese Franc' },
-  { value: 'GHS', label: 'Ghanaian Cedi' },
-  { value: 'KES', label: 'Kenyan Shillings' },
-  { value: "MWK", label: "Malawian Kwacha" },
-  { value: 'RWF', label: 'Rwandan Franc' },
-  { value: 'TZS', label: 'Tanzanian Shilling' },
-  { value: 'UGX', label: 'Ugandan Shilling' },
-  { value: 'XAF', label: 'C African CFA Franc' },
-  { value: 'XOF', label: 'W African CFA Franc' },
-  { value: 'ZMW', label: 'Zambian Kwacha' },
-
-  // { value: 'NGN', label: 'Nigerian Naira' },
-
-];
-
-const chainOptions = [
-  // ALL SUPPORTED CHAINS
-  
-  { value: 'Arbitrum', label: 'Arbitrum' },
-  { value: 'Ethereum', label: 'Ethereum' },
-  { value: 'Base', label: 'Base' },
-  { value: 'Lisk', label: 'Lisk' },
-  
-];
-
-const receiveCurrencyOptions = [
-  // AVAILABLE TOKENS
-  { value: 'UZAR', label: 'UZAR' },
-  // { value: 'USDC', label: 'USDC' },
-  { value: 'USDT', label: 'USDT' },
-];
-
 const AmountStep = ({ onNext }: { onNext: () => void }) => {
-  const { formData, setFormData } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, currencyOptions, chainOptions, receiveCurrencyOptions, paymentMethodsZAR, bankCodes } = useOnOffRampContext();
   const [amount, setAmount] = useState(formData.amount);
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
   const [buttonActive, setButtonActive] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [network, setNetwork] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [crossBorderSender, setCrossBorderSender] = useState('ZAR')
+  const [crossBorderSendAmount, setCrossBorderSendAmount] = useState(0)
+  const [address, setAddress] = useState('');
+  const [bankCode, setBankCode] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+
 
   useEffect(() => {
-    
+
     if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
       setReceiveAmount(amount / formData.exchangeRate);
     } else {
@@ -60,6 +36,13 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(Number(e.target.value));
     setFormData((prev) => ({ ...prev, amount: Number(e.target.value) }));
+  };
+
+  const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCrossBorderSendAmount(Number(e.target.value));
+    setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, sendAmount: Number(e.target.value) } }));
+    console.log(formData.crossBorder.sendAmount)
+
   };
 
   const handleSubmit = () => {
@@ -78,14 +61,49 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
   }, [receiveAmount, amount])
 
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+
+      crossBorder: {
+        sendCurrency: crossBorderSender,
+        receiveCurrency: '',
+        sendAmount: crossBorderSendAmount,
+        receiveAmount: 0,
+        exchangeRate: formData.exchangeRate,
+        totalFee: 0,
+      },
+      mobileWallet: {
+        phoneNumber,
+        network,
+        accountName
+      },
+      bankDetails: {
+        fullname,
+        phoneNumber,
+        paymentMethod,
+        bankCode,
+        address,
+        accountNumber,
+        country: ''
+      },
+    }));
+  }, [setFormData, crossBorderSender]);
+
+  const logSender = () => {
+    console.log('Sender Country', crossBorderSender)
+  }
+
+
 
 
   return (
     <>
-      {formData.action === 'buy' ? (
+      {formData.action === 'buy' && (
         <>
-        {/* Fields for Buying */}
+          {/* Fields for Buying */}
           <div className="p-6 rounded-lg shadow-md bg-gray-100">
+
             {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
             <div className='flex flex-row gap-10 justify-items-start'>
               <div className='flex flex-col flex-nowrap'>
@@ -181,7 +199,10 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
           </div>
         </>
-      ) : (
+      )
+      }
+
+      {formData.action === 'sell' && (
         <>
           {/* Fields for selling */}
           <div className="p-6 rounded-lg shadow-md bg-gray-100">
@@ -278,6 +299,182 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2)) * (3 / 100)} {formData.currency}</span>
             </label>
 
+          </div>
+        </>
+      )}
+
+      {formData.action === 'cross-border' && (
+        <>
+          <div className="p-6 rounded-lg shadow-md bg-gray-100">
+            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+              Currency
+            </label>
+            <div className='mb-4'>
+              <Select onValueChange={(value) => {
+                setCrossBorderSender(value)
+                setFormData((prev) => ({ ...prev, currency: value }))
+                logSender()
+              }} defaultValue={'ZAR'}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencyOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+
+
+            {crossBorderSender == 'ZAR' && (
+              <>
+                <label htmlFor="amount" className="block mb-2 mt-4 text-sm  text-gray-900">
+                  Amount to send (in {crossBorderSender})
+                </label>
+
+                <Input
+                  type="number"
+                  id="amount"
+                  // value with currency symbols
+                  value={crossBorderSendAmount}
+                  onChange={handleCrossBorderInputChange}
+                  className="mb-4"
+                />
+
+                
+                <p className='font-bold mb-2'>Bank Details</p>
+
+                <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
+                  Bank
+                </label>
+                <Select onValueChange={(value) => {
+                  setFormData((prev) => ({ ...prev, bankCode: value }))
+                }
+                } defaultValue={formData.bankDetails.bankCode}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Bank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bankCodes.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <label htmlFor="accountNumber" className="block mb-2 text-sm font-medium text-gray-900 mt-4">
+                  Account Number
+                </label>
+                <Input
+                  type="text"
+                  id="accountNumber"
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
+                  className="mb-4"
+                  placeholder={`Enter your account number`}
+                />
+
+
+                <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
+                  Full Name
+                </label>
+                <Input
+                  type="text"
+                  id="fullname"
+                  value={fullname}
+                  onChange={(e) => setFullname(e.target.value)}
+                  className="mb-4"
+                />
+                <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
+                  Address
+                </label>
+                <Input
+                  type="text"
+                  id="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="mb-4"
+                />
+                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="mb-4"
+                />
+
+                
+
+                
+              </>
+            )
+            }
+
+            {crossBorderSender !== 'ZAR' && (
+              <>
+                <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+                  Amount to send (in {crossBorderSender})
+                </label>
+                <Input
+                  type="number"
+                  id="amount"
+                  // value with currency symbols
+                  value={crossBorderSendAmount}
+                  onChange={handleCrossBorderInputChange}
+                  className="mb-4"
+
+                />
+
+                <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
+                  Account Name
+                </label>
+                <Input
+                  type="text"
+                  id="accountName"
+                  value={accountName}
+                  onChange={(e) => setAccountName(e.target.value)}
+                  className="mb-4"
+                />
+                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="mb-4"
+                />
+                <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
+                  Network
+                </label>
+                <Select onValueChange={setNetwork} defaultValue={network}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Network" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyProviders[crossBorderSender].map((provider) => (
+                      <SelectItem key={provider} value={provider}>
+                        {provider}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+              </>
+            )}
+
+            <Button onClick={handleSubmit} className="mt-4">
+              Next
+            </Button>
           </div>
         </>
       )}

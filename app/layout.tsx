@@ -24,6 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ThirdwebProvider>
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex justify-center items-center h-screen ` }
@@ -31,5 +32,6 @@ export default function RootLayout({
         {children}
       </body>
     </html>
+    </ThirdwebProvider>
   );
 }

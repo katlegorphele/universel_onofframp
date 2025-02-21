@@ -7,7 +7,7 @@ let url_in_use: string;
 let api_key_in_use: string;
 
 if (test_mode) {
-  url_in_use = process.env.NEXT_PUBLIC_KOTANI_BASE_URL_TEST || "";
+  url_in_use = "https://sandbox-api.kotanipay.io/api/v3";
   api_key_in_use = process.env.NEXT_PUBLIC_KOTANI_API_KEY_TEST || "";
 } else {
   url_in_use = process.env.NEXT_PUBLIC_KOTANI_BASE_URL_PROD || "";
