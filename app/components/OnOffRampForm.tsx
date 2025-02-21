@@ -40,9 +40,10 @@ const OnOffRampForm = () => {
 
   return (
     <>
-    <div className="on-off-ramp-form p-6 rounded-lg shadow-md bg-stone-600 w-auto max-h-screen mt-4">
+    <div className="p-6 rounded-lg shadow-md bg-[#68BEFF40] bg-opacity-80 max-h-screen mt-4 w-2/3 h-auto "
+    >
       {/* <h1 className="text-2xl font-bold mb-4 text-center">Universal</h1> */}
-      <div className='justify-center rounded-lg border '>
+      <div className='justify-center rounded-lg border p-2 text-white font-bold text-center '>
         <p>{formData.action.toUpperCase()}</p>
       </div>
       <div className="steps flex justify-center mb-4 w-full">
@@ -53,12 +54,13 @@ const OnOffRampForm = () => {
       {step === 3 && <VerifyStep onNext={handleNext} onBack={handleBack} />}
       {step === 4 && <OrderStep onBack={handleBack} />}
       {step === 5 && <TransferStep/>}
-      <div className='flex justify-between'>
+      
+    </div>
+    <div className='flex justify-between mt-2'>
       <Button onClick={switchToBuy}>BUY</Button>
       <Button onClick={switchToSell}>SELL</Button>
       <Button onClick={switchToTransfer}>TRANSFER</Button>
       <Button onClick={switchToCrossBorder}>CROSS-BORDER</Button>
-      </div>
     </div>
     
     </>
