@@ -60,7 +60,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   
 
   return (
-    <div className="verify-step p-6 rounded-lg shadow-md bg-gray-100">
+    <div className="md:p-6 rounded-lg p-4">
       <h2 className="text-xl font-bold mb-4">Step 3: Verify</h2>
       {!isOtpGenerated ? (
         <>
@@ -72,7 +72,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             id="email"
             value={email}
             onChange={handleEmailChange}
-            className="mb-4"
+            className="mb-4 bg-white"
           />
           <div className='flex justify-between mt-4'>
           <Button onClick={onBack} variant="outline">
@@ -97,7 +97,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             id="otp"
             value={otp}
             onChange={handleOtpChange}
-            className="mb-4"
+            className="mb-4 bg-white"
           />
           <div className="flex justify-between mt-4">
             <Button onClick={onBack} variant="outline">

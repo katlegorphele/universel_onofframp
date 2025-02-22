@@ -92,7 +92,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <>
-      <div className="order-step p-6 rounded-lg shadow-md bg-gray-100">
+      <div className="order-step p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold">Review Details</h2>
         <p className='text-sm'>Confirm details and proceed with the transaction</p>
 

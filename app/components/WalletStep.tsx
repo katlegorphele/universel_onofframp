@@ -80,7 +80,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
           fullname == '' ||
           address == '' ||
           phoneNumber == '' ||
-          bankCode == '' ||
+          // bankCode == '' ||
           accountNumber == ''
           
         ) {
@@ -506,7 +506,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
       {formData.action === 'sell' && (
         <>
-          <div className="wallet-step p-6 rounded-lg shadow-md bg-gray-100 ">
+          <div className="p-6 rounded-lg">
             {formData.currency === 'ZAR' ? (
               <h2 className="text-xl font-bold mb-4">Please provide your crypto wallet address and details for the transaction.</h2>
             ) : (
@@ -524,7 +524,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               id="walletAddress"
               value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
-              className="mb-4"
+              className="mb-4 bg-white"
             />
 
             {formData.currency === 'ZAR' && (<>
@@ -536,7 +536,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="fullname"
                 value={fullname}
                 onChange={(e) => setFullname(e.target.value)}
-                className="mb-4"
+                className="mb-4 bg-white"
               />
               <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
                 Address
@@ -546,7 +546,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="mb-4"
+                className="mb-4 bg-white"
               />
               <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                 Phone Number
@@ -556,7 +556,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="phoneNumber"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                className="mb-4"
+                className="mb-4 bg-white"
               />
               <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
                 Bank
@@ -565,7 +565,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 setFormData((prev) => ({ ...prev, bankCode: value }))
               }
               } defaultValue={formData.bankDetails.bankCode}>
-                <SelectTrigger>
+                <SelectTrigger className='bg-white'>
                   <SelectValue placeholder="Select Bank" />
                 </SelectTrigger>
                 <SelectContent>
@@ -585,7 +585,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="accountNumber"
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
-                className="mb-4"
+                className="mb-4 bg-white"
                 placeholder={`Enter your account number`}
               />
             </>)}
