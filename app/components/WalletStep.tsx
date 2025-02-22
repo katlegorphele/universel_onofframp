@@ -333,7 +333,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
       {formData.action === 'cross-border' && (
         <>
-          <div className="wallet-step p-6 rounded-lg shadow-md bg-gray-100 ">
+          <div className="p-6 rounded-lg">
             <h2 className="text-xl font-bold mb-4">Please provide Recepient Details</h2>
             <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
               Currency
@@ -342,7 +342,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               setCrossBorderReceiver(value)
               setFormData((prev) => ({...prev, crossBorder: {...prev.crossBorder, receiveCurrency: value}}))
               }}>
-              <SelectTrigger>
+              <SelectTrigger className='bg-white'>
                 <SelectValue placeholder="Select Currency" />
               </SelectTrigger>
               <SelectContent>
@@ -367,7 +367,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   // value with currency symbols
                   value={crossBorderReceiveAmount}
                   onChange={handleCrossBorderInputChange}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                   disabled={true}
                 />
 
@@ -380,7 +380,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="fullname"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
                   Address
@@ -390,7 +390,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -400,7 +400,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
 
                 <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
@@ -410,7 +410,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   setFormData((prev) => ({ ...prev, bankCode: value }))
                 }
                 } defaultValue={formData.bankDetails.bankCode}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Bank" />
                   </SelectTrigger>
                   <SelectContent>
@@ -430,7 +430,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="accountNumber"
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                   placeholder={`Enter your account number`}
                 />
 
@@ -450,7 +450,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   // value with currency symbols
                   value={crossBorderReceiveAmount}
                   onChange={handleCrossBorderInputChange}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                   disabled={true}
                 />
                 <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
@@ -461,7 +461,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="accountName"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -471,13 +471,13 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
                   Network
                 </label>
                 <Select onValueChange={setNetwork} defaultValue={network}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Network" />
                   </SelectTrigger>
                   <SelectContent>

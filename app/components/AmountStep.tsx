@@ -102,7 +102,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       {formData.action === 'buy' && (
         <>
           {/* Fields for Buying */}
-          <div className="md:p-6 flex flex-col sm:w-full">
+          <div className="p-6 flex flex-col sm:w-full">
 
             {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
             <div className='flex flex-col md:flex-row gap-10 justify-items-between'>
@@ -185,10 +185,12 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             />
             <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
             {/* disabled if the amount is 0 */}
-
-            <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4">
+            
+            <div className='mt-2'>
+            <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4 m-auto">
               Next
             </Button>
+            </div>
             <div className='flex justify-center mt-2'>
               _______________________________
             </div>
@@ -305,7 +307,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
       {formData.action === 'cross-border' && (
         <>
-          <div className="p-6 rounded-lg shadow-md bg-gray-100">
+          <div className="p-6 rounded-lg">
             <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
               Currency
             </label>
@@ -315,7 +317,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 setFormData((prev) => ({ ...prev, currency: value }))
                 logSender()
               }} defaultValue={'ZAR'}>
-                <SelectTrigger>
+                <SelectTrigger className='bg-white'>
                   <SelectValue placeholder="Select Currency" />
                 </SelectTrigger>
                 <SelectContent>
@@ -342,7 +344,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   // value with currency symbols
                   value={crossBorderSendAmount}
                   onChange={handleCrossBorderInputChange}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
 
                 
@@ -355,7 +357,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   setFormData((prev) => ({ ...prev, bankCode: value }))
                 }
                 } defaultValue={formData.bankDetails.bankCode}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Bank" />
                   </SelectTrigger>
                   <SelectContent>
@@ -375,7 +377,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   id="accountNumber"
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                   placeholder={`Enter your account number`}
                 />
 
@@ -388,7 +390,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   id="fullname"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
                   Address
@@ -398,7 +400,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   id="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
