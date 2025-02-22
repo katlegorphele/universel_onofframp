@@ -28,6 +28,8 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
       if (response.data.success) {
         alert(response.data.message)
+        // redirect to payment link
+        window.location.href = response.data.data.redirectUrl;
       } else {
         console.log(response.data.message)
       }

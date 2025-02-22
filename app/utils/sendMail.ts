@@ -43,6 +43,7 @@ export async function sendPaymentTransactionEmail(
     bankAccount?: string | undefined,
     transactionId?: string | undefined,
     paymentURL?: string | undefined,
+    token?:string | undefined,
 
 ) {
     if (!recipientEmail) return;
@@ -51,14 +52,14 @@ export async function sendPaymentTransactionEmail(
         await transporter.sendMail({
             from: 'UZAR Team',
             to: recipientEmail,
-            subject: 'UZAR Purchase Confirmation',
+            subject: `${token} Purchase Confirmation`,
             text: `
       Dear valued customer,
       
-      Your purchase of ${amount} UZAR has been initiated.
+      Your purchase of ${amount} ${token} has been initiated.
       ${currency !== "ZAR"
-                    ? `Payment method: M-Pesa (${mpesaNumber})`
-                    : `Payment method: Bank Transfer (${bankAccount})`
+                    ? `Payment method: Mobile Money`
+                    : `Payment method: Bank Transfer`
                 }
       
       Transaction ID: ${transactionId}
