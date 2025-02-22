@@ -49,7 +49,8 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
         bankDetails: formData.bankDetails,
         walletAddress: formData.walletAddress,
         email: formData.email,
-        currency: formData.currency
+        currency: formData.currency,
+        token: formData.receiveCurrency
       });
 
 

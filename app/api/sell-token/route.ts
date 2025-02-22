@@ -19,7 +19,8 @@ export async function POST(req: Request) {
       amount,
       email,
       bankDetails,
-      currency
+      currency,
+      token,
     } = await req.json();
 
 
@@ -69,9 +70,8 @@ export async function POST(req: Request) {
         await sendWithdrawalTransactionEmail(
           email,
           amount,
-          undefined,
-          undefined,
-          undefined,
+          currency,
+          token,
           transactionId
         );
       }

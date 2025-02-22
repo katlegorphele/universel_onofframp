@@ -82,10 +82,10 @@ export async function sendWithdrawalTransactionEmail(
     recipientEmail: string | undefined,
     amount: number,
     currency: string | undefined,
-    mpesaNumber?: string | undefined,
-    bankAccount?: string | undefined,
+    token: string | undefined,
     transactionId?: string | undefined,
     kotaniPayReference?: string | undefined,
+    
 
 ) {
     if (!recipientEmail) return;
@@ -94,14 +94,14 @@ export async function sendWithdrawalTransactionEmail(
         await transporter.sendMail({
             from: 'UZAR Team',
             to: recipientEmail,
-            subject: 'UZAR Sale Confirmation',
+            subject: `${token} Sale Confirmation`,
             text: `
       Dear valued customer,
       
-      Your sale of ${amount} UZAR has been initiated.
-      ${currency === "KES"
-                    ? `Payment method: M-Pesa (${mpesaNumber})`
-                    : `Payment method: Bank Transfer (${bankAccount})`
+      Your sale of ${amount} ${token} has been initiated.
+      ${currency !== "ZAR"
+                    ? `Payment method: Mobile Money`
+                    : `Payment method: Bank Transfer`
                 }
       
       Transaction ID: ${transactionId}
