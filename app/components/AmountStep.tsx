@@ -410,7 +410,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
 
                 
