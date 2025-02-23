@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -6,9 +6,9 @@ import { useActiveAccount } from 'thirdweb/react';
 import { ConnectButton } from 'thirdweb/react';
 import { networkConfig } from '../config/networkConfig';
 import { thirdwebClient } from '../config/client';
-import { defineChain, getContract, prepareContractCall, readContract, sendTransaction, toEther, toWei } from 'thirdweb';
+import { defineChain, getContract, sendTransaction, toEther, } from 'thirdweb';
 import { allowance, approve, getBalance, transfer } from 'thirdweb/extensions/erc20';
-import axios, { all } from 'axios';
+import axios from 'axios';
 
 const transferContract = getContract({
   client: thirdwebClient,
@@ -20,8 +20,8 @@ const transferContract = getContract({
 
 
 const TransferStep = () => {
-  const { chainId, uZarContractAddress, rampContractAddress } = networkConfig;
-  const { uzarContract, transactionContract } = useOnOffRampContext();
+  const { chainId, uZarContractAddress } = networkConfig;
+  const { uzarContract, } = useOnOffRampContext();
   const [addressTo, setAddressTo] = useState('')
   const [amount, setAmount] = useState(0)
   const [email, setEmail] = useState('')
@@ -31,6 +31,13 @@ const TransferStep = () => {
   const activeAccount = useActiveAccount()
 
   const account = useActiveAccount()
+
+  useEffect(() => {
+    if (account) {
+      setWalletAddress(account.address)
+    }
+  }, [account])
+
 
   // console.log('Wallet Address: ', walletAddress)
 
@@ -43,7 +50,7 @@ const TransferStep = () => {
         throw new Error('Account is not defined');
       }
       // get balance
-      const balance = await getBalance({ contract: transferContract, address: account.address })
+      const balance = await getBalance({ contract: transferContract, address: walletAddress })
       console.log('Balance', toEther(balance.value))
 
       // if balance lower than amount return
@@ -52,17 +59,17 @@ const TransferStep = () => {
         return
       }
 
-      let userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: account.address, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' })))
+      let userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' })))
 
       if (userAllowance < amount) {
-        let transaction = await approve({
+        const transaction = await approve({
           contract: uzarContract,
           spender: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
           amount: toEther(BigInt(amount)),
         });
         const approveHash = await sendTransaction({ transaction, account });
         console.log('Approval Hash', approveHash)
-        userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: account.address, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' })))
+        userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' })))
       }
 
       if (userAllowance > amount) {

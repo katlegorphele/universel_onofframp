@@ -200,7 +200,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       },
       walletAddress
     }));
-  }, [phoneNumber, setFormData, network, accountName, fullname, paymentMethod, walletAddress]);
+  }, [phoneNumber, setFormData, network, accountName, fullname, paymentMethod, walletAddress, accountNumber, address, bankCode, crossBorderReceiveAmount, crossBorderReceiver, formData.crossBorder.sendAmount, formData.crossBorder.sendCurrency, formData.exchangeRate]);
 
 
   const handleSubmit = () => {

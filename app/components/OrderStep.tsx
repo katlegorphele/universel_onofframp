@@ -3,12 +3,12 @@ import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import axios from 'axios';
 import { useActiveAccount } from 'thirdweb/react';
-import { defineChain, getContract, readContract, sendTransaction, toEther } from 'thirdweb';
+import { defineChain, getContract, sendTransaction, toEther } from 'thirdweb';
 import { thirdwebClient } from '../config/client';
 import { getBalance, allowance, approve, transfer } from 'thirdweb/extensions/erc20';
 
 const OrderStep = ({ onBack }: { onBack: () => void }) => {
-  const { formData, uzarContract } = useOnOffRampContext();
+  const { formData } = useOnOffRampContext();
   const [loading, setLoading] = useState(false);
   const account = useActiveAccount()
 
@@ -105,9 +105,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
   // helper functions
 
-  interface TokenDecimals {
-    [key: string]: number;
-  }
 
   interface ChainIds {
     [key: string]: number;
@@ -118,15 +115,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       [key: string]: string;
     };
   }
-
-  const getDecimals = (token: string): number => {
-    const tokenDecimals: TokenDecimals = {
-      USDT: 6, // USDT has 6 decimals
-      UZAR: 8, // UZAR has 8 decimals (adjust as needed)
-    };
-
-    return tokenDecimals[token] || 18; // Default to 18 decimals if unknown
-  };
 
   const getDynamicContract = async (contractAddress: string, chain: string) => {
     const chainId = getChainId(chain.toLowerCase()); // Map the chain name to its corresponding chain ID
@@ -177,7 +165,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
         ARBITRUM: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', // USDT on Arbitrum
       },
       UZAR: {
-        LISK: '0xE29E8434FF23c4ab128AEA088eE4f434129F1Bf1', // Replace with actual UZAR address on Lisk
+        LISK: '0xE29E8434FF23c4ab128AEA088eE4f434129F1Bf1', // UZAR on Lisk
       },
     };
 
