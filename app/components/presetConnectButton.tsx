@@ -31,9 +31,9 @@ const PresetConnectButton = () => {
     return (
         <ConnectButton
             supportedTokens={{
-                [chainId]: [
+                [lisk_chainId]: [
                     {
-                        address: uZarContractAddress,
+                        address: lisk_uZarContractAddress,
                         name: "Universel Zar",
                         symbol: "uZAR",
                         icon: "...",
@@ -50,11 +50,11 @@ const PresetConnectButton = () => {
                 size: "compact",
                 showThirdwebBranding: false,
             }}
-            detailsButton={{
-                displayBalanceToken: {
-                    [lisk_chainId]: lisk_uZarContractAddress
-                },
-            }}
+            // detailsButton={{
+            //     displayBalanceToken: {
+            //         [lisk_chainId]: lisk_uZarContractAddress
+            //     },
+            // }}
         />
     )
 }

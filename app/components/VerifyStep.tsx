@@ -5,10 +5,10 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
-// import { sendOTP } from '../utils/sendMail';
+
 
 const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const { formData, setFormData} = useOnOffRampContext();
+  const { formData, setFormData } = useOnOffRampContext();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [timeRemaining, setTimeRemaining] = useState(60);
@@ -42,22 +42,37 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     }
   };
 
-  
-  const generateOtp = () => {
+
+  const generateOtp = async () => {
     if (!email) {
       alert('Please enter your email address');
       return;
     }
 
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    setFormData((prev) => ({ ...prev, otpCode: code }));
-    console.log(`OTP sent: ${code}`);
-    // sendOTP(email, code);
-    setIsOtpGenerated(true);
+    try {
+      const response = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFormData((prev) => ({ ...prev, otpCode: data.otp }));
+        setIsOtpGenerated(true);
+        console.log(`OTP sent: ${data.otp}`);
+      } else {
+        alert('Failed to send OTP');
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert('Error sending OTP');
+    }
   };
 
 
-  
+
 
   return (
     <div className="md:p-6 rounded-lg p-4">
@@ -75,13 +90,13 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             className="mb-4 bg-white"
           />
           <div className='flex justify-between mt-4'>
-          <Button onClick={onBack} variant="outline">
+            <Button onClick={onBack} variant="outline">
               Back
-          </Button>
-          <Button onClick={generateOtp}>
-            Generate OTP
-          </Button>
-          
+            </Button>
+            <Button onClick={generateOtp}>
+              Generate OTP
+            </Button>
+
           </div>
         </>
       ) : (

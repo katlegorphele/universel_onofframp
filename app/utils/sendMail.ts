@@ -30,8 +30,10 @@ export async function sendOTP(email: string | undefined, otp: string | undefined
       The UZAR Team
             `
         });
+        return true;
     } catch (error) {
         console.error('Failed to send email notification:', error);
+        return false;
     }
 }
 

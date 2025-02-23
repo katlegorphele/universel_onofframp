@@ -246,15 +246,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     } finally {
       setLoading(false)
     }
-    // if (balance !== undefined && balance > formData.amount) {
-    //   const allowance = await TransferToken()
-    // }
-    // check the users balance of the token they want to sell
-    // ensure the user has the balance they actually want to sell
-    // if transaction is successful, deduct the amount from the user's balance
-    // run the api to send the money
-
-
 
   }
 
