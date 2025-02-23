@@ -4,3 +4,8 @@ export const networkConfig = {
     chainId: 534351,
     rpc: "https://sepolia-rpc.scroll.io"
   }
+
+export const liskNetworkConfig = {
+  lisk_chainId: 1135,
+  lisk_uZarContractAddress: '0xE29E8434FF23c4ab128AEA088eE4f434129F1Bf1'
+}

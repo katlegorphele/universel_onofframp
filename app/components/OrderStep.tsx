@@ -35,22 +35,22 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     const contract = await getDynamicContract(tokenAddress, formData.chain);
 
 
-    let userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' }))))
+    let userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: 'process.env.PUBLIC_NEXT_ESCROW_WALLET' }))))
     if (userAllowance < formData.amount) {
       const transaction = await approve({
         contract,
-        spender: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
+        spender: "process.env.PUBLIC_NEXT_ESCROW_WALLET",
         amount: formData.amount,
       });
 
       await sendTransaction({ transaction, account });
-      userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' }))))
+      userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: 'process.env.PUBLIC_NEXT_ESCROW_WALLET' }))))
     }
 
     if (userAllowance >= formData.amount) {
       const transaction = await transfer({
         contract,
-        to: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
+        to: "process.env.PUBLIC_NEXT_ESCROW_WALLET",
         amount: formData.amount,
       });
 

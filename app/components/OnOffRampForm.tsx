@@ -15,6 +15,7 @@ import { ConnectButton, useActiveAccount } from 'thirdweb/react';
 import { thirdwebClient } from '../config/client';
 import { defineChain } from 'thirdweb';
 import { networkConfig } from '../config/networkConfig';
+import PresetConnectButton from './presetConnectButton';
 
 
 const OnOffRampForm = () => {
@@ -89,27 +90,7 @@ const OnOffRampForm = () => {
       :
       (<>
       <div className='flex justify-center items-center w-full h-screen'>
-      <ConnectButton
-          supportedTokens={{
-            [chainId]: [
-              {
-                address: uZarContractAddress,
-                name: "Universel Zar",
-                symbol: "uZAR",
-                icon: "...",
-              },
-            ],
-          }}
-          client={thirdwebClient}
-          accountAbstraction={{
-            chain: defineChain(chainId),
-            sponsorGas: true,
-          }}
-          connectModal={{
-            size: "wide",
-            showThirdwebBranding: false,
-          }}
-        />
+      <PresetConnectButton/>
       </div>
       </>)}
       

@@ -59,23 +59,23 @@ const TransferStep = () => {
         return
       }
 
-      let userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' })))
+      let userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))
 
       if (userAllowance < amount) {
         const transaction = await approve({
           contract: uzarContract,
-          spender: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
+          spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
           amount: toEther(BigInt(amount)),
         });
         const approveHash = await sendTransaction({ transaction, account });
         console.log('Approval Hash', approveHash)
-        userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' })))
+        userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))
       }
 
       if (userAllowance > amount) {
         const transaction = await transfer({
           contract: transferContract,
-          to: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
+          to: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
           amount: amount,
         });
 
@@ -98,27 +98,6 @@ const TransferStep = () => {
           alert('Something went wrong')
         }
       }
-
-
-
-
-      // if (userAllowance < amount) {
-      //   alert('Approving ...')
-      //   let transaction = await approve({
-      //     contract: uzarContract,
-      //     spender: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
-      //     amount: toEther(BigInt(amount)),
-      //   });
-      //   const approveHash = await sendTransaction({ transaction, account });
-      //   console.log('Approval Hash', approveHash)
-      //   userAllowance = await allowance({ contract: uzarContract, owner: account.address, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' })
-      // }
-
-
-
-      // check user allowance and if less send approval
-
-      // transfer token
 
     } catch (error) {
       console.error(error)
@@ -153,7 +132,7 @@ const TransferStep = () => {
             <Input
               type="text"
               id="recepientWalletAddress"
-              value={'0xC1245E360B99d22D146c513e41fcB8914BA0bA44'}
+              value={addressTo}
               onChange={(e) => setAddressTo(e.target.value)}
               className="mb-4"
             />
