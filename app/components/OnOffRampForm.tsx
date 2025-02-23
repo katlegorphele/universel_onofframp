@@ -11,10 +11,17 @@ import { Button } from '@/components/ui/button';
 import TransferStep from './TransferStep';
 import Header from './Header';
 import { ArrowLeftRight, MapPinned } from 'lucide-react';
+import { ConnectButton, useActiveAccount } from 'thirdweb/react';
+import { thirdwebClient } from '../config/client';
+import { defineChain } from 'thirdweb';
+import { networkConfig } from '../config/networkConfig';
+
 
 const OnOffRampForm = () => {
+  const {chainId, uZarContractAddress} = networkConfig;
   const [step, setStep] = useState(1);
   const { formData, setFormData } = useOnOffRampContext();
+  const account = useActiveAccount()
 
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
@@ -43,7 +50,9 @@ const OnOffRampForm = () => {
   return (
     <>
       <Header />
-      <div className="md:p-6 rounded-lg shadow-md bg-[#68BEFF40] bg-opacity-0 max-h-screen mt-4 "
+      { account ? 
+      (<>
+        <div className="md:p-6 rounded-lg shadow-md bg-[#68BEFF40] bg-opacity-0 max-h-screen mt-4 "
       >
         {/* <h1 className="text-2xl font-bold mb-4 text-center">Universal</h1> */}
         <div className='justify-center rounded-lg border p-2 text-white font-bold text-center mb-4 bg-[#039FFF]'>
@@ -76,6 +85,34 @@ const OnOffRampForm = () => {
         <MapPinned size={16} /> CROSS BORDER
         </Button>
       </div>
+      </>) 
+      :
+      (<>
+      <div className='flex justify-center items-center w-full h-screen'>
+      <ConnectButton
+          supportedTokens={{
+            [chainId]: [
+              {
+                address: uZarContractAddress,
+                name: "Universel Zar",
+                symbol: "uZAR",
+                icon: "...",
+              },
+            ],
+          }}
+          client={thirdwebClient}
+          accountAbstraction={{
+            chain: defineChain(chainId),
+            sponsorGas: true,
+          }}
+          connectModal={{
+            size: "wide",
+            showThirdwebBranding: false,
+          }}
+        />
+      </div>
+      </>)}
+      
 
     </>
   );

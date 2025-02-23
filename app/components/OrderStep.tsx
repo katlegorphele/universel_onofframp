@@ -2,13 +2,215 @@ import React, { useState, } from 'react';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import axios from 'axios';
+import { useActiveAccount } from 'thirdweb/react';
+import { defineChain, getContract, readContract, sendTransaction, toEther } from 'thirdweb';
+import { thirdwebClient } from '../config/client';
+import { getBalance, allowance, approve, transfer } from 'thirdweb/extensions/erc20';
 
 const OrderStep = ({ onBack }: { onBack: () => void }) => {
-  const { formData } = useOnOffRampContext();
+  const { formData, uzarContract } = useOnOffRampContext();
   const [loading, setLoading] = useState(false);
+  const account = useActiveAccount()
+
+  const TransferToken = async () => {
+
+    const userBalance = await checkUserCryptoBalance()
+    if (!userBalance || !account) {
+      return
+    }
 
 
-  
+    if (parseFloat(userBalance) < formData.amount) {
+      alert(`You do not have a sufficient balance to continue. Your balance: ${userBalance} ${formData.receiveCurrency}`)
+      return
+    }
+    const tokenAddress = getTokenAddress(formData.receiveCurrency, formData.chain);
+
+    // Check if the token address is valid
+    if (!tokenAddress) {
+      alert('Invalid token address for the selected network.');
+      return;
+    }
+
+    const contract = await getDynamicContract(tokenAddress, formData.chain);
+
+
+    let userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' }))))
+    if (userAllowance < formData.amount) {
+      const transaction = await approve({
+        contract,
+        spender: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
+        amount: formData.amount,
+      });
+
+      await sendTransaction({ transaction, account });
+      userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: '0xC1245E360B99d22D146c513e41fcB8914BA0bA44' }))))
+    }
+
+    if (userAllowance >= formData.amount) {
+      const transaction = await transfer({
+        contract,
+        to: "0xC1245E360B99d22D146c513e41fcB8914BA0bA44",
+        amount: formData.amount,
+      });
+
+      const txHash = await sendTransaction({ transaction, account });
+
+      if (txHash) {
+        return true
+      } else {
+        return false
+      }
+    }
+
+
+  }
+
+  const checkUserCryptoBalance = async () => {
+    try {
+
+      if (!account?.address || !formData.chain || !formData.receiveCurrency) {
+        alert('Please ensure your wallet is connected, a network is selected, and a token is chosen.');
+        return;
+      }
+
+      const isValidCombination = validateTokenNetwork(formData.receiveCurrency, formData.chain);
+      if (!isValidCombination) {
+        if (formData.receiveCurrency)
+          return;
+      }
+
+      // Get the token address based on the selected chain and token
+      const tokenAddress = getTokenAddress(formData.receiveCurrency, formData.chain);
+
+      // Check if the token address is valid
+      if (!tokenAddress) {
+        alert('Invalid token address for the selected network.');
+        return;
+      }
+
+      const contract = await getDynamicContract(tokenAddress, formData.chain);
+
+      const balance = await getBalance({ contract, address: account.address })
+
+
+      const formattedBalance = toEther(balance.value);
+      return formattedBalance
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred');
+    }
+  }
+
+  // helper functions
+
+  interface TokenDecimals {
+    [key: string]: number;
+  }
+
+  interface ChainIds {
+    [key: string]: number;
+  }
+
+  interface TokenAddresses {
+    [key: string]: {
+      [key: string]: string;
+    };
+  }
+
+  const getDecimals = (token: string): number => {
+    const tokenDecimals: TokenDecimals = {
+      USDT: 6, // USDT has 6 decimals
+      UZAR: 8, // UZAR has 8 decimals (adjust as needed)
+    };
+
+    return tokenDecimals[token] || 18; // Default to 18 decimals if unknown
+  };
+
+  const getDynamicContract = async (contractAddress: string, chain: string) => {
+    const chainId = getChainId(chain.toLowerCase()); // Map the chain name to its corresponding chain ID
+    if (!chainId) {
+      throw new Error('Invalid chain selected.');
+    }
+
+    // Instantiate the contract using the thirdweb SDK
+    const contract = getContract({
+      client: thirdwebClient,
+      chain: defineChain(chainId),
+      address: contractAddress,
+    });
+
+    return contract;
+  };
+
+
+  const getChainId = (chain: string): number | null => {
+    const chainIds: ChainIds = {
+      ethereum: 1, // Ethereum Mainnet
+      base: 8453,  // Base Mainnet
+      arbitrum: 42161, // Arbitrum One
+      lisk: 1135, // Lisk Mainnet
+    };
+
+    return chainIds[chain] || null;
+  };
+
+  const validateTokenNetwork = (token: string, chain: string) => {
+    if (token === 'UZAR' && chain !== 'LISK') {
+      alert('UZAR is only available on the Lisk network. Please switch to Lisk.');
+      return false;
+    }
+
+    if (token === 'USDT' && chain === 'LISK') {
+      alert('USDT is not available on the Lisk network. Please switch to another network.');
+      return false;
+    }
+    return true;
+  };
+
+  const getTokenAddress = (token: string, chain: string): string | null => {
+    const tokenAddresses: TokenAddresses = {
+      USDT: {
+        ETHEREUM: '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT on Ethereum
+        BASE: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',    // USDT on Base
+        ARBITRUM: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', // USDT on Arbitrum
+      },
+      UZAR: {
+        LISK: '0xE29E8434FF23c4ab128AEA088eE4f434129F1Bf1', // Replace with actual UZAR address on Lisk
+      },
+    };
+
+    // Return the token address for the selected chain and token
+    return tokenAddresses[token]?.[chain] || null;
+  };
+
+  const sendSellToAPI = async () => {
+    try {
+      setLoading(true)
+      const response = await axios.post('api/sell-token', {
+        amount: formData.amount,
+        bankDetails: formData.bankDetails,
+        walletAddress: formData.walletAddress,
+        email: formData.email,
+        currency: formData.currency,
+        token: formData.receiveCurrency
+      });
+
+
+      if (response.data.success) {
+        alert('Transaction successful!');
+      } else {
+        alert('Transaction failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   const handleBuy = async () => {
     try {
@@ -42,29 +244,29 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   }
 
   const handleSell = async () => {
+    setLoading(true)
     try {
-      setLoading(true)
-      const response = await axios.post('api/sell-token', {
-        amount: formData.amount,
-        bankDetails: formData.bankDetails,
-        walletAddress: formData.walletAddress,
-        email: formData.email,
-        currency: formData.currency,
-        token: formData.receiveCurrency
-      });
-
-
-      if (response.data.success) {
-        alert('Transaction successful!');
+      const tokenSent = await TransferToken()
+      console.log('Token sent: ', tokenSent)
+      if (tokenSent) {
+        sendSellToAPI()
       } else {
-        alert('Transaction failed');
+        alert('Error processing your request')
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred');
+      console.error(error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
+    // if (balance !== undefined && balance > formData.amount) {
+    //   const allowance = await TransferToken()
+    // }
+    // check the users balance of the token they want to sell
+    // ensure the user has the balance they actually want to sell
+    // if transaction is successful, deduct the amount from the user's balance
+    // run the api to send the money
+
+
 
   }
 
@@ -144,9 +346,10 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
                 <>
                   <div>
                     <p><span className='font-bold'>Selling:</span> {formData.amount} {formData.receiveCurrency}</p>
+                    <p><span className='font-bold'>Chain:</span> {formData.chain}</p>
                     <p><span className='font-bold'>Receive Amount:</span> {(formData.receiveAmount).toFixed(2)} {formData.currency}</p>
                     <p><span className='font-bold'>Wallet:</span> {formData.walletAddress}</p>
-                    <p><span className='font-bold'>Transaction Fee:</span> {formData.totalFee} {formData.currency}</p>
+                    {/* <p><span className='font-bold'>Transaction Fee:</span> {formData.totalFee} {formData.currency}</p> */}
                   </div>
                 </>
               ) : (
@@ -180,7 +383,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
                     <p className='font-bold'>Send Amount: {formData.crossBorder.sendAmount}</p>
                     <p className='font-bold'>Receive Amount: {formData.crossBorder.receiveAmount}</p>
                     <p className='font-bold'>Exchange Rate: {formData.crossBorder.exchangeRate}</p>
-                    
+
                   </div>
                 </>
               )}
