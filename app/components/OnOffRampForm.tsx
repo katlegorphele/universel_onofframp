@@ -11,15 +11,11 @@ import { Button } from '@/components/ui/button';
 import TransferStep from './TransferStep';
 import Header from './Header';
 import { ArrowLeftRight, MapPinned } from 'lucide-react';
-import { ConnectButton, useActiveAccount } from 'thirdweb/react';
-import { thirdwebClient } from '../config/client';
-import { defineChain } from 'thirdweb';
-import { networkConfig } from '../config/networkConfig';
+import {useActiveAccount } from 'thirdweb/react';
 import PresetConnectButton from './presetConnectButton';
 
 
 const OnOffRampForm = () => {
-  const {chainId, uZarContractAddress} = networkConfig;
   const [step, setStep] = useState(1);
   const { formData, setFormData } = useOnOffRampContext();
   const account = useActiveAccount()

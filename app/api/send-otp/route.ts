@@ -40,6 +40,7 @@ export async function POST(req: Request) {
         }
 
     } catch (error) {
+        console.error("Error in send-otp route:", error);
         return NextResponse.json(
             {
                 success: false,

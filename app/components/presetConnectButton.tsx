@@ -26,7 +26,7 @@ import {
   ];
 
 const PresetConnectButton = () => {
-    const {chainId, uZarContractAddress} = networkConfig;
+    const {chainId} = networkConfig;
     const {lisk_chainId, lisk_uZarContractAddress} = liskNetworkConfig;
     return (
         <ConnectButton
