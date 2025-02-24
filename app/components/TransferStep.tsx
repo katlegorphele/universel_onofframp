@@ -3,12 +3,12 @@ import { useOnOffRampContext } from '../context/OnOffRampContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useActiveAccount } from 'thirdweb/react';
-import { ConnectButton } from 'thirdweb/react';
 import { networkConfig } from '../config/networkConfig';
 import { thirdwebClient } from '../config/client';
-import { defineChain, getContract, sendTransaction, toEther, } from 'thirdweb';
+import { defineChain, getContract, sendTransaction, toEther, toWei, } from 'thirdweb';
 import { allowance, approve, getBalance, transfer } from 'thirdweb/extensions/erc20';
 import axios from 'axios';
+import { getDynamicContract } from '../utils/helperFunctions';
 
 const transferContract = getContract({
   client: thirdwebClient,
@@ -20,8 +20,8 @@ const transferContract = getContract({
 
 
 const TransferStep = () => {
-  const { chainId, uZarContractAddress } = networkConfig;
-  const { uzarContract, } = useOnOffRampContext();
+  // const { chainId, uZarContractAddress } = networkConfig;
+  // const { uzarContract, } = useOnOffRampContext();
   const [addressTo, setAddressTo] = useState('')
   const [amount, setAmount] = useState(0)
   const [email, setEmail] = useState('')
@@ -45,7 +45,15 @@ const TransferStep = () => {
   const handleTransfer = async () => {
     setLoading(true)
 
+  const logAmounts = () => {
+    console.log('Amount: ', amount)
+    console.log('Amount in wei', toWei(amount.toString()))
+    console.log('Amount in ether', toEther(BigInt(amount)))
+  }
+
     try {
+      logAmounts()
+
       if (!account) {
         throw new Error('Account is not defined');
       }
@@ -61,28 +69,28 @@ const TransferStep = () => {
 
       let userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))
 
+      const contract = await getDynamicContract('0xE29E8434FF23c4ab128AEA088eE4f434129F1Bf1','LISK')
+
       if (userAllowance < amount) {
         const transaction = await approve({
-          contract: uzarContract,
+          contract,
           spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
-          amount: toEther(BigInt(amount)),
+          amount,
         });
         const approveHash = await sendTransaction({ transaction, account });
         console.log('Approval Hash', approveHash)
         userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))
       }
 
-      if (userAllowance > amount) {
+      if (userAllowance >= amount) {
         const transaction = await transfer({
-          contract: transferContract,
-          to: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
+          contract,
+          to: addressTo || '',
           amount: amount,
         });
 
 
         const txHash = await sendTransaction({ transaction, account });
-        alert(txHash.transactionHash)
-
         if (txHash.transactionHash) {
           const response = await axios.post("/api/transfer-token", {
             amount,
@@ -111,9 +119,9 @@ const TransferStep = () => {
   return (
     // If active account then display fields otherwise show connect button
     <>
-      {activeAccount ? (
+      {activeAccount && (
         <>
-          <div className="p-6 rounded-lg shadow-md bg-gray-100">
+          <div className="p-6 flex flex-col sm:w-full">
             <label htmlFor="senderWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
               Enter Your Wallet Address
             </label>
@@ -122,7 +130,7 @@ const TransferStep = () => {
               id="walletAddress"
               value={activeAccount.address}
               onChange={(e) => setWalletAddress(e.target.value)}
-              className="mb-4"
+              className="mb-4 bg-white"
               disabled={true}
             />
 
@@ -134,7 +142,7 @@ const TransferStep = () => {
               id="recepientWalletAddress"
               value={addressTo}
               onChange={(e) => setAddressTo(e.target.value)}
-              className="mb-4"
+              className="mb-4 bg-white"
             />
 
             <label htmlFor="amount" className="block mb-2 text-sm font-medium text-gray-900">
@@ -145,7 +153,7 @@ const TransferStep = () => {
               id="amount"
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-              className="mb-4"
+              className="mb-4 bg-white"
             />
 
             <label htmlFor="recepientWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
@@ -156,7 +164,7 @@ const TransferStep = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mb-4"
+              className="mb-4 bg-white"
             />
 
             <Button onClick={handleTransfer} disabled={loading}>
@@ -166,33 +174,7 @@ const TransferStep = () => {
           </div>
 
         </>)
-        :
-        (<>
-          <ConnectButton
-            supportedTokens={{
-              [chainId]: [
-                {
-                  address: uZarContractAddress,
-                  name: "Universel Zar",
-                  symbol: "uZAR",
-                  icon: "...",
-                },
-              ],
-            }}
-            client={thirdwebClient}
-            accountAbstraction={{
-              chain: defineChain(chainId),
-              sponsorGas: true,
-            }}
-            connectModal={{
-              size: "wide",
-              showThirdwebBranding: false,
-            }}
-          />
-
-
-        </>
-        )}
+        }
     </>
   )
 }

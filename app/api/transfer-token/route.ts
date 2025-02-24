@@ -41,7 +41,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
             {
                 success: true,
-                message: "Transaction initiated successfully.",
+                message: "UZAR Token Transfer Succesful",
             },
             { status: 200 }
         );

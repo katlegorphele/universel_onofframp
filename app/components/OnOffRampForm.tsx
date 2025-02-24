@@ -65,7 +65,7 @@ const OnOffRampForm = () => {
         {step === 5 && <TransferStep />}
 
       </div>
-      <div className='flex sm:flex-col md:flex-row justify-between mt-2'>
+      <div className='flex sm:flex-col justify-between mt-2'>
         <Button onClick={switchToBuy} className="bg-[#039FFF] hover:bg-[#94c7e7] text-white flex items-center m-1">
           <ArrowLeftRight size={16} /> BUY
         </Button>

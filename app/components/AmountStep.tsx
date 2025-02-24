@@ -16,11 +16,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
   const [fullname, setFullname] = useState('');
-  // const [paymentMethod, setPaymentMethod] = useState('');
   const [crossBorderSender, setCrossBorderSender] = useState('ZAR')
   const [crossBorderSendAmount, setCrossBorderSendAmount] = useState(0)
   const [address, setAddress] = useState('');
-  // const [bankCode, setBankCode] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
 
 
@@ -431,7 +429,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   // value with currency symbols
                   value={crossBorderSendAmount}
                   onChange={handleCrossBorderInputChange}
-                  className="mb-4"
+                  className="mb-4 bg-white"
 
                 />
 
@@ -443,7 +441,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   id="accountName"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -453,13 +451,13 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4"
+                  className="mb-4 bg-white"
                 />
                 <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
                   Network
                 </label>
                 <Select onValueChange={setNetwork} defaultValue={network}>
-                  <SelectTrigger>
+                  <SelectTrigger className='bg-white'>
                     <SelectValue placeholder="Select Network" />
                   </SelectTrigger>
                   <SelectContent>

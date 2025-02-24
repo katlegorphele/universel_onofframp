@@ -204,11 +204,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
 
   const handleSubmit = () => {
-    // if (formData.currency == 'ZAR' && formData.action == 'buy' || formData.action == 'sell') {
-    //   onNext();
-    // } else {
-    //   alert('We only support ZAR currently. Please check back again')
-    // }
+
     onNext();
   };
 

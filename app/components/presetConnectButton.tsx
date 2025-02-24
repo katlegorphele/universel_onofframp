@@ -43,18 +43,18 @@ const PresetConnectButton = () => {
             wallets={wallets}
             client={thirdwebClient}
             accountAbstraction={{
-                chain: defineChain(chainId),
+                chain: defineChain(1135),
                 sponsorGas: true,
             }}
             connectModal={{
                 size: "compact",
                 showThirdwebBranding: false,
             }}
-            // detailsButton={{
-            //     displayBalanceToken: {
-            //         [lisk_chainId]: lisk_uZarContractAddress
-            //     },
-            // }}
+            detailsButton={{
+                displayBalanceToken: {
+                    [lisk_chainId]: lisk_uZarContractAddress
+                },
+            }}
         />
     )
 }

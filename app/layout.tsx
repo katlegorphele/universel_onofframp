@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThirdwebProvider } from "thirdweb/react";
 
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Universel On-Offramp",
   description: "Send and receive money across borders",
-  icons: '/sqaureUlogo.png'
+  // icons: '/sqaureUlogo.png'
 };
 
 export default function RootLayout({
@@ -28,13 +29,14 @@ export default function RootLayout({
   return (
     <ThirdwebProvider>
       <html lang="en">
-        <head>
+        {/* <head>
           <link rel="icon" type="image/png" href="/squareUlogo.png" />
-        </head>
+        </head> */}
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-items-center items-center h-screen bg-[url('/backgroundSwirls.png')] bg-cover bg-center bg-no-repeat`}
         >
           {children}
+          
         </body>
       </html>
     </ThirdwebProvider>
