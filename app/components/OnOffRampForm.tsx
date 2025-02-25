@@ -105,19 +105,19 @@ const OnOffRampForm = () => {
             <Button onClick={switchToBuy} className="bg-[#039FFF] rounded-full hover:bg-[#94c7e7] text-white flex items-center m-1 w-1/2">
               <ArrowLeftRight size={16} /> BUY
             </Button>
-            <Button onClick={switchToSell} className="bg-[#b160d6] hover:bg-[#0a3047af] text-white flex items-center m-1 w-1/2">
+            <Button onClick={switchToSell} className="bg-[#b160d6] rounded-full hover:bg-[#0a3047af] text-white flex items-center m-1 w-1/2">
               <ArrowLeftRight size={16} /> SELL
             </Button>
             </div>
             
 
             <div className='flex flex-row md:flex-row items-start'>
-            <Button onClick={switchToTransfer} className="bg-[#6066be] hover:bg-[#0a3047af] text-white flex items-center m-1 w-1/2" >
+            <Button onClick={switchToTransfer} className="bg-[#6066be] rounded-full hover:bg-[#0a3047af] text-white flex items-center m-1 w-1/2" >
               <ArrowLeftRight size={16} /> TRANSFER
             </Button>
 
 
-            <Button onClick={switchToCrossBorder} className="bg-[#176133] hover:bg-[#0a3047af] text-white flex items-center m-1 w-1/2">
+            <Button onClick={switchToCrossBorder} className="bg-[#176133] rounded-full hover:bg-[#0a3047af] text-white flex items-center m-1 w-1/2">
               <MapPinned size={16} /> CROSS BORDER
             </Button>
             </div>
