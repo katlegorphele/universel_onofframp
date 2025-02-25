@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useOnOffRampContext } from '../context/OnOffRampContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useActiveAccount } from 'thirdweb/react';
-import { networkConfig } from '../config/networkConfig';
 import { thirdwebClient } from '../config/client';
 import { defineChain, getContract, sendTransaction, toEther, toWei, } from 'thirdweb';
 import { allowance, approve, getBalance, transfer } from 'thirdweb/extensions/erc20';
@@ -20,12 +18,9 @@ const transferContract = getContract({
 
 
 const TransferStep = () => {
-  // const { chainId, uZarContractAddress } = networkConfig;
-  // const { uzarContract, } = useOnOffRampContext();
   const [addressTo, setAddressTo] = useState('')
   const [amount, setAmount] = useState(0)
   const [email, setEmail] = useState('')
-  // const [txHash, setTXHash] = useState('')
   const [walletAddress, setWalletAddress] = useState('')
   const [loading, setLoading] = useState(false)
   const activeAccount = useActiveAccount()
@@ -37,9 +32,6 @@ const TransferStep = () => {
       setWalletAddress(account.address)
     }
   }, [account])
-
-
-  // console.log('Wallet Address: ', walletAddress)
 
 
   const handleTransfer = async () => {

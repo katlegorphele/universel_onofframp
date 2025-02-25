@@ -2,7 +2,7 @@ import React from 'react'
 import { ConnectButton } from 'thirdweb/react'
 import { defineChain } from 'thirdweb'
 import { thirdwebClient } from '../config/client'
-import { networkConfig, liskNetworkConfig } from '../config/networkConfig'
+import { liskNetworkConfig } from '../config/networkConfig'
 import {
     inAppWallet,
     createWallet,
@@ -17,16 +17,17 @@ import {
           "telegram",
           "email",
           "passkey",
+          "phone"
         ],
       },
     }),
     createWallet("io.metamask"),
     createWallet("com.coinbase.wallet"),
-    createWallet("com.valoraapp")
+    createWallet("com.valoraapp"),
+    createWallet("com.okex.wallet")
   ];
 
 const PresetConnectButton = () => {
-    const {chainId} = networkConfig;
     const {lisk_chainId, lisk_uZarContractAddress} = liskNetworkConfig;
     return (
         <ConnectButton
