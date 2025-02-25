@@ -228,7 +228,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       {formData.action === 'buy' && (
         <>
           {/* Fields for buying */}
-          <div className="md:p-6 flex flex-col sm:m-5 ">
+          <div className="p-6 flex flex-col sm:m-5 ">
             {formData.currency === 'ZAR' ? (
               <h2 className="text-xl font-bold mb-4">Please provide your crypto wallet address and details for the transaction.</h2>
             ) : (

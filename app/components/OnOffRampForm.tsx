@@ -77,7 +77,7 @@ const OnOffRampForm = () => {
             )}
             {formData.action === 'transfer' && (
               <>
-              <div className='flex items-center justify-center rounded-full border p-2 text-white font-extrabold text-center mb-4 bg-[#6066be] w-1/3 mt-1'>
+              <div className='flex items-center justify-center rounded-full border p-2 text-white font-extrabold text-center mb-4 bg-[#6066be] w-1/2 mt-1'>
               <ArrowLeftRight size={15} className='mx-2'/> TRANSFER
             </div>
               </>
