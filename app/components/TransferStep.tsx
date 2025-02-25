@@ -24,8 +24,17 @@ const TransferStep = () => {
   const [walletAddress, setWalletAddress] = useState('')
   const [loading, setLoading] = useState(false)
   const activeAccount = useActiveAccount()
+  const [buttonActive, setButtonActive] = useState(false)
 
   const account = useActiveAccount()
+
+  useEffect(() => {
+    if (addressTo === '' || amount === 0 || email === '') {
+      setButtonActive(false)
+    } else {
+      setButtonActive(true)
+    }
+  }, [setButtonActive, addressTo, amount, email]) 
 
   useEffect(() => {
     if (account) {
@@ -37,11 +46,11 @@ const TransferStep = () => {
   const handleTransfer = async () => {
     setLoading(true)
 
-  const logAmounts = () => {
-    console.log('Amount: ', amount)
-    console.log('Amount in wei', toWei(amount.toString()))
-    console.log('Amount in ether', toEther(BigInt(amount)))
-  }
+    const logAmounts = () => {
+      console.log('Amount: ', amount)
+      console.log('Amount in wei', toWei(amount.toString()))
+      console.log('Amount in ether', toEther(BigInt(amount)))
+    }
 
     try {
       logAmounts()
@@ -61,7 +70,7 @@ const TransferStep = () => {
 
       let userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))
 
-      const contract = await getDynamicContract('0xE29E8434FF23c4ab128AEA088eE4f434129F1Bf1','LISK')
+      const contract = await getDynamicContract('0xE29E8434FF23c4ab128AEA088eE4f434129F1Bf1', 'LISK')
 
       if (userAllowance < amount) {
         const transaction = await approve({
@@ -111,62 +120,59 @@ const TransferStep = () => {
   return (
     // If active account then display fields otherwise show connect button
     <>
-      {activeAccount && (
-        <>
-          <div className="p-6 flex flex-col sm:w-full">
-            <label htmlFor="senderWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
-              Enter Your Wallet Address
-            </label>
-            <Input
-              type="text"
-              id="walletAddress"
-              value={activeAccount.address}
-              onChange={(e) => setWalletAddress(e.target.value)}
-              className="mb-4 bg-white"
-              disabled={true}
-            />
 
-            <label htmlFor="recepientWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
-              Enter Recepient Wallet Address
-            </label>
-            <Input
-              type="text"
-              id="recepientWalletAddress"
-              value={addressTo}
-              onChange={(e) => setAddressTo(e.target.value)}
-              className="mb-4 bg-white"
-            />
+      <div className="p-6 flex flex-col sm:w-full">
+        <label htmlFor="senderWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
+          Enter Your Wallet Address
+        </label>
+        <Input
+          type="text"
+          id="walletAddress"
+          value={activeAccount?.address}
+          onChange={(e) => setWalletAddress(e.target.value)}
+          className="mb-4 bg-white font-extrabold"
+          disabled={true}
+        />
 
-            <label htmlFor="amount" className="block mb-2 text-sm font-medium text-gray-900">
-              Amount To Transfer
-            </label>
-            <Input
-              type="number"
-              id="amount"
-              value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
-              className="mb-4 bg-white"
-            />
+        <label htmlFor="recepientWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
+          Enter Recepient Wallet Address
+        </label>
+        <Input
+          type="text"
+          id="recepientWalletAddress"
+          value={addressTo}
+          onChange={(e) => setAddressTo(e.target.value)}
+          className="mb-4 bg-white font-extrabold"
+        />
 
-            <label htmlFor="recepientWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
-              Email Address
-            </label>
-            <Input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mb-4 bg-white"
-            />
+        <label htmlFor="amount" className="block mb-2 text-sm font-medium text-gray-900">
+          Amount To Transfer
+        </label>
+        <Input
+          type="number"
+          id="amount"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          className="mb-4 bg-white font-extrabold"
+        />
 
-            <Button onClick={handleTransfer} disabled={loading}>
-              {loading ? 'Processing...' : 'Confirm & Proceed'}
-              {/* Next: Transfer Funds */}
-            </Button>
-          </div>
+        <label htmlFor="recepientWalletAddress" className="block mb-2 text-sm font-medium text-gray-900">
+          Email Address
+        </label>
+        <Input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mb-4 bg-white font-extrabold"
+        />
 
-        </>)
-        }
+        <Button onClick={handleTransfer} disabled={!buttonActive}>
+          {loading ? 'Processing...' : 'Confirm & Proceed'}
+          
+          {/* Next: Transfer Funds */}
+        </Button>
+      </div>
     </>
   )
 }

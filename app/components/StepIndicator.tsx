@@ -12,6 +12,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
       {steps.map((step, index) => (
         <div key={index} className="flex flex-col items-center relative w-full">
           {/* Connecting Line (From Circle to Circle) */}
+          
           {index > 0 && (
             <div
               className={`absolute top-5 left-[50%] h-1 ${
