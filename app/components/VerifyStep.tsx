@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
+import { Loader } from 'lucide-react';
 
 
 const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
@@ -13,6 +14,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [otp, setOtp] = useState('');
   const [timeRemaining, setTimeRemaining] = useState(60);
   const [isOtpGenerated, setIsOtpGenerated] = useState(false);
+  const [generatingOTP, setGeneratingOTP] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,6 +50,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       alert('Please enter your email address');
       return;
     }
+    setGeneratingOTP(true);
 
     try {
       const response = await fetch('/api/send-otp', {
@@ -68,6 +71,8 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     } catch (error) {
       console.error('Error sending OTP:', error);
       alert('Error sending OTP');
+    } finally {
+      setGeneratingOTP(false);
     }
   };
 
@@ -94,7 +99,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               Back
             </Button>
             <Button onClick={generateOtp}>
-              Generate OTP
+              {generatingOTP ? <><Loader/> Generating OTP</> : 'Generate OTP'}
             </Button>
 
           </div>
@@ -119,7 +124,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               Back
             </Button>
             <Button onClick={handleSubmit}>
-              Next: Verify OTP
+              Verify OTP
             </Button>
           </div>
         </>

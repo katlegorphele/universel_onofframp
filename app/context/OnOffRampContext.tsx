@@ -77,8 +77,8 @@ const chainOptions = [
 const receiveCurrencyOptions = [
   // AVAILABLE TOKENS
   { value: 'UZAR', label: 'UZAR' },
-  // { value: 'USDC', label: 'USDC' },
-  { value: 'USDT', label: 'USDT' },
+  { value: 'USDC', label: 'USDC' },
+  // { value: 'USDT', label: 'USDT' },
 ];
 
 const paymentMethodsZAR = ['CARD', 'BANK'];

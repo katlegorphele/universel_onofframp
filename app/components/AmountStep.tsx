@@ -194,7 +194,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             </div>
 
             <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-              Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2)) * (3 / 100)} {formData.currency}</span>
+              Transaction Fee (3%): <span className='font-light'>{(Number((amount).toFixed(2)) * (3 / 100)).toFixed(2)} {formData.currency}</span>
             </label>
 
           </div>
@@ -296,7 +296,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             </div>
 
             <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-              Transaction Fee (3%): <span className='font-light'>{Number((amount).toFixed(2)) * (3 / 100)} {formData.currency}</span>
+              Transaction Fee (3%): <span className='font-light'>{(Number((amount).toFixed(2)) * (3 / 100)).toFixed(2)} {formData.currency}</span>
             </label>
 
           </div>
