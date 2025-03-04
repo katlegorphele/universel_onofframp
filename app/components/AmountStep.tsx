@@ -5,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
+import { useSwitchActiveWalletChain } from 'thirdweb/react';
+import { defineChain } from 'thirdweb';
 
 
 const AmountStep = ({ onNext }: { onNext: () => void }) => {
@@ -21,15 +23,35 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [address, setAddress] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
 
+  const wallet = useSwitchActiveWalletChain();
+
 
   useEffect(() => {
-
     if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
       setReceiveAmount(amount / formData.exchangeRate);
     } else {
       setReceiveAmount(amount * formData.exchangeRate);
     }
   }, [amount, formData.exchangeRate, formData.action]);
+
+  useEffect(()=> {
+    switch(formData.chain) {
+      case 'ARBITRUM':
+        wallet(defineChain(42161));
+        break;
+      case 'ETHEREUM':
+        wallet(defineChain(1));
+        break;
+      case 'BASE':
+        wallet(defineChain(8453));
+        break;
+      case 'LISK':
+        wallet(defineChain(1135));
+        break;
+      default:
+        wallet(defineChain(1135));
+    }
+  }, [formData.chain])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(Number(e.target.value));

@@ -40,19 +40,19 @@ import { thirdwebClient } from "../config/client";
       lisk: 1135, // Lisk Mainnet
     };
 
-    return chainIds[chain] || null;
+    return chainIds[chain];
   };
 
   export const validateTokenNetwork = (token: string, chain: string) => {
-    if (token === 'UZAR' && chain !== 'LISK') {
-      alert('UZAR is only available on the Lisk network. Please switch to Lisk.');
+    if (token === 'UZAR' && chain !== 'LISK' && chain !== 'ARBITRUM') {
+      alert('UZAR is only available on the Lisk and Arbitrum networks. Please switch to one of these networks.');
       return false;
     }
 
-    if (token === 'USDT' && chain === 'LISK') {
-      alert('USDT is not available on the Lisk network. Please switch to another network.');
-      return false;
-    }
+    // if (token === 'USDT' && chain === 'LISK') {
+    //   alert('USDT is not available on the Lisk network. Please switch to another network.');
+    //   return false;
+    // }
     return true;
   };
 

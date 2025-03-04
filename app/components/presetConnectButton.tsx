@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ConnectButton } from 'thirdweb/react'
 import { defineChain } from 'thirdweb'
 import { thirdwebClient } from '../config/client'
@@ -6,29 +6,33 @@ import { liskNetworkConfig } from '../config/networkConfig'
 import {
     inAppWallet,
     createWallet,
-  } from "thirdweb/wallets";
+} from "thirdweb/wallets";
 
-  const wallets = [
+const wallets = [
     inAppWallet({
-      auth: {
-        options: [
-          "google",
-          "discord",
-          "telegram",
-          "email",
-          "passkey",
-          "phone"
-        ],
-      },
+        auth: {
+            options: [
+                "google",
+                "discord",
+                "telegram",
+                "email",
+                "passkey",
+                "phone"
+            ],
+        },
     }),
     createWallet("io.metamask"),
     createWallet("com.coinbase.wallet"),
     createWallet("com.valoraapp"),
     createWallet("com.okex.wallet")
-  ];
+];
+
 
 const PresetConnectButton = () => {
-    const {lisk_chainId, lisk_uZarContractAddress} = liskNetworkConfig;
+
+    const { lisk_chainId, lisk_uZarContractAddress } = liskNetworkConfig;
+
+
     return (
         <ConnectButton
             supportedTokens={{

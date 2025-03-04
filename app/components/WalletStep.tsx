@@ -15,15 +15,15 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [phoneNumber, setPhoneNumber] = useState('');
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
-  const [fullname, setFullname] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const [walletAddress, setWalletAddress] = useState('');
+  const [fullname, setFullname] = useState(formData.bankDetails.fullname);
+  const [paymentMethod, setPaymentMethod] = useState(formData.bankDetails.paymentMethod);
+  const [walletAddress, setWalletAddress] = useState(formData.walletAddress);
   const [buttonActive, setButtonActive] = useState(false);
-  const [address, setAddress] = useState('');
-  const [bankCode] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
+  const [address, setAddress] = useState(formData.bankDetails.address);
+  const [bankCode] = useState(formData.bankDetails.bankCode);
+  const [accountNumber, setAccountNumber] = useState(formData.bankDetails.accountNumber);
   const [crossBorderReceiver, setCrossBorderReceiver] = useState('ZAR')
-  const [crossBorderReceiveAmount, setcrossBorderReceiveAmount] = useState(0)
+  const [crossBorderReceiveAmount, setcrossBorderReceiveAmount] = useState(formData.crossBorder.receiveAmount)
   const account = useActiveAccount()
 
   useEffect(() => {

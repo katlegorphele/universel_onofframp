@@ -6,6 +6,7 @@ import { useActiveAccount } from 'thirdweb/react';
 import {sendTransaction, toEther } from 'thirdweb';
 import { getBalance, allowance, approve, transfer } from 'thirdweb/extensions/erc20';
 import { getDynamicContract, getTokenAddress, validateTokenNetwork } from '../utils/helperFunctions';
+import { Loader2 } from 'lucide-react';
 
 const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const { formData } = useOnOffRampContext();
@@ -20,8 +21,8 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     }
 
 
-    if (parseFloat(userBalance) < formData.amount) {
-      alert(`You do not have a sufficient balance to continue. Your balance: ${userBalance} ${formData.receiveCurrency}`)
+    if (parseFloat(userBalance.displayValue) < formData.amount) {
+      alert(`You do not have a sufficient balance to continue. Your balance: ${userBalance.displayValue} ${formData.receiveCurrency}`)
       return
     }
     const tokenAddress = getTokenAddress(formData.receiveCurrency, formData.chain);
@@ -33,11 +34,15 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     }
 
     const contract = await getDynamicContract(tokenAddress, formData.chain);
-
-
-    let userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' }))))
+    let userAllowance = 0;
+    if (formData.receiveCurrency == 'UZAR') {
+      // has 18 decimals
+      userAllowance = Number((await (allowance({ contract, owner: account.address, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))) / 10 ** 18
+    } else {
+      userAllowance = Number((await (allowance({ contract, owner: account.address, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))) / 10 ** 6
+    }
     if (userAllowance < formData.amount) {
-      const transaction = await approve({
+      const transaction = approve({
         contract,
         spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
         amount: formData.amount,
@@ -47,8 +52,9 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       userAllowance = Number(toEther(await (allowance({ contract, owner: account.address, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' }))))
     }
 
-    if (userAllowance >= formData.amount) {
-      const transaction = await transfer({
+
+    if (parseFloat(userBalance.displayValue) >= formData.amount) {
+      const transaction = transfer({
         contract,
         to: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
         amount: formData.amount,
@@ -93,16 +99,13 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
       const balance = await getBalance({ contract, address: account.address })
 
-
-      const formattedBalance = toEther(balance.value);
-      return formattedBalance
+      return balance
 
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred');
     }
   }
-
 
   const sendSellToAPI = async () => {
     try {
@@ -130,7 +133,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     //   setLoading(false);
     // }
   }
-
 
   const handleBuy = async () => {
     try {
@@ -206,12 +208,12 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     setLoading(true)
     try {
       const tokenSent = await TransferToken()
-      console.log('Token sent: ', tokenSent)
-      if (tokenSent) {
-        sendSellToAPI()
-      } else {
-        alert('Error processing your request')
-      }
+      // console.log('Token sent: ', tokenSent)
+      // if (tokenSent) {
+      //   sendSellToAPI()
+      // } else {
+      //   alert('Error processing your request')
+      // }
     } catch (error) {
       console.error(error)
     } finally {
@@ -355,7 +357,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
                   : handleCrossBorder
             }
             disabled={loading}>
-            {loading ? 'Processing...' : 'Confirm & Proceed'}
+            {loading ? <><Loader2/> Processing ...</> : 'Confirm & Proceed'}
             {/* Next: Transfer Funds */}
           </Button>
         </div>
