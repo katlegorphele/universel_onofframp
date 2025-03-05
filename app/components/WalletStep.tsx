@@ -20,7 +20,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [walletAddress, setWalletAddress] = useState(formData.walletAddress);
   const [buttonActive, setButtonActive] = useState(false);
   const [address, setAddress] = useState(formData.bankDetails.address);
-  const [bankCode] = useState(formData.bankDetails.bankCode);
+  const [bankCode, setBankCode] = useState(formData.bankDetails.bankCode);
   const [accountNumber, setAccountNumber] = useState(formData.bankDetails.accountNumber);
   const [crossBorderReceiver, setCrossBorderReceiver] = useState('ZAR')
   const [crossBorderReceiveAmount, setcrossBorderReceiveAmount] = useState(formData.crossBorder.receiveAmount)
@@ -188,7 +188,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         bankCode,
         address,
         accountNumber,
-        country: ''
+        country: 'SOUTH AFRICA'
       },
       crossBorder: {
         sendCurrency: formData.crossBorder.sendCurrency,
@@ -412,7 +412,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   Bank
                 </label>
                 <Select onValueChange={(value) => {
-                  setFormData((prev) => ({ ...prev, bankCode: value }))
+                  setFormData((prev) => ({...prev, bankDetails: {...prev.bankDetails, bankCode: value}}))
                 }
                 } defaultValue={formData.bankDetails.bankCode}>
                   <SelectTrigger className='bg-white'>
@@ -567,7 +567,9 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 Bank
               </label>
               <Select onValueChange={(value) => {
-                setFormData((prev) => ({ ...prev, bankCode: value }))
+                setBankCode(value)
+                // setFormData((prev) => ({...prev, bankDetails: {...prev.bankDetails, bankCode: value}}))
+                console.log('Bank Code:', formData.bankDetails.bankCode)
               }
               } defaultValue={formData.bankDetails.bankCode}>
                 <SelectTrigger className='bg-white'>

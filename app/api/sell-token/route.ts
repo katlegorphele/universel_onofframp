@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { sendWithdrawalTransactionEmail } from "@/app/utils/sendMail";
 
 const test_mode = true;
-let url_in_use:string;
-let api_key_in_use:string;
+let url_in_use: string;
+let api_key_in_use: string;
 
 if (test_mode) {
   url_in_use = "https://sandbox-api.kotanipay.io/api/v3";
@@ -36,9 +36,10 @@ export async function POST(req: Request) {
 
 
     const transactionId = "txn_" + Math.random().toString(36).substr(2, 9);
-    
+
     try {
       const url = `${url_in_use}/withdraw/v2/bank`;
+
       const options = {
         method: "POST",
         headers: {
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
             name: bankDetails.fullname,
             address: bankDetails.address,
             phoneNumber: bankDetails.phoneNumber,
-            bankCode: bankDetails.bankCode,
+            bankCode: parseInt(bankDetails.bankCode),
             accountNumber: bankDetails.accountNumber,
             country: 'South Africa',
           },
@@ -61,10 +62,23 @@ export async function POST(req: Request) {
           referenceId: transactionId,
         }),
       };
+      console.log(options)
 
-      
+
+
       const kotaniPayResponse = await fetch(url, options)
-      .then((res) => res.json());
+        .then((res) => res.json());
+
+      if (!kotaniPayResponse.success) {
+        console.error("KotaniPay API error:", kotaniPayResponse);
+        return NextResponse.json(
+          {
+            success: false,
+            message: kotaniPayResponse.message,
+            errordata: kotaniPayResponse.data,
+          }
+        );
+      }
 
       if (email) {
         await sendWithdrawalTransactionEmail(

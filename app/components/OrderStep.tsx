@@ -110,8 +110,9 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const sendSellToAPI = async () => {
     try {
       // setLoading(true)
+      console.log('Bank details', formData.bankDetails)
       const response = await axios.post('api/sell-token', {
-        amount: formData.amount,
+        amount: formData.receiveAmount,
         bankDetails: formData.bankDetails,
         walletAddress: formData.walletAddress,
         email: formData.email,
@@ -119,10 +120,13 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
         token: formData.receiveCurrency
       });
 
+      console.log(formData.bankDetails)
+
 
       if (response.data.success) {
         alert('Transaction successful!');
       } else {
+        console.log(response)
         alert('Transaction failed');
       }
     } catch (error) {
@@ -208,12 +212,12 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     setLoading(true)
     try {
       const tokenSent = await TransferToken()
-      // console.log('Token sent: ', tokenSent)
-      // if (tokenSent) {
-      //   sendSellToAPI()
-      // } else {
-      //   alert('Error processing your request')
-      // }
+      console.log('Token sent: ', tokenSent)
+      if (tokenSent) {
+        sendSellToAPI()
+      } else {
+        alert('Error processing your request')
+      }
     } catch (error) {
       console.error(error)
     } finally {
