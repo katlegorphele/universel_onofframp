@@ -114,7 +114,6 @@ export async function POST(req: Request) {
     } 
 
     const redirectUrl = KotaniPayResponse.data?.redirectUrl;
-    console.log('redirectUrl', redirectUrl);
 
     if (email) {
       await sendPaymentTransactionEmail(
@@ -127,10 +126,7 @@ export async function POST(req: Request) {
         redirectUrl,
         token,
       );
-      console.log('Email sent to', email);
-    } else {
-      console.log('No listed email')
-    }
+    } 
 
     return NextResponse.json({
       success: true,

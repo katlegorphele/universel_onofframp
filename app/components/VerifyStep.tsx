@@ -81,7 +81,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
   return (
     <div className="md:p-6 rounded-lg p-4">
-      <h2 className="text-xl font-bold mb-4">Step 3: Verify</h2>
+      {/* <h2 className="text-xl font-bold mb-4">Step 3: Verify</h2> */}
       {!isOtpGenerated ? (
         <>
           <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">
@@ -92,7 +92,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             id="email"
             value={email}
             onChange={handleEmailChange}
-            className="mb-4 bg-white"
+            className="mb-4 bg-white font-extrabold"
           />
           <div className='flex justify-between mt-4'>
             <Button onClick={onBack} variant="outline">
@@ -117,7 +117,7 @@ const VerifyStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             id="otp"
             value={otp}
             onChange={handleOtpChange}
-            className="mb-4 bg-white"
+            className="mb-4 bg-white font-extrabold"
           />
           <div className="flex justify-between mt-4">
             <Button onClick={onBack} variant="outline">

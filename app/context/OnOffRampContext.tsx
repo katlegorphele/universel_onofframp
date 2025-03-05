@@ -34,13 +34,13 @@ const currencyProviders: { [key: string]: string[] } = {
 };
 
 const bankCodes = [
-  // AVAILABLE TOKENS
+  // Banks
   { value: '6320', label: 'ABSA' },
   { value: '4300', label: 'African Bank'},
   { value: '4620', label: 'BidVest Bank'},
-  { value: '4700', label: 'Capitec' },
-  { value: '4701', label: 'Capitec Business Bank'},
-  { value: '6799', label: 'Discovery Bank'},
+  // { value: '4700', label: 'Capitec' },
+  // { value: '4701', label: 'Capitec Business Bank'},
+  // { value: '6799', label: 'Discovery Bank'},
   { value: '2500', label: 'FNB' },
   { value: '5800', label: 'Investec Bank Limited' },
   { value: '1987', label: 'Nedbank' },
@@ -201,10 +201,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       }
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data);
       const rate = data.conversion_rates[formData.currency];
-      console.log(rate)
-      console.log('Cross Border Sender Currency:',formData.crossBorder.sendCurrency)
       setFormData((prev) => ({ ...prev, exchangeRate: rate }));
     };
 

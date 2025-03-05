@@ -43,7 +43,6 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         const targetRate = data.conversion_rates[formData.crossBorder.sendCurrency];
         const finalAmount = zarAmount * targetRate;
         setcrossBorderReceiveAmount(Number(finalAmount.toFixed(2)));
-        console.log(finalAmount)
       };
 
       fetchTargetExchangeRate()
@@ -244,7 +243,8 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               id="walletAddress"
               value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
-              className="mb-4 bg-white"
+              className="mb-4 bg-white font-extrabold"
+              disabled={true}
               
             />
             {currencyProviders[formData.currency] ? (
@@ -257,7 +257,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="accountName"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -267,7 +267,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
                   Network
@@ -295,7 +295,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="fullname"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -305,7 +305,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
                   Payment Method
@@ -372,7 +372,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   // value with currency symbols
                   value={crossBorderReceiveAmount}
                   onChange={handleCrossBorderInputChange}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                   disabled={true}
                 />
 
@@ -385,7 +385,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="fullname"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
                   Address
@@ -395,7 +395,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -405,7 +405,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
 
                 <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
@@ -435,7 +435,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="accountNumber"
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                   placeholder={`Enter your account number`}
                 />
 
@@ -455,7 +455,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   // value with currency symbols
                   value={crossBorderReceiveAmount}
                   onChange={handleCrossBorderInputChange}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                   disabled={true}
                 />
                 <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
@@ -466,7 +466,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="accountName"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   Phone Number
@@ -476,7 +476,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4 bg-white"
+                  className="mb-4 bg-white font-extrabold"
                 />
                 <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
                   Network
@@ -529,7 +529,8 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               id="walletAddress"
               value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
-              className="mb-4 bg-white"
+              className="mb-4 bg-white font-extrabold"
+              disabled={true}
             />
 
             {formData.currency === 'ZAR' && (<>
@@ -541,7 +542,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="fullname"
                 value={fullname}
                 onChange={(e) => setFullname(e.target.value)}
-                className="mb-4 bg-white"
+                className="mb-4 bg-white font-extrabold"
               />
               <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
                 Address
@@ -551,7 +552,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="mb-4 bg-white"
+                className="mb-4 bg-white font-extrabold"
               />
               <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                 Phone Number
@@ -561,15 +562,13 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="phoneNumber"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                className="mb-4 bg-white"
+                className="mb-4 bg-white font-extrabold"
               />
               <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
                 Bank
               </label>
               <Select onValueChange={(value) => {
                 setBankCode(value)
-                // setFormData((prev) => ({...prev, bankDetails: {...prev.bankDetails, bankCode: value}}))
-                console.log('Bank Code:', formData.bankDetails.bankCode)
               }
               } defaultValue={formData.bankDetails.bankCode}>
                 <SelectTrigger className='bg-white'>
@@ -592,7 +591,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="accountNumber"
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
-                className="mb-4 bg-white"
+                className="mb-4 bg-white font-extrabold"
                 placeholder={`Enter your account number`}
               />
             </>)}
@@ -606,7 +605,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="accountName"
                 value={accountName}
                 onChange={(e) => setAccountName(e.target.value)}
-                className="mb-4 bg-white"
+                className="mb-4 bg-white font-extrabold"
               />
               <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
                 Phone Number
@@ -616,7 +615,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 id="phoneNumber"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                className="mb-4 bg-white"
+                className="mb-4 bg-white font-extrabold"
               />
 
               <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">

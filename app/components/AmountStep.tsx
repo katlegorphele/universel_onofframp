@@ -15,13 +15,13 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
   const [buttonActive, setButtonActive] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [network, setNetwork] = useState('');
-  const [accountName, setAccountName] = useState('');
-  const [fullname, setFullname] = useState('');
+  const [network, setNetwork] = useState(formData.mobileWallet.network);
+  const [accountName, setAccountName] = useState(formData.mobileWallet.accountName);
+  const [fullname, setFullname] = useState(formData.bankDetails.fullname);
   const [crossBorderSender, setCrossBorderSender] = useState('ZAR')
   const [crossBorderSendAmount, setCrossBorderSendAmount] = useState(0)
-  const [address, setAddress] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
+  const [address, setAddress] = useState(formData.bankDetails.address);
+  const [accountNumber, setAccountNumber] = useState(formData.bankDetails.accountNumber);
 
   const wallet = useSwitchActiveWalletChain();
 
@@ -61,7 +61,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCrossBorderSendAmount(Number(e.target.value));
     setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, sendAmount: Number(e.target.value) } }));
-    console.log(formData.crossBorder.sendAmount)
 
   };
 
@@ -109,11 +108,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       },
     }));
   }, [setFormData, crossBorderSender, accountName, address, bankCodes, formData.exchangeRate, fullname, network, phoneNumber, receiveAmount, amount, crossBorderSendAmount, accountNumber]);
-
-  const logSender = () => {
-    console.log('Sender Country', crossBorderSender)
-  }
-
 
 
 
@@ -335,7 +329,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               <Select onValueChange={(value) => {
                 setCrossBorderSender(value)
                 setFormData((prev) => ({ ...prev, currency: value }))
-                logSender()
               }} defaultValue={'ZAR'}>
                 <SelectTrigger className='bg-white'>
                   <SelectValue placeholder="Select Currency" />

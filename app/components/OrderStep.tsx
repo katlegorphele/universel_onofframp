@@ -110,7 +110,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const sendSellToAPI = async () => {
     try {
       // setLoading(true)
-      console.log('Bank details', formData.bankDetails)
       const response = await axios.post('api/sell-token', {
         amount: formData.receiveAmount,
         bankDetails: formData.bankDetails,
@@ -119,8 +118,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
         currency: formData.currency,
         token: formData.receiveCurrency
       });
-
-      console.log(formData.bankDetails)
 
 
       if (response.data.success) {

@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useActiveAccount } from 'thirdweb/react';
 import { thirdwebClient } from '../config/client';
-import { defineChain, getContract, sendTransaction, toEther, toWei, } from 'thirdweb';
+import { defineChain, getContract, sendTransaction, toEther,} from 'thirdweb';
 import { allowance, approve, getBalance, transfer } from 'thirdweb/extensions/erc20';
 import axios from 'axios';
 import { getDynamicContract } from '../utils/helperFunctions';
@@ -46,21 +46,13 @@ const TransferStep = () => {
   const handleTransfer = async () => {
     setLoading(true)
 
-    const logAmounts = () => {
-      console.log('Amount: ', amount)
-      console.log('Amount in wei', toWei(amount.toString()))
-      console.log('Amount in ether', toEther(BigInt(amount)))
-    }
-
     try {
-      logAmounts()
 
       if (!account) {
         throw new Error('Account is not defined');
       }
       // get balance
       const balance = await getBalance({ contract: transferContract, address: walletAddress })
-      console.log('Balance', toEther(balance.value))
 
       // if balance lower than amount return
       if (Number(toEther(balance.value)) < amount) {
@@ -78,8 +70,7 @@ const TransferStep = () => {
           spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
           amount,
         });
-        const approveHash = await sendTransaction({ transaction, account });
-        console.log('Approval Hash', approveHash)
+        await sendTransaction({ transaction, account });
         userAllowance = Number(toEther(await allowance({ contract: transferContract, owner: walletAddress, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))
       }
 
