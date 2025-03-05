@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ConnectButton } from 'thirdweb/react'
 import { defineChain } from 'thirdweb'
 import { thirdwebClient } from '../config/client'

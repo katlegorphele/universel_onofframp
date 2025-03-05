@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { sendWithdrawalTransactionEmail } from "@/app/utils/sendMail";
 
-const test_mode = true;
+const test_mode = false;
 let url_in_use: string;
 let api_key_in_use: string;
 

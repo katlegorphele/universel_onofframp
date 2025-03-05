@@ -51,7 +51,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       default:
         wallet(defineChain(1135));
     }
-  }, [formData.chain])
+  }, [formData.chain, wallet])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(Number(e.target.value));
