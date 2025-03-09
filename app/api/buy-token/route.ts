@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { sendPaymentTransactionEmail } from "@/app/utils/sendMail";
 
 
-const test_mode = false;
+const test_mode = true;
 let url_in_use: string;
 let api_key_in_use: string;
 
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
           token: token,
           fiatAmount: amount,
           receiverAddress: walletAddress,
-          referenceId: "txn_" + Math.random().toString(36).substr(2, 9)
+          referenceId: tx_id
         })
       };
       console.log(options)
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
           token: receiveCurrency,
           fiatAmount: amount,
           receiverAddress: walletAddress,
-          referenceId: "txn_" + Math.random().toString(36).substr(2, 9)
+          referenceId: tx_id
         })
       };
 
@@ -120,11 +120,9 @@ export async function POST(req: Request) {
         email,
         amount,
         currency,
-        mobileWallet.phoneNumber,
-        bankDetails,
         tx_id,
         redirectUrl,
-        token,
+        token
       );
     } 
 

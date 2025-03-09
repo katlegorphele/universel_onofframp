@@ -41,8 +41,6 @@ export async function sendPaymentTransactionEmail(
     recipientEmail: string | undefined,
     amount: number,
     currency: string | undefined,
-    mpesaNumber?: string | undefined,
-    bankAccount?: string | undefined,
     transactionId?: string | undefined,
     paymentURL?: string | undefined,
     token?:string | undefined,

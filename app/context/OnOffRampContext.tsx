@@ -68,15 +68,15 @@ const chainOptions = [
   // ALL SUPPORTED CHAINS
 
   { value: 'ARBITRUM', label: 'ARBITRUM' },
-  { value: 'ETHEREUM', label: 'ETHEREUM' },
+  // { value: 'ETHEREUM', label: 'ETHEREUM' },
   { value: 'BASE', label: 'BASE' },
-  { value: 'LISK', label: 'LISK' },
+  // { value: 'LISK', label: 'LISK' },
 
 ];
 
 const receiveCurrencyOptions = [
   // AVAILABLE TOKENS
-  { value: 'UZAR', label: 'UZAR' },
+  // { value: 'UZAR', label: 'UZAR' },
   { value: 'USDC', label: 'USDC' },
   // { value: 'USDT', label: 'USDT' },
 ];
@@ -156,8 +156,8 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
   const [formData, setFormData] = useState({
     amount: 0,
     currency: 'ZAR',
-    chain: 'LISK',
-    receiveCurrency: 'UZAR',
+    chain: 'ARBITRUM',
+    receiveCurrency: 'USDC',
     receiveAmount: 0,
     exchangeRate: 0,
     totalFee: 0,

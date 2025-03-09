@@ -49,7 +49,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         wallet(defineChain(1135));
         break;
       default:
-        wallet(defineChain(1135));
+        wallet(defineChain(42161));
     }
   }, [formData.chain, wallet])
 
@@ -124,7 +124,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
                   Currency
                 </label>
-                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency}>
+                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency} >
                   <SelectTrigger className='bg-white font-extrabold'>
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
@@ -160,7 +160,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 </label>
                 <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, receiveCurrency: value }))} defaultValue={formData.receiveCurrency}>
                   <SelectTrigger className='bg-white font-extrabold '>
-                    <SelectValue placeholder="Select Receive Currency" />
+                    <SelectValue placeholder="Select Token" />
                   </SelectTrigger>
                   <SelectContent>
                     {receiveCurrencyOptions.map((option) => (
@@ -180,8 +180,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             <Input
               type="number"
               id="amount"
+              pattern="[0-9]*"
               // value with currency symbols
-              value={amount}
+              
               onChange={handleInputChange}
               className="md:mb-4 bg-white font-extrabold"
             />
@@ -278,14 +279,14 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             </div>
 
             <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-              Amount to sell (in {formData.receiveCurrency})
+              {formData.currency !== '' ? `Enter Amount to Sell (in ${formData.receiveCurrency})` : 'Enter Amount to Sell'}
             </label>
 
             <Input
               type="number"
               id="amount"
               // value with currency symbols
-              value={amount}
+              // value={amount}
               onChange={handleInputChange}
               className="mb-4 bg-white font-extrabold"
             />
