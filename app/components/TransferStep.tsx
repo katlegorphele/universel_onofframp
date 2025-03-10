@@ -9,8 +9,7 @@ import axios from 'axios';
 import { getDynamicContract, getTokenAddress } from '../utils/helperFunctions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
-import { Loader, } from 'lucide-react';
-import { token } from 'thirdweb/extensions/vote';
+import { Loader } from 'lucide-react';
 
 const transferContract = getContract({
   client: thirdwebClient,
