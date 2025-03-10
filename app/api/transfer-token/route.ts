@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
     try {
         // get Address to, Amount
-        const { to, amount, email, txHash } = await req.json();
+        const { to, amount, email, txHash, token,chain } = await req.json();
 
         // Validate required fields
         if (!to) {
@@ -35,13 +35,13 @@ export async function POST(req: Request) {
        
         // Send transaction email
          if (email) {
-             sendTransferEmail(email, amount,to, txHash);
+             sendTransferEmail(email, amount,to, txHash,token, chain);
          }
 
         return NextResponse.json(
             {
                 success: true,
-                message: "UZAR Token Transfer Succesful",
+                message: `${token} Token Transfer Succesful`,
             },
             { status: 200 }
         );

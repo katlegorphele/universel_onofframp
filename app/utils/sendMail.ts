@@ -1,5 +1,12 @@
 import nodemailer from 'nodemailer';
 
+const chainScanURLS = {
+    'ETHEREUM' : 'https://etherscan.io/tx/',
+    'ARBITRUM' : 'https://arbiscan.io/tx/',
+    'BASE' : 'https://blockscout.com/poa/xdai/tx/',
+    'LISK' : 'https://sepolia.scrollscan.com/tx/'
+}
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     host: 'smtp.gmail.com',
@@ -126,6 +133,8 @@ export async function sendTransferEmail(
     amount: number,
     to: string | undefined,
     txHash: string | undefined,
+    token: string | undefined,
+    chain: keyof typeof chainScanURLS
 ) {
     if (!recipientEmail) return;
     if(!to) return;
@@ -135,19 +144,20 @@ export async function sendTransferEmail(
         await transporter.sendMail({
             from: 'UZAR Team',
             to: recipientEmail,
-            subject: 'UZAR Transfer Confirmation',
+            subject: `${token} Transfer Confirmation`,
             text: `
-      Dear valued customer,
+    Dear valued customer,
       
-      You have successfully transferred ${amount} UZAR to ${to}.
-      View blockchain receipt:
-      https://sepolia.scrollscan.com/tx/${txHash}
-      
-      Thank you for using our service!
-      
-      Best regards,
-      The UZAR Team
-            `
+    You have successfully transferred ${amount} ${token} to ${to}.
+    
+    View blockchain receipt:
+    ${chainScanURLS[chain]}${txHash}
+    
+    Thank you for using our service!
+    
+    Best regards,
+    The UZAR Team
+        `
         });
     } catch (error) {
         console.error('Failed to send email notification:', error);
