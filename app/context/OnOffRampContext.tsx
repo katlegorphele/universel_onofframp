@@ -38,9 +38,9 @@ const bankCodes = [
   { value: '6320', label: 'ABSA' },
   { value: '4300', label: 'African Bank'},
   { value: '4620', label: 'BidVest Bank'},
-  // { value: '4700', label: 'Capitec' },
-  // { value: '4701', label: 'Capitec Business Bank'},
-  // { value: '6799', label: 'Discovery Bank'},
+  { value: '4700', label: 'Capitec' },
+  { value: '4701', label: 'Capitec Business Bank'},
+  { value: '6799', label: 'Discovery Bank'},
   { value: '2500', label: 'FNB' },
   { value: '5800', label: 'Investec Bank Limited' },
   { value: '1987', label: 'Nedbank' },
@@ -70,7 +70,7 @@ const chainOptions = [
   { value: 'ARBITRUM', label: 'ARBITRUM' },
   // { value: 'ETHEREUM', label: 'ETHEREUM' },
   { value: 'BASE', label: 'BASE' },
-  // { value: 'LISK', label: 'LISK' },
+  { value: 'LISK', label: 'LISK' },
 
 ];
 
