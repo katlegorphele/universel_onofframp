@@ -41,23 +41,25 @@ const PresetConnectButton = () => {
                         address: lisk_uZarContractAddress,
                         name: "Universel Zar",
                         symbol: "UZAR",
-                        icon: "...",
                     },
                     {
                         address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
                         name: "USDC",
                         symbol: "USDC",
-                        icon: "...",
                     },
                 ],
                 
-                [42161]: [
+                [42161]: [ // Arbitrum
                     {
                         address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
                         name: "USDC",
                         symbol: "USDC",
-                        icon: '...',
                     },
+                    {
+                        address: '0x9A9D0574739B5c9b856Bd0bB3fb16d7B0186f9bB',
+                        name: "UNIVERSEL ZAR",
+                        symbol: "UZAR",
+                    }
                 ],
             }}
             wallets={wallets}
