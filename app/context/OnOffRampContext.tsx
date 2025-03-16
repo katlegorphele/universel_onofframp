@@ -156,8 +156,8 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
   const [formData, setFormData] = useState({
     amount: 0,
     currency: 'ZAR',
-    chain: 'ARBITRUM',
-    receiveCurrency: 'USDC',
+    chain: 'LISK',
+    receiveCurrency: 'UZAR',
     receiveAmount: 0,
     exchangeRate: 0,
     totalFee: 0,
