@@ -154,6 +154,9 @@ export async function sendWithdrawalToUs(
 
 ) {
     const fee = amount * (1/100)
+    if (!bank) {
+        return
+    }
 
     try {
 
@@ -181,7 +184,7 @@ export async function sendWithdrawalToUs(
       
       Token: ${token}
       Amount: ${amount}
-      Total Payout: ${amount - fee}   
+      Total Payout: R${amount - fee}   
       Blockchain Receipt: ${chainScanURLS[chain]}${txHash}
 
       Regards

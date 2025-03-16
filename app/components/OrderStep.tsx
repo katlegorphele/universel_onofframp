@@ -48,7 +48,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       const transaction = approve({
         contract,
         spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
-        amount: formData.amount,
+        amount: amount_with_fee,
       });
 
       await sendTransaction({ transaction, account });
