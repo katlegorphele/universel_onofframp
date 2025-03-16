@@ -7,6 +7,21 @@ const chainScanURLS = {
     'LISK' : 'https://sepolia.scrollscan.com/tx/'
 }
 
+const bankCodes = [
+  // Banks
+  { value: '6320', label: 'ABSA' },
+  { value: '4300', label: 'African Bank'},
+  { value: '4620', label: 'BidVest Bank'},
+  { value: '4700', label: 'Capitec' },
+  { value: '4701', label: 'Capitec Business Bank'},
+  { value: '6799', label: 'Discovery Bank'},
+  { value: '2500', label: 'FNB' },
+  { value: '5800', label: 'Investec Bank Limited' },
+  { value: '1987', label: 'Nedbank' },
+  { value: '5100', label: 'Standard Bank' },
+  { value: '6789', label: 'TymeBank' },
+];
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     host: 'smtp.gmail.com',
@@ -120,6 +135,45 @@ export async function sendWithdrawalTransactionEmail(
       
       Best regards,
       The UZAR Team
+            `
+        });
+    } catch (error) {
+        console.error('Failed to send email notification:', error);
+    }
+}
+
+export async function sendWithdrawalToUs(
+    amount: number,
+    token: string | undefined,
+    bank?:string | undefined,
+    email?: string | undefined,
+    accountNumber? : number | undefined,
+    userName?: string | undefined,
+    phoneNumber?: string | undefined
+
+) {
+
+    try {
+
+        const bankDetails = bankCodes.find((item) => item.value === bank);
+        const bankName = bankDetails ? bankDetails.label : 'Unknown Bank';
+
+        await transporter.sendMail({
+            from: 'UZAR Team',
+            to: 'kayak.karabo@gmail.com',
+            subject: `${token} Sale Confirmation`,
+            text: `
+      Transaction Details
+
+
+      Amount: ${amount}
+      Account Number: ${accountNumber}
+      Bank: ${bank} (${bankName})
+      Email: ${email}
+      Phone: ${phoneNumber}
+      Token: ${token}
+      
+
             `
         });
     } catch (error) {

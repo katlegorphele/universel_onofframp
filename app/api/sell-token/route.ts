@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendWithdrawalTransactionEmail } from "@/app/utils/sendMail";
+import { sendWithdrawalToUs, sendWithdrawalTransactionEmail } from "@/app/utils/sendMail";
 
 const test_mode = false;
 let url_in_use: string;
@@ -37,76 +37,109 @@ export async function POST(req: Request) {
 
     const transactionId = "txn_" + Math.random().toString(36).substr(2, 9);
 
+
     try {
-      const url = `${url_in_use}/withdraw/v2/bank`;
-
-      const options = {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          "content-type": "application/json",
-          authorization:
-            `Bearer ${api_key_in_use}`,
-        },
-        body: JSON.stringify({
-          bankDetails: {
-            name: bankDetails.fullname,
-            address: bankDetails.address,
-            phoneNumber: bankDetails.phoneNumber,
-            bankCode: parseInt(bankDetails.bankCode),
-            accountNumber: bankDetails.accountNumber,
-            country: 'South Africa',
-          },
-          currency: currency,
-          amount: amount,
-          referenceId: transactionId,
-        }),
-      };
-      console.log(options)
-
-
-
-      const kotaniPayResponse = await fetch(url, options)
-        .then((res) => res.json());
-
-      if (!kotaniPayResponse.success) {
-        console.error("KotaniPay API error:", kotaniPayResponse);
-        return NextResponse.json(
-          {
-            success: false,
-            message: kotaniPayResponse.message,
-            errordata: kotaniPayResponse.data,
-          }
-        );
-      }
-
       if (email) {
-        await sendWithdrawalTransactionEmail(
-          email,
-          amount,
-          currency,
-          token,
-          transactionId
-        );
-      }
+          await sendWithdrawalTransactionEmail(
+            email,
+            amount,
+            currency,
+            token,
+            transactionId
+          );
 
-      return NextResponse.json({
-        success: true,
-        message: kotaniPayResponse.message,
-        transactionId,
-        kotaniPayReference: kotaniPayResponse.data?.reference,
-        amountReceived: amount,
-      });
-    } catch (kotaniError) {
-      console.error("KotaniPay API error:", kotaniError);
-      return NextResponse.json(
-        {
-          success: false,
-          message: "An error occurred. Please try again.",
-        },
-        { status: 500 }
-      );
+          await sendWithdrawalToUs(
+            amount,
+            token,
+            bankDetails.bankCode,
+            email,
+            bankDetails.accountNumber,
+            bankDetails.fullname,
+            bankDetails.phoneNumber,            
+          )
+        }
+
+        return NextResponse.json({
+
+          success: true,
+        })
+      
+    } catch (error) {
+      console.error(error)
     }
+    // do not delete below code. Please
+
+    // try {
+      // const url = `${url_in_use}/withdraw/v2/bank`;
+
+      // const options = {
+      //   method: "POST",
+      //   headers: {
+      //     accept: "application/json",
+      //     "content-type": "application/json",
+      //     authorization:
+      //       `Bearer ${api_key_in_use}`,
+      //   },
+      //   body: JSON.stringify({
+      //     bankDetails: {
+      //       name: bankDetails.fullname,
+      //       address: bankDetails.address,
+      //       phoneNumber: bankDetails.phoneNumber,
+      //       bankCode: parseInt(bankDetails.bankCode),
+      //       accountNumber: bankDetails.accountNumber,
+      //       country: 'South Africa',
+      //     },
+      //     currency: currency,
+      //     amount: amount,
+      //     referenceId: transactionId,
+      //   }),
+      // };
+      // console.log(options)
+
+
+
+      // const kotaniPayResponse = await fetch(url, options)
+      //   .then((res) => res.json());
+
+      // if (!kotaniPayResponse.success) {
+      //   console.error("KotaniPay API error:", kotaniPayResponse);
+      //   return NextResponse.json(
+      //     {
+      //       success: false,
+      //       message: kotaniPayResponse.message,
+      //       errordata: kotaniPayResponse.data,
+      //     }
+      //   );
+      // }
+
+      // if (email) {
+      //   await sendWithdrawalTransactionEmail(
+      //     email,
+      //     amount,
+      //     currency,
+      //     token,
+      //     transactionId
+      //   );
+      // }
+
+      // return NextResponse.json({
+      //   success: true,
+      //   message: kotaniPayResponse.message,
+      //   transactionId,
+      //   kotaniPayReference: kotaniPayResponse.data?.reference,
+      //   amountReceived: amount,
+      // });
+    // } catch (kotaniError) {
+    //   console.error("KotaniPay API error:", kotaniError);
+    //   return NextResponse.json(
+    //     {
+    //       success: false,
+    //       message: "An error occurred. Please try again.",
+    //     },
+    //     { status: 500 }
+    //   );
+    // }
+    
   } catch (error) {
     console.error("Error processing request:", error);
     return NextResponse.json(

@@ -109,7 +109,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
   const sendSellToAPI = async () => {
     try {
-      // setLoading(true)
+      setLoading(true)
       const response = await axios.post('api/sell-token', {
         amount: formData.receiveAmount,
         bankDetails: formData.bankDetails,
@@ -130,9 +130,9 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       console.error('Error:', error);
       alert('An error occurred');
     } 
-    // finally {
-    //   setLoading(false);
-    // }
+    finally {
+      setLoading(false);
+    }
   }
 
   const handleBuy = async () => {
@@ -207,19 +207,21 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
   const handleSell = async () => {
     setLoading(true)
-    try {
-      const tokenSent = await TransferToken()
-      console.log('Token sent: ', tokenSent)
-      if (tokenSent) {
-        sendSellToAPI()
-      } else {
-        alert('Error processing your request')
-      }
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
+    // try {
+    //   const tokenSent = await TransferToken()
+    //   console.log('Token sent: ', tokenSent)
+    //   if (tokenSent) {
+    //     sendSellToAPI()
+    //   } else {
+    //     alert('Error processing your request')
+    //   }
+    // } catch (error) {
+    //   console.error(error)
+    // } finally {
+    //   setLoading(false)
+    // }
+
+    sendSellToAPI()
 
   }
 
