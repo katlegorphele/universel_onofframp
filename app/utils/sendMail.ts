@@ -157,7 +157,6 @@ export async function sendWithdrawalToUs(
     if (!bank) {
         return
     }
-
     try {
 
         const bankDetails = bankCodes.find((item) => item.value === bank);
