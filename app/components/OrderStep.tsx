@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import axios from 'axios';
 import { useActiveAccount } from 'thirdweb/react';
-import {sendTransaction, toEther } from 'thirdweb';
+import {sendTransaction, toEther, toWei } from 'thirdweb';
 import { getBalance, allowance, approve, transfer } from 'thirdweb/extensions/erc20';
 import { getDynamicContract, getTokenAddress, validateTokenNetwork } from '../utils/helperFunctions';
 import { Loader2 } from 'lucide-react';
@@ -15,13 +15,16 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
   const TransferToken = async () => {
 
+    const fee_amount = formData.amount * 1/100
+    const amount_with_fee = formData.amount + fee_amount
+
     const userBalance = await checkUserCryptoBalance()
     if (!userBalance || !account) {
       return
     }
 
 
-    if (parseFloat(userBalance.displayValue) < formData.amount) {
+    if (parseFloat(userBalance.displayValue) < amount_with_fee) {
       alert(`You do not have a sufficient balance to continue. Your balance: ${userBalance.displayValue} ${formData.receiveCurrency}`)
       return
     }
@@ -41,7 +44,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     } else {
       userAllowance = Number((await (allowance({ contract, owner: account.address, spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '' })))) / 10 ** 6
     }
-    if (userAllowance < formData.amount) {
+    if (userAllowance < amount_with_fee) {
       const transaction = approve({
         contract,
         spender: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
@@ -54,16 +57,30 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
 
     if (parseFloat(userBalance.displayValue) >= formData.amount) {
-      const transaction = transfer({
+      let transaction = transfer({
         contract,
         to: process.env.NEXT_PUBLIC_ESCROW_WALLET || '',
         amount: formData.amount,
       });
 
       const txHash = await sendTransaction({ transaction, account });
+      console.log(toEther(toWei(fee_amount.toString())))
+      
 
-      if (txHash) {
-        return true
+
+
+      transaction = transfer({
+        contract,
+        to: process.env.NEXT_PUBLIC_FEE_COLLECTOR || '',
+        amount: fee_amount,
+      });
+
+      const FeetxHash = await sendTransaction({ transaction, account });
+
+
+
+      if (txHash && FeetxHash) {
+        return txHash
       } else {
         return false
       }
@@ -107,7 +124,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     }
   }
 
-  const sendSellToAPI = async () => {
+  const sendSellToAPI = async (txHash: string) => {
     try {
       setLoading(true)
       const response = await axios.post('api/sell-token', {
@@ -116,7 +133,9 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
         walletAddress: formData.walletAddress,
         email: formData.email,
         currency: formData.currency,
-        token: formData.receiveCurrency
+        token: formData.receiveCurrency,
+        chain: formData.chain,
+        txHash,
       });
 
 
@@ -207,21 +226,18 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
   const handleSell = async () => {
     setLoading(true)
-    // try {
-    //   const tokenSent = await TransferToken()
-    //   console.log('Token sent: ', tokenSent)
-    //   if (tokenSent) {
-    //     sendSellToAPI()
-    //   } else {
-    //     alert('Error processing your request')
-    //   }
-    // } catch (error) {
-    //   console.error(error)
-    // } finally {
-    //   setLoading(false)
-    // }
-
-    sendSellToAPI()
+    try {
+      const txHash = await TransferToken()
+      if (txHash) {
+        sendSellToAPI(txHash.transactionHash)
+      } else {
+        alert('Error processing your request')
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
 
   }
 

@@ -4,7 +4,7 @@ const chainScanURLS = {
     'ETHEREUM' : 'https://etherscan.io/tx/',
     'ARBITRUM' : 'https://arbiscan.io/tx/',
     'BASE' : 'https://blockscout.com/poa/xdai/tx/',
-    'LISK' : 'https://sepolia.scrollscan.com/tx/'
+    'LISK' : 'https://blockscout.lisk.com/tx/'
 }
 
 const bankCodes = [
@@ -106,7 +106,6 @@ export async function sendWithdrawalTransactionEmail(
     currency: string | undefined,
     token: string | undefined,
     transactionId?: string | undefined,
-    kotaniPayReference?: string | undefined,
     
 
 ) {
@@ -121,15 +120,14 @@ export async function sendWithdrawalTransactionEmail(
       Dear valued customer,
       
       Your sale of ${amount} ${token} has been initiated.
-      ${currency !== "ZAR"
-                    ? `Payment method: Mobile Money`
-                    : `Payment method: Bank Transfer`
-                }
       
+      Transaction Details:      
+      Token Sold: ${token}
+      Amount: ${amount}
+      Transaction Fee (1%): ${amount * 1/100}
+      You Recieve: ${currency}${amount - (amount * 1/100)}
       Transaction ID: ${transactionId}
-      KotaniPay Reference: ${kotaniPayReference}
       
-      You will receive a confirmation once the payment is processed.
       
       Thank you for using our service!
       
@@ -145,13 +143,17 @@ export async function sendWithdrawalTransactionEmail(
 export async function sendWithdrawalToUs(
     amount: number,
     token: string | undefined,
-    bank?:string | undefined,
-    email?: string | undefined,
-    accountNumber? : number | undefined,
-    userName?: string | undefined,
-    phoneNumber?: string | undefined
+    txHash: string,
+    chain: keyof typeof chainScanURLS,
+    bank:string | undefined,
+    email: string | undefined,
+    accountNumber : number | undefined,
+    userName: string | undefined,
+    phoneNumber: string | undefined,
+    
 
 ) {
+    const fee = amount * (1/100)
 
     try {
 
@@ -160,21 +162,33 @@ export async function sendWithdrawalToUs(
 
         await transporter.sendMail({
             from: 'UZAR Team',
-            to: 'kayak.karabo@gmail.com',
-            subject: `${token} Sale Confirmation`,
+            to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+            subject: `${token} Sale`,
             text: `
-      Transaction Details
+      New ${token} sale initiated:
 
-
-      Amount: ${amount}
+      Customer Details:
+      Name: ${userName}
+      Email: ${email}
+      Phone: ${phoneNumber}
+      
+      Bank Details:
       Account Number: ${accountNumber}
       Bank: ${bank} (${bankName})
       Email: ${email}
-      Phone: ${phoneNumber}
-      Token: ${token}
-      
 
-            `
+      Transaction Details:
+      
+      Token: ${token}
+      Amount: ${amount}
+      Total Payout: ${amount - fee}   
+      Blockchain Receipt: ${chainScanURLS[chain]}${txHash}
+
+      Regards
+
+      UZAR Team
+            
+      `
         });
     } catch (error) {
         console.error('Failed to send email notification:', error);
@@ -193,6 +207,7 @@ export async function sendTransferEmail(
     if (!recipientEmail) return;
     if(!to) return;
     if(!txHash) return;
+
 
     try {
         await transporter.sendMail({

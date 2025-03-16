@@ -21,6 +21,8 @@ export async function POST(req: Request) {
       bankDetails,
       currency,
       token,
+      chain,
+      txHash
     } = await req.json();
 
 
@@ -51,11 +53,14 @@ export async function POST(req: Request) {
           await sendWithdrawalToUs(
             amount,
             token,
+            txHash,
+            chain,
             bankDetails.bankCode,
             email,
             bankDetails.accountNumber,
             bankDetails.fullname,
-            bankDetails.phoneNumber,            
+            bankDetails.phoneNumber
+            
           )
         }
 
