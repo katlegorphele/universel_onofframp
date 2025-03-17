@@ -65,11 +65,15 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   };
 
   const handleSubmit = () => {
-    setFormData((prev) => ({
-      ...prev,
-      receiveAmount,
-    }));
-    onNext();
+    if (receiveAmount >= 25) {
+      setFormData((prev) => ({
+        ...prev,
+        receiveAmount,
+      }));
+      onNext();
+    } else {
+      alert('Minimum Value of 25 UZAR')
+    }
   };
 
   useEffect(() => {

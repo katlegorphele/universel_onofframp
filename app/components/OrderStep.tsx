@@ -15,7 +15,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const bankName =
     bankCodes.find((bank) => bank.value === formData.bankDetails.bankCode)?.label ||
     'Unknown Bank';
-
+    
   const TransferToken = async () => {
 
     const fee_amount = formData.amount * 1 / 100
@@ -139,6 +139,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
         token: formData.receiveCurrency,
         chain: formData.chain,
         txHash,
+        txFee: transactionFee()
       });
 
 
@@ -268,6 +269,18 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     }
   }
 
+  const transactionFee = () => {
+
+    let transactionFee;
+    if (formData.bankDetails.paymentMethod == 'E-WALLET / CASH SEND') {
+        transactionFee = (formData.amount * (1/100)) + 10
+    } else {
+      transactionFee = (formData.amount * (1/100))
+    }
+
+    return transactionFee;
+  }
+
 
   return (
     <>
@@ -320,22 +333,23 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
               {formData.currency === 'ZAR' ? (
                 <>
                   <div>
+                    <p className='mt-2'>Token Details:</p>
                     <p><span className='font-bold'>Selling:</span> {formData.amount} {formData.receiveCurrency}</p>
                     <p><span className='font-bold'>Chain:</span> {formData.chain}</p>
-                    <p><span className='font-bold'>Transaction Fee:</span> {(formData.receiveAmount * (1 / 100))} {formData.currency}</p>
-                    <p><span className='font-bold'>Receive Amount:</span> {(formData.receiveAmount - (formData.receiveAmount * (1 / 100))).toFixed(2)} {formData.currency}</p>
-                    <p className='mt-2'>Payment Details ({formData.bankDetails.paymentMethod})</p>
                     <p><span className='font-bold'>Wallet:</span> {formData.walletAddress}</p>
+
+                    <p className='mt-2'>Payment Details ({formData.bankDetails.paymentMethod})</p>
+                    <p><span className='font-bold'>Transaction Fee:</span> R{transactionFee()}</p>
+                    <p><span className='font-bold'>Receive Amount:</span> R{formData.amount - transactionFee()}</p>
+                    
                     {formData.bankDetails.paymentMethod == 'BANK TRANSFER' ?
                       <>
-                        <p className='mt-2'>Bank Details</p>
                         <p><span className='font-bold'>Bank:</span> {bankName}</p>
                         <p><span className='font-bold'>Account Number:</span> {formData.bankDetails.accountNumber}</p>
 
                       </>
                       : <>
-                        <p className='mt-2'>E-wallet Details</p>
-                        <p><span className='font-bold'>Bank:</span> {bankName}</p>
+                        {/* <p><span className='font-bold'>Bank:</span> {bankName}</p> */}
                         <p><span className='font-bold'>Phone Number:</span> {formData.bankDetails.phoneNumber}</p>
 
                       </>}

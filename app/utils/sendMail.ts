@@ -1,25 +1,25 @@
 import nodemailer from 'nodemailer';
 
 const chainScanURLS = {
-    'ETHEREUM' : 'https://etherscan.io/tx/',
-    'ARBITRUM' : 'https://arbiscan.io/tx/',
-    'BASE' : 'https://blockscout.com/poa/xdai/tx/',
-    'LISK' : 'https://blockscout.lisk.com/tx/'
+    'ETHEREUM': 'https://etherscan.io/tx/',
+    'ARBITRUM': 'https://arbiscan.io/tx/',
+    'BASE': 'https://blockscout.com/poa/xdai/tx/',
+    'LISK': 'https://blockscout.lisk.com/tx/'
 }
 
 const bankCodes = [
-  // Banks
-  { value: '6320', label: 'ABSA' },
-  { value: '4300', label: 'African Bank'},
-  { value: '4620', label: 'BidVest Bank'},
-  { value: '4700', label: 'Capitec' },
-  { value: '4701', label: 'Capitec Business Bank'},
-  { value: '6799', label: 'Discovery Bank'},
-  { value: '2500', label: 'FNB' },
-  { value: '5800', label: 'Investec Bank Limited' },
-  { value: '1987', label: 'Nedbank' },
-  { value: '5100', label: 'Standard Bank' },
-  { value: '6789', label: 'TymeBank' },
+    // Banks
+    { value: '6320', label: 'ABSA' },
+    { value: '4300', label: 'African Bank' },
+    { value: '4620', label: 'BidVest Bank' },
+    { value: '4700', label: 'Capitec' },
+    { value: '4701', label: 'Capitec Business Bank' },
+    { value: '6799', label: 'Discovery Bank' },
+    { value: '2500', label: 'FNB' },
+    { value: '5800', label: 'Investec Bank Limited' },
+    { value: '1987', label: 'Nedbank' },
+    { value: '5100', label: 'Standard Bank' },
+    { value: '6789', label: 'TymeBank' },
 ];
 
 const transporter = nodemailer.createTransport({
@@ -65,7 +65,7 @@ export async function sendPaymentTransactionEmail(
     currency: string | undefined,
     transactionId?: string | undefined,
     paymentURL?: string | undefined,
-    token?:string | undefined,
+    token?: string | undefined,
 
 ) {
     if (!recipientEmail) return;
@@ -104,12 +104,12 @@ export async function sendWithdrawalTransactionEmail(
     recipientEmail: string | undefined,
     amount: number,
     token: string | undefined,
-    txHash:string,
+    txHash: string,
     chain: keyof typeof chainScanURLS,
     paymentMethod: string,
-    bank:string,
-    accountNumber:number,
-    phoneNumber:string,
+    bank: string,
+    accountNumber: number,
+    phoneNumber: string,
     transactionId?: string | undefined,
 ) {
     if (!recipientEmail) return;
@@ -131,16 +131,16 @@ export async function sendWithdrawalTransactionEmail(
       - Amount Sold: ${amount} ${token}
       - Blockchain Receipt: ${blockscannerUrl} 
       - Transaction ID: ${transactionId}
-      - Transaction Fee (1%): R${amount * 1/100}
-      - You Recieve: R${amount - (amount * 1/100)}
+      - Transaction Fee (1%): R${amount * 1 / 100}
+      - You Recieve: R${amount - (amount * 1 / 100)}
 
       ${paymentMethod === 'BANK TRANSFER'
-        ? `
+                    ? `
       Your payment will be processed to the following bank account:
       - Bank: ${bankName}
       - Account Number: ${accountNumber}
       `
-        : `
+                    : `
       Your payment will be sent to your e-wallet linked to the following bank and phone number:
       - Bank: ${bankName}
       - Phone Number: ${phoneNumber}
@@ -167,19 +167,15 @@ export async function sendWithdrawalToUs(
     token: string,
     txHash: string,
     chain: keyof typeof chainScanURLS,
-    bank:string | undefined,
+    bank: string | undefined,
     email: string | undefined,
-    accountNumber : number | undefined,
+    accountNumber: number | undefined,
     userName: string | undefined,
     phoneNumber: string | undefined,
     paymentMethod: string,
-    
+    transactionFee: number,
 
 ) {
-    const fee = amount * (1/100)
-    if (!bank) {
-        return
-    }
     try {
 
         const bankDetails = bankCodes.find((item) => item.value === bank);
@@ -206,7 +202,7 @@ export async function sendWithdrawalToUs(
       Transaction Details:
       Token: ${token}
       Amount: ${amount}
-      Total Payout: R${amount - fee}   
+      Total Payout: R${amount - transactionFee}   
       Blockchain Receipt: ${chainScanURLS[chain]}${txHash}
 
       Regards
@@ -230,8 +226,8 @@ export async function sendTransferEmail(
     chain: keyof typeof chainScanURLS
 ) {
     if (!recipientEmail) return;
-    if(!to) return;
-    if(!txHash) return;
+    if (!to) return;
+    if (!txHash) return;
 
 
     try {

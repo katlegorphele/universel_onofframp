@@ -22,7 +22,8 @@ export async function POST(req: Request) {
       bankDetails,
       token,
       chain,
-      txHash
+      txHash,
+      txFee
     } = await req.json();
 
 
@@ -65,7 +66,8 @@ export async function POST(req: Request) {
             bankDetails.accountNumber,
             bankDetails.fullname,
             bankDetails.phoneNumber,
-            bankDetails.paymentMethod
+            bankDetails.paymentMethod,
+            txFee
           )
         }
 
