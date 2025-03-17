@@ -82,6 +82,7 @@ const receiveCurrencyOptions = [
 ];
 
 const paymentMethodsZAR = ['CARD', 'BANK'];
+const paymentMethodsZARforSelling = ['E-WALLET / CASH SEND', 'BANK TRANSFER'];
 
 
 interface FormData {
@@ -131,6 +132,7 @@ interface OnOffRampContextType {
   chainOptions: typeof chainOptions;
   receiveCurrencyOptions: typeof receiveCurrencyOptions;
   paymentMethodsZAR: typeof paymentMethodsZAR;
+  paymentMethodsZARforSelling: typeof paymentMethodsZARforSelling
 
 }
 
@@ -145,6 +147,7 @@ const OnOffRampContext = createContext<OnOffRampContextType>({
   chainOptions,
   receiveCurrencyOptions,
   paymentMethodsZAR,
+  paymentMethodsZARforSelling
 });
 
 interface OnOffRampProviderProps {
@@ -226,7 +229,8 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       currencyOptions,
       chainOptions,
       receiveCurrencyOptions,
-      paymentMethodsZAR
+      paymentMethodsZAR,
+      paymentMethodsZARforSelling
       }}>
       {children}
     </OnOffRampContext.Provider>

@@ -20,7 +20,6 @@ export async function POST(req: Request) {
       amount,
       email,
       bankDetails,
-      currency,
       token,
       chain,
       txHash
@@ -46,8 +45,13 @@ export async function POST(req: Request) {
           await sendWithdrawalTransactionEmail(
             email,
             amount,
-            currency,
             token,
+            txHash,
+            chain,
+            bankDetails.paymentMethod,
+            bankDetails.bankCode,
+            bankDetails.accountNumber,
+            bankDetails.phoneNumber,
             transactionId
           );
 
@@ -60,8 +64,8 @@ export async function POST(req: Request) {
             email,
             bankDetails.accountNumber,
             bankDetails.fullname,
-            bankDetails.phoneNumber
-            
+            bankDetails.phoneNumber,
+            bankDetails.paymentMethod
           )
         }
 

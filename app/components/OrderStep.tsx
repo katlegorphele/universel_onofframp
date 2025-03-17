@@ -3,19 +3,22 @@ import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import axios from 'axios';
 import { useActiveAccount } from 'thirdweb/react';
-import {sendTransaction, toEther, toWei } from 'thirdweb';
+import { sendTransaction, toEther, toWei } from 'thirdweb';
 import { getBalance, allowance, approve, transfer } from 'thirdweb/extensions/erc20';
 import { getDynamicContract, getTokenAddress, validateTokenNetwork } from '../utils/helperFunctions';
 import { Loader2 } from 'lucide-react';
 
 const OrderStep = ({ onBack }: { onBack: () => void }) => {
-  const { formData } = useOnOffRampContext();
+  const { formData, bankCodes } = useOnOffRampContext();
   const [loading, setLoading] = useState(false);
   const account = useActiveAccount()
+  const bankName =
+    bankCodes.find((bank) => bank.value === formData.bankDetails.bankCode)?.label ||
+    'Unknown Bank';
 
   const TransferToken = async () => {
 
-    const fee_amount = formData.amount * 1/100
+    const fee_amount = formData.amount * 1 / 100
     const amount_with_fee = formData.amount + fee_amount
 
     const userBalance = await checkUserCryptoBalance()
@@ -65,7 +68,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
       const txHash = await sendTransaction({ transaction, account });
       console.log(toEther(toWei(fee_amount.toString())))
-      
+
 
 
 
@@ -148,7 +151,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred');
-    } 
+    }
     finally {
       setLoading(false);
     }
@@ -173,14 +176,14 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       if (response.data.success) {
         alert(response.data.message)
         // redirect to payment link on a new page
-        if (response.data.redirectUrl ) {
+        if (response.data.redirectUrl) {
           const redirectUrl = response.data.redirectUrl;
           if (redirectUrl) {
             window.open(redirectUrl, '_blank')?.focus();
           }
-            
+
         }
-        
+
       } else {
         console.log(response.data.message)
       }
@@ -212,7 +215,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   //     if (response.data.success) {
   //       alert(response.data.message)
   //       // redirect to payment link
-        
+
   //     } else {
   //       console.log(response.data.message)
   //     }
@@ -319,8 +322,23 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
                   <div>
                     <p><span className='font-bold'>Selling:</span> {formData.amount} {formData.receiveCurrency}</p>
                     <p><span className='font-bold'>Chain:</span> {formData.chain}</p>
-                    <p><span className='font-bold'>Receive Amount:</span> {(formData.receiveAmount).toFixed(2)} {formData.currency}</p>
+                    <p><span className='font-bold'>Transaction Fee:</span> {(formData.receiveAmount * (1 / 100))} {formData.currency}</p>
+                    <p><span className='font-bold'>Receive Amount:</span> {(formData.receiveAmount - (formData.receiveAmount * (1 / 100))).toFixed(2)} {formData.currency}</p>
+                    <p className='mt-2'>Payment Details ({formData.bankDetails.paymentMethod})</p>
                     <p><span className='font-bold'>Wallet:</span> {formData.walletAddress}</p>
+                    {formData.bankDetails.paymentMethod == 'BANK TRANSFER' ?
+                      <>
+                        <p className='mt-2'>Bank Details</p>
+                        <p><span className='font-bold'>Bank:</span> {bankName}</p>
+                        <p><span className='font-bold'>Account Number:</span> {formData.bankDetails.accountNumber}</p>
+
+                      </>
+                      : <>
+                        <p className='mt-2'>E-wallet Details</p>
+                        <p><span className='font-bold'>Bank:</span> {bankName}</p>
+                        <p><span className='font-bold'>Phone Number:</span> {formData.bankDetails.phoneNumber}</p>
+
+                      </>}
                     {/* <p><span className='font-bold'>Transaction Fee:</span> {formData.totalFee} {formData.currency}</p> */}
                   </div>
                 </>
@@ -376,7 +394,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
                   : handleCrossBorder
             }
             disabled={loading}>
-            {loading ? <><Loader2/> Processing ...</> : 'Confirm & Proceed'}
+            {loading ? <><Loader2 /> Processing ...</> : 'Confirm & Proceed'}
             {/* Next: Transfer Funds */}
           </Button>
         </div>

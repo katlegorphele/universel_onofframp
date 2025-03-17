@@ -103,31 +103,53 @@ export async function sendPaymentTransactionEmail(
 export async function sendWithdrawalTransactionEmail(
     recipientEmail: string | undefined,
     amount: number,
-    currency: string | undefined,
     token: string | undefined,
+    txHash:string,
+    chain: keyof typeof chainScanURLS,
+    paymentMethod: string,
+    bank:string,
+    accountNumber:number,
+    phoneNumber:string,
     transactionId?: string | undefined,
-    
-
 ) {
     if (!recipientEmail) return;
+    const blockscannerUrl = `${chainScanURLS[chain]}${txHash}`;
+    const bankDetails = bankCodes.find((item) => item.value === bank);
+    const bankName = bankDetails ? bankDetails.label : 'Unknown Bank';
 
     try {
         await transporter.sendMail({
-            from: 'UZAR Team',
+            from: 'UZAR Team <noreply@uzar.com>',
             to: recipientEmail,
             subject: `${token} Sale Confirmation`,
             text: `
       Dear valued customer,
       
-      Your sale of ${amount} ${token} has been initiated.
+      Your sale of ${amount} ${token} has been successfully initiated.
       
-      Transaction Details:      
-      Token Sold: ${token}
-      Amount: ${amount}
-      Transaction Fee (1%): ${amount * 1/100}
-      You Recieve: ${currency}${amount - (amount * 1/100)}
-      Transaction ID: ${transactionId}
-      
+      Transaction Details:
+      - Amount Sold: ${amount} ${token}
+      - Blockchain Receipt: ${blockscannerUrl} 
+      - Transaction ID: ${transactionId}
+      - Transaction Fee (1%): R${amount * 1/100}
+      - You Recieve: R${amount - (amount * 1/100)}
+
+      ${paymentMethod === 'BANK TRANSFER'
+        ? `
+      Your payment will be processed to the following bank account:
+      - Bank: ${bankName}
+      - Account Number: ${accountNumber}
+      `
+        : `
+      Your payment will be sent to your e-wallet linked to the following bank and phone number:
+      - Bank: ${bankName}
+      - Phone Number: ${phoneNumber}
+      `}
+
+      Please note:
+      - You can track your transaction on the blockchain using the provided link.
+      - The processing time may vary depending on network conditions and banking/e-wallet procedures.
+      - You will receive a confirmation once the payment has been successfully completed.
       
       Thank you for using our service!
       
@@ -142,7 +164,7 @@ export async function sendWithdrawalTransactionEmail(
 
 export async function sendWithdrawalToUs(
     amount: number,
-    token: string | undefined,
+    token: string,
     txHash: string,
     chain: keyof typeof chainScanURLS,
     bank:string | undefined,
@@ -150,6 +172,7 @@ export async function sendWithdrawalToUs(
     accountNumber : number | undefined,
     userName: string | undefined,
     phoneNumber: string | undefined,
+    paymentMethod: string,
     
 
 ) {
@@ -175,12 +198,12 @@ export async function sendWithdrawalToUs(
       Phone: ${phoneNumber}
       
       Bank Details:
+      Payment Method: ${paymentMethod}
       Account Number: ${accountNumber}
       Bank: ${bank} (${bankName})
-      Email: ${email}
+
 
       Transaction Details:
-      
       Token: ${token}
       Amount: ${amount}
       Total Payout: R${amount - fee}   

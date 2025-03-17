@@ -11,7 +11,7 @@ import { useActiveAccount } from 'thirdweb/react';
 
 
 const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const { formData, setFormData, currencyProviders, bankCodes, currencyOptions, paymentMethodsZAR } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, bankCodes, currencyOptions, paymentMethodsZAR,paymentMethodsZARforSelling } = useOnOffRampContext();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -87,8 +87,9 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
           fullname == '' ||
           address == '' ||
           phoneNumber == '' ||
-          // bankCode == '' ||
-          accountNumber == ''
+          bankCode == '' ||
+          accountNumber == '' ||
+          paymentMethod == ''
           
         ) {
           setButtonActive(false)
@@ -203,8 +204,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
 
   const handleSubmit = () => {
-
-    onNext();
+    onNext()
   };
 
 
@@ -535,7 +535,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
             {formData.currency === 'ZAR' && (<>
               <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
-                Full Name
+                Full Names
               </label>
               <Input
                 type="text"
@@ -545,7 +545,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 className="mb-4 bg-white font-extrabold"
               />
               <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
-                Address
+                Physical Address
               </label>
               <Input
                 type="text"
@@ -564,7 +564,24 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="mb-4 bg-white font-extrabold"
               />
-              <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
+
+<label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
+                  How would you like to offramp?
+                </label>
+                <Select onValueChange={setPaymentMethod} defaultValue={paymentMethod}>
+                  <SelectTrigger className='bg-white'>
+                    <SelectValue placeholder="Select Payment Method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {paymentMethodsZARforSelling.map((method) => (
+                      <SelectItem key={method} value={method}>
+                        {method}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+              <label htmlFor="bankCode" className="block mb-2 mt-2 text-sm font-medium text-gray-900">
                 Bank
               </label>
               <Select onValueChange={(value) => {
