@@ -141,8 +141,7 @@ export async function sendWithdrawalTransactionEmail(
       - Account Number: ${accountNumber}
       `
                     : `
-      Your payment will be sent to your e-wallet linked to the following bank and phone number:
-      - Bank: ${bankName}
+      Your payment code will be sent to the following phone number:
       - Phone Number: ${phoneNumber}
       `}
 
