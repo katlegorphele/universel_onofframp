@@ -228,6 +228,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const handleCrossBorder = async () => {
     try {
       setLoading(true)
+      console.log('Cross-Border-Transaction')
       const response = await axios.post('api/cross-border', {
         amount: formData.amount,
         bankDetails: formData.bankDetails,
