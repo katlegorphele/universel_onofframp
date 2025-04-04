@@ -26,33 +26,13 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const wallet = useSwitchActiveWalletChain();
 
 
-  // useEffect(() => {
-  //   if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
-  //     setReceiveAmount(amount / formData.exchangeRate);
-  //   } else {
-  //     setReceiveAmount(amount * formData.exchangeRate);
-  //   }
-  // }, [amount, formData.exchangeRate, formData.action]);
-
   useEffect(() => {
-    const fetchMainExchangeRate = async () => {
-      if (formData.action === 'cross-border') return;
-  
-      let baseCurrency = formData.receiveCurrency === 'UZAR' ? 'ZAR' : 'USD';
-      const response = await fetch(
-        `https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/latest/${baseCurrency}`
-      );
-      const data = await response.json();
-      const rate = data.conversion_rates[formData.currency] || 0;
-  
-      setFormData(prev => ({
-        ...prev,
-        exchangeRate: rate,
-      }));
-    };
-  
-    fetchMainExchangeRate();
-  }, [formData.currency, formData.receiveCurrency, formData.action]);
+    if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
+      setReceiveAmount(amount / formData.exchangeRate);
+    } else {
+      setReceiveAmount(amount * formData.exchangeRate);
+    }
+  }, [amount, formData.exchangeRate, formData.action]);
 
   useEffect(() => {
     switch (formData.chain) {
@@ -135,68 +115,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       },
     }));
   }, [setFormData, crossBorderSender, accountName, address, bankCodes, formData.exchangeRate, fullname, network, phoneNumber, receiveAmount, amount, crossBorderSendAmount, accountNumber]);
-
-  const getCrossBorderExchangeRate = async (from: string, to: string): Promise<number> => {
-    if (!from || !to) return 0;
-    
-    try {
-      const response = await fetch(
-        `https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/pair/${from}/${to}`
-      );
-      const data = await response.json();
-      return data.conversion_rate || 0;
-    } catch (error) {
-      console.error("Error fetching exchange rate:", error);
-      return 0;
-    }
-  };
-
-  // Add these useEffects to handle cross-border calculations
-useEffect(() => {
-  // Fetch cross-border exchange rate when currencies change
-  const fetchCrossBorderRate = async () => {
-    const rate = await getCrossBorderExchangeRate(
-      formData.crossBorder.sendCurrency,
-      formData.crossBorder.receiveCurrency
-    );
-    
-    setFormData(prev => ({
-      ...prev,
-      crossBorder: {
-        ...prev.crossBorder,
-        exchangeRate: rate || 0,
-      },
-    }));
-  };
-
-  if (formData.crossBorder.sendCurrency && formData.crossBorder.receiveCurrency) {
-    fetchCrossBorderRate();
-  }
-}, [formData.crossBorder.sendCurrency, formData.crossBorder.receiveCurrency]);
-
-useEffect(() => {
-  // Calculate cross-border fee and receive amount when send amount changes
-  if (!formData.crossBorder.sendAmount) return;
-
-  const fee = (formData.crossBorder.sendAmount * 3) / 100;
-  const receiveAmount = formData.crossBorder.exchangeRate
-    ? (formData.crossBorder.sendAmount - fee) * formData.crossBorder.exchangeRate
-    : 0;
-
-  setFormData(prev => ({
-    ...prev,
-    crossBorder: {
-      ...prev.crossBorder,
-      totalFee: fee,
-      receiveAmount: receiveAmount,
-    },
-  }));
-}, [
-  formData.crossBorder.sendAmount,
-  formData.crossBorder.exchangeRate,
-  formData.crossBorder.sendCurrency,
-  formData.crossBorder.receiveCurrency,
-]);
 
 
 
@@ -410,90 +328,41 @@ useEffect(() => {
 
       {formData.action === 'cross-border' && (
         <>
-          <div className=' p-6 w-full' >
-            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-              You Send:
-            </label>
-            <Select
-              onValueChange={(value) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  crossBorder: {
-                    ...prev.crossBorder,
-                    sendCurrency: value,
-                  },
-                }))
-              }
-              defaultValue={formData.crossBorder.receiveCurrency}>
-              {/* <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency} ></Select> */}
-              <SelectTrigger className='bg-white font-extrabold'>
-                <SelectValue placeholder="Select Currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencyOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-              Send Amount
-            </label>
-
-            <Input
-              type="number"
-              id="amount"
-              pattern="[0-9]*"
-              onChange={handleCrossBorderInputChange}
-              className="md:mb-4 bg-white font-extrabold"
-            />
-
-            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-              They Receive
-            </label>
-
-            <Select
-              onValueChange={(value) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  crossBorder: {
-                    ...prev.crossBorder,
-                    receiveCurrency: value,
-                  },
-                }))
-              }
-              defaultValue={formData.crossBorder.receiveCurrency}>
-              {/* <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency} ></Select> */}
-              <SelectTrigger className='bg-white font-extrabold'>
-                <SelectValue placeholder="Select Currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencyOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-              Receive Amount
-            </label>
-
-            <Input
-              type="number"
-              id="amount"
-              pattern="[0-9]*"
-              disabled={true}
-              // onChange={handleCrossBorderInputChange}
-              className="md:mb-4 bg-white font-extrabold"
-            />
-
+          <div className='w-full p-6'>
+            <label htmlFor="You Send" className="block text-sm/6 font-medium text-gray-900">You Send</label>
+            <div className="mt-2">
+              <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
+                {/* <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6">
+                {formData.crossBorder.sendCurrency}
+                </div> */}
+                <input type="text" name="price" id="price" className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="0.00" />
+                <div className="grid shrink-0 grid-cols-1 focus-within:relative">
+                  {/* <select id="currency" name="currency" aria-label="Currency" className="col-start-1 row-start-1 w-full appearance-none rounded-md py-1.5 pr-7 pl-3 text-base text-gray-500 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <option>USD</option>
+                    <option>CAD</option>
+                    <option>EUR</option>
+                  </select> */}
+                  <Select onValueChange={(value) => {
+                setCrossBorderSender(value)
+                setFormData((prev) => ({ ...prev, currency: value }))
+              }} defaultValue={'ZAR'}>
+                <SelectTrigger className='bg-white'>
+                  <SelectValue placeholder="Select Currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencyOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+                </div>
+              </div>
+            </div>
           </div>
 
-          
+
         </>
       )}
     </>
