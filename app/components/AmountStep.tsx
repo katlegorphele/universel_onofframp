@@ -61,6 +61,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCrossBorderSendAmount(Number(e.target.value));
     setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, sendAmount: Number(e.target.value) } }));
+    console.log('Cross Border Sender Amount', crossBorderSendAmount)
 
   };
 
@@ -331,18 +332,18 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
               You Send:
             </label>
-            <Select 
-            onValueChange={(value) => 
-              setFormData((prev) => ({
-                ...prev,
-                crossBorder: {
-                  ...prev.crossBorder,
-                  receiveCurrency: value,
-                },
-              }))
-            }
-            defaultValue={formData.crossBorder.receiveCurrency}>
-            {/* <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency} ></Select> */}
+            <Select
+              onValueChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  crossBorder: {
+                    ...prev.crossBorder,
+                    sendCurrency: value,
+                  },
+                }))
+              }
+              defaultValue={formData.crossBorder.receiveCurrency}>
+              {/* <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency} ></Select> */}
               <SelectTrigger className='bg-white font-extrabold'>
                 <SelectValue placeholder="Select Currency" />
               </SelectTrigger>
@@ -356,9 +357,61 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             </Select>
 
             <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-                  Send Amount
+              Send Amount
             </label>
+
+            <Input
+              type="number"
+              id="amount"
+              pattern="[0-9]*"
+              onChange={handleCrossBorderInputChange}
+              className="md:mb-4 bg-white font-extrabold"
+            />
+
+            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+              They Receive
+            </label>
+
+            <Select
+              onValueChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  crossBorder: {
+                    ...prev.crossBorder,
+                    receiveCurrency: value,
+                  },
+                }))
+              }
+              defaultValue={formData.crossBorder.receiveCurrency}>
+              {/* <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency} ></Select> */}
+              <SelectTrigger className='bg-white font-extrabold'>
+                <SelectValue placeholder="Select Currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+              Receive Amount
+            </label>
+
+            <Input
+              type="number"
+              id="amount"
+              pattern="[0-9]*"
+              disabled={true}
+              // onChange={handleCrossBorderInputChange}
+              className="md:mb-4 bg-white font-extrabold"
+            />
+
           </div>
+
+          
         </>
       )}
     </>
