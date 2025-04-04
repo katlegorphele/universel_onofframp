@@ -115,6 +115,8 @@ interface FormData {
     receiveAmount: number;
     exchangeRate: number;
     totalFee: number;
+    senderDetails: {};
+    recieverDetails: {};
   }
   otpCode: string;
   email: string;

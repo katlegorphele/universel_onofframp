@@ -197,6 +197,8 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         receiveAmount: crossBorderReceiveAmount,
         exchangeRate: formData.exchangeRate,
         totalFee: 0,
+        senderDetails: formData.crossBorder.senderDetails,
+        recieverDetails: formData.crossBorder.recieverDetails,
       },
       walletAddress
     }));
