@@ -334,10 +334,19 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
             <div className='flex flex-col gap-2 md:gap-10 md:flex-row justify-items-between'>
               <div className='flex flex-col flex-nowrap md:w-1/3'>
-                <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="crossBorderSendCurrency" className="block mb-2 text-sm font-medium text-gray-900">
                   You Send
                 </label>
-                <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, currency: value }))} defaultValue={formData.currency} >
+                <Select onValueChange={(value) => 
+                  setFormData((prev) => ({ 
+                    ...prev, 
+                    crossBorder: {
+                      ...prev.crossBorder,
+                      sendCurrency: value,
+                    },
+                  }))}
+                    // defaultValue={formData.crossBorder.sendCurrency}
+                    >
                   <SelectTrigger className='bg-white font-extrabold'>
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
@@ -352,22 +361,20 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               </div>
 
               <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-              Enter Payment Amount (in {formData.currency})
+              Enter Payment Amount (in {formData.crossBorder.sendCurrency})
             </label>
-
             <Input
               type="number"
               id="amount"
               pattern="[0-9]*"
               // value with currency symbols
 
-              onChange={handleInputChange}
+              onChange={handleCrossBorderInputChange}
               className="md:mb-4 bg-white font-extrabold"
             />  
             <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-              They Recieve (in {formData.receiveCurrency})
+              {formData.crossBorder.receiveCurrency !== '' ? `They Recieve (in ${formData.receiveCurrency})` : 'They Recieve'}
             </label>
-            
             <Input
               type="number"
               id="receiveAmount"
@@ -379,6 +386,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
             {/* disabled if the amount is 0 */}        
             </div>
+
             <div className='mt-2'>
               <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4 m-auto">
                 Next
