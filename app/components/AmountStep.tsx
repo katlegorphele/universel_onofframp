@@ -26,13 +26,33 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const wallet = useSwitchActiveWalletChain();
 
 
+  // useEffect(() => {
+  //   if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
+  //     setReceiveAmount(amount / formData.exchangeRate);
+  //   } else {
+  //     setReceiveAmount(amount * formData.exchangeRate);
+  //   }
+  // }, [amount, formData.exchangeRate, formData.action]);
+
   useEffect(() => {
-    if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
-      setReceiveAmount(amount / formData.exchangeRate);
-    } else {
-      setReceiveAmount(amount * formData.exchangeRate);
-    }
-  }, [amount, formData.exchangeRate, formData.action]);
+    const fetchMainExchangeRate = async () => {
+      if (formData.action === 'cross-border') return;
+  
+      let baseCurrency = formData.receiveCurrency === 'UZAR' ? 'ZAR' : 'USD';
+      const response = await fetch(
+        `https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/latest/${baseCurrency}`
+      );
+      const data = await response.json();
+      const rate = data.conversion_rates[formData.currency] || 0;
+  
+      setFormData(prev => ({
+        ...prev,
+        exchangeRate: rate,
+      }));
+    };
+  
+    fetchMainExchangeRate();
+  }, [formData.currency, formData.receiveCurrency, formData.action]);
 
   useEffect(() => {
     switch (formData.chain) {
@@ -115,6 +135,68 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       },
     }));
   }, [setFormData, crossBorderSender, accountName, address, bankCodes, formData.exchangeRate, fullname, network, phoneNumber, receiveAmount, amount, crossBorderSendAmount, accountNumber]);
+
+  const getCrossBorderExchangeRate = async (from: string, to: string): Promise<number> => {
+    if (!from || !to) return 0;
+    
+    try {
+      const response = await fetch(
+        `https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/pair/${from}/${to}`
+      );
+      const data = await response.json();
+      return data.conversion_rate || 0;
+    } catch (error) {
+      console.error("Error fetching exchange rate:", error);
+      return 0;
+    }
+  };
+
+  // Add these useEffects to handle cross-border calculations
+useEffect(() => {
+  // Fetch cross-border exchange rate when currencies change
+  const fetchCrossBorderRate = async () => {
+    const rate = await getCrossBorderExchangeRate(
+      formData.crossBorder.sendCurrency,
+      formData.crossBorder.receiveCurrency
+    );
+    
+    setFormData(prev => ({
+      ...prev,
+      crossBorder: {
+        ...prev.crossBorder,
+        exchangeRate: rate || 0,
+      },
+    }));
+  };
+
+  if (formData.crossBorder.sendCurrency && formData.crossBorder.receiveCurrency) {
+    fetchCrossBorderRate();
+  }
+}, [formData.crossBorder.sendCurrency, formData.crossBorder.receiveCurrency]);
+
+useEffect(() => {
+  // Calculate cross-border fee and receive amount when send amount changes
+  if (!formData.crossBorder.sendAmount) return;
+
+  const fee = (formData.crossBorder.sendAmount * 3) / 100;
+  const receiveAmount = formData.crossBorder.exchangeRate
+    ? (formData.crossBorder.sendAmount - fee) * formData.crossBorder.exchangeRate
+    : 0;
+
+  setFormData(prev => ({
+    ...prev,
+    crossBorder: {
+      ...prev.crossBorder,
+      totalFee: fee,
+      receiveAmount: receiveAmount,
+    },
+  }));
+}, [
+  formData.crossBorder.sendAmount,
+  formData.crossBorder.exchangeRate,
+  formData.crossBorder.sendCurrency,
+  formData.crossBorder.receiveCurrency,
+]);
 
 
 
