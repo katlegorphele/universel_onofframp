@@ -213,6 +213,32 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
     fetchExchangeRates();
   }, [formData.receiveCurrency, formData.currency, formData.crossBorder.sendCurrency]);
 
+  useEffect(() => {
+    const fetchCrossBorderExchangeRates = async () => {
+      let url = `https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/${formData.crossBorder.sendCurrency}`;
+      const response = await fetch(url);
+      console.log('Response:', response);
+      const data = await response.json();
+      const rate = data.conversion_rates[formData.crossBorder.receiveCurrency];
+      setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, exchangeRate: rate } }));
+    }
+
+    if (formData.crossBorder.receiveCurrency !== '' && formData.crossBorder.sendAmount > 0) {
+      fetchCrossBorderExchangeRates();
+    }
+
+    console.log('Cross Border Exchange Rate:', formData.crossBorder.exchangeRate);
+  }, [formData.crossBorder.sendCurrency, formData.crossBorder.exchangeRate, formData.crossBorder.receiveCurrency, formData.crossBorder.sendAmount]);
+
+
+  //useEffect to set receive amount which is amount * exchange rate
+  useEffect(() => {
+    const crossBorderReceiveAmount = formData.crossBorder.sendAmount * formData.crossBorder.exchangeRate;
+    console.log('Cross Border Receive Amount:', crossBorderReceiveAmount);
+    setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, receiveAmount: crossBorderReceiveAmount } }));
+  }
+  , [formData.crossBorder.receiveCurrency]);
+
   //useEffect to set total fee which is 3% of amount
   useEffect(() => {
     const fee = (formData.amount * 3) / 100;

@@ -19,7 +19,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [accountName, setAccountName] = useState(formData.mobileWallet.accountName);
   const [fullname, setFullname] = useState(formData.bankDetails.fullname);
   const [crossBorderSender, setCrossBorderSender] = useState('ZAR')
+  const [crossBorderReciever, setCrossBorderReciever] = useState('')
   const [crossBorderSendAmount, setCrossBorderSendAmount] = useState(0)
+  const [crossBorderReceiveAmount, setCrossBorderReceiveAmount] = useState(0)
   const [address, setAddress] = useState(formData.bankDetails.address);
   const [accountNumber, setAccountNumber] = useState(formData.bankDetails.accountNumber);
 
@@ -33,6 +35,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       setReceiveAmount(amount * formData.exchangeRate);
     }
   }, [amount, formData.exchangeRate, formData.action]);
+
 
   useEffect(() => {
     switch (formData.chain) {
@@ -61,7 +64,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCrossBorderSendAmount(Number(e.target.value));
     setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, sendAmount: Number(e.target.value) } }));
-    console.log('Cross Border Sender Amount', crossBorderSendAmount)
 
   };
 
@@ -85,39 +87,29 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
   }, [receiveAmount, amount])
 
+  // get and calculate recieve amount
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
+    if (formData.action == 'cross-border') {
+      if (crossBorderSender && crossBorderSendAmount > 0) {
+        const exchangeRate = formData.crossBorder.exchangeRate;
+        const receiveAmount = crossBorderSendAmount * exchangeRate;
+        console.log('Exchange Rate:', exchangeRate);
+        console.log('Cross Border Receive Amount:', receiveAmount);
+        setCrossBorderReceiveAmount(receiveAmount);
+        setFormData((prev) => ({
+          ...prev,
+          crossBorder: {
+            ...prev.crossBorder,
+            receiveAmount: receiveAmount,
+          },
+        }));
+      }
+    }
 
-      crossBorder: {
-        sendCurrency: crossBorderSender,
-        receiveCurrency: '',
-        sendAmount: crossBorderSendAmount,
-        receiveAmount: 0,
-        exchangeRate: formData.exchangeRate,
-        totalFee: 0,
-        senderDetails: {},
-        recieverDetails: {},
-      },
-      mobileWallet: {
-        phoneNumber,
-        network,
-        accountName
-      },
-      bankDetails: {
-        fullname,
-        phoneNumber,
-        paymentMethod: '',
-        bankCode: '',
-        address,
-        accountNumber,
-        country: ''
-      },
-    }));
-  }, [setFormData, crossBorderSender, accountName, address, bankCodes, formData.exchangeRate, fullname, network, phoneNumber, receiveAmount, amount, crossBorderSendAmount, accountNumber]);
+    console.log('Recieve Amount:', crossBorderReceiveAmount);
+  }, [crossBorderSender, crossBorderSendAmount, formData.crossBorder.exchangeRate, formData.action, setFormData]);
 
-
-
+  
   return (
     <>
       {formData.action === 'buy' && (
@@ -334,19 +326,21 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
             <div className='flex flex-col gap-2 md:gap-10 md:flex-row justify-items-between'>
               <div className='flex flex-col flex-nowrap md:w-1/3'>
-                <label htmlFor="crossBorderSendCurrency" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
                   You Send
                 </label>
-                <Select onValueChange={(value) => 
-                  setFormData((prev) => ({ 
-                    ...prev, 
+                <Select onValueChange={(value) => {
+                  setFormData((prev) => ({
+                    ...prev,
                     crossBorder: {
                       ...prev.crossBorder,
                       sendCurrency: value,
                     },
-                  }))}
-                    // defaultValue={formData.crossBorder.sendCurrency}
-                    >
+                  }))
+                  setCrossBorderSender(value)
+                }}
+                  defaultValue={formData.crossBorder.sendCurrency}
+                >
                   <SelectTrigger className='bg-white font-extrabold'>
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
@@ -360,31 +354,61 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 </Select>
               </div>
 
-              <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-              Enter Payment Amount (in {formData.crossBorder.sendCurrency})
-            </label>
-            <Input
-              type="number"
-              id="amount"
-              pattern="[0-9]*"
-              // value with currency symbols
+              <label htmlFor="crossBorderSendamount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+                {formData.crossBorder.sendCurrency !== '' ? `Amount (in ${formData.crossBorder.sendCurrency})` : 'They Recieve'}
+              </label>
+              <Input
+                type="number"
+                id="amount"
+                pattern="[0-9]*"
+                // value with currency symbols
 
-              onChange={handleCrossBorderInputChange}
-              className="md:mb-4 bg-white font-extrabold"
-            />  
-            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-              {formData.crossBorder.receiveCurrency !== '' ? `They Recieve (in ${formData.receiveCurrency})` : 'They Recieve'}
-            </label>
-            <Input
-              type="number"
-              id="receiveAmount"
-              value={amount > 0 ? Number((receiveAmount).toFixed(2)) : 0}
-              readOnly
-              className="mb-4 bg-white font-extrabold"
-              disabled={true}
-            />
-            <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
-            {/* disabled if the amount is 0 */}        
+                onChange={handleCrossBorderInputChange}
+                className="md:mb-4 bg-white font-extrabold"
+              />
+              <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+                {/* {formData.crossBorder.receiveCurrency !== '' ? `They Recieve (in ${formData.receiveCurrency})` : 'They Recieve'} */}
+                They Receive
+              </label>
+
+              <Select onValueChange={(value) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  crossBorder: {
+                    ...prev.crossBorder,
+                    receiveCurrency: value,
+                  },
+                }))
+                setCrossBorderReciever(value)
+              }}
+                defaultValue={formData.crossBorder.receiveCurrency}
+              >
+                <SelectTrigger className='bg-white font-extrabold'>
+                  <SelectValue placeholder="Select Currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencyOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+                {formData.crossBorder.receiveCurrency !== '' ? `Receive Amount (in ${formData.crossBorder.receiveCurrency})` : 'Recieve Amount'}
+              </label>
+
+
+              <Input
+                type="number"
+                id="receiveAmount"
+                value={formData.crossBorder.receiveAmount > 0 ? Number((crossBorderReceiveAmount).toFixed(2)) : 0}
+                readOnly
+                className="mb-4 bg-white font-extrabold"
+                disabled={true}
+              />
+              {/* <p className='font-semibold text-sm'>1 {formData.crossBorder.sendCurrency} = {Number((formData.crossBorder.exchangeRate).toFixed(2))} {formData.crossBorder.receiveCurrency}</p>        */}
             </div>
 
             <div className='mt-2'>
