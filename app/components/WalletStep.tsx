@@ -142,37 +142,6 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName, formData.currency, formData.action, address, bankCode, accountNumber, formData.crossBorder.receiveCurrency])
 
 
-
-
-  // useEffect(() => {
-  //   if (formData.currency == 'ZAR' && formData.action== 'buy') {
-  //     if (
-  //       phoneNumber == '' ||
-  //       paymentMethod == '' ||
-  //       fullname == '' ||
-  //       walletAddress == ''
-  //     ) {
-  //       setButtonActive(false)
-  //     } else {
-  //       setButtonActive(true)
-  //     }
-  //   } else {
-  //     if (
-  //       phoneNumber == '' ||
-  //       accountName == '' ||
-  //       phoneNumber == '' ||
-  //       walletAddress == '' ||
-  //       network == ''
-  //     ) {
-
-  //       setButtonActive(false)
-  //     } else {
-  //       setButtonActive(true)
-  //     }
-
-  //   }
-  // }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName, formData.currency])
-
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
@@ -199,6 +168,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
         totalFee: 0,
         senderDetails: formData.crossBorder.senderDetails,
         recieverDetails: formData.crossBorder.recieverDetails,
+        paymentMethod: formData.crossBorder.paymentMethod,
       },
       walletAddress
     }));
@@ -341,165 +311,8 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       {formData.action === 'cross-border' && (
         <>
           <div className="p-6 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Please provide Recepient Details</h2>
-            <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900">
-              Currency
-            </label>
-            <Select onValueChange={(value) => {
-              setCrossBorderReceiver(value)
-              setFormData((prev) => ({...prev, crossBorder: {...prev.crossBorder, receiveCurrency: value}}))
-              }}>
-              <SelectTrigger className='bg-white'>
-                <SelectValue placeholder="Select Currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencyOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
 
-            {crossBorderReceiver === 'ZAR' && (
-              <>
-
-                <label htmlFor="amount" className="block mb-2 mt-4 text-sm  text-gray-900">
-                  Recepient Amount (in {crossBorderReceiver})
-                </label>
-
-                <Input
-                  type="number"
-                  id="amount"
-                  // value with currency symbols
-                  value={crossBorderReceiveAmount}
-                  onChange={handleCrossBorderInputChange}
-                  className="mb-4 bg-white font-extrabold"
-                  disabled={true}
-                />
-
-
-                <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
-                  Full Name
-                </label>
-                <Input
-                  type="text"
-                  id="fullname"
-                  value={fullname}
-                  onChange={(e) => setFullname(e.target.value)}
-                  className="mb-4 bg-white font-extrabold"
-                />
-                <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
-                  Address
-                </label>
-                <Input
-                  type="text"
-                  id="address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="mb-4 bg-white font-extrabold"
-                />
-                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
-                  Phone Number
-                </label>
-                <Input
-                  type="text"
-                  id="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4 bg-white font-extrabold"
-                />
-
-                <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
-                  Bank
-                </label>
-                <Select onValueChange={(value) => {
-                  setFormData((prev) => ({...prev, bankDetails: {...prev.bankDetails, bankCode: value}}))
-                }
-                } defaultValue={formData.bankDetails.bankCode}>
-                  <SelectTrigger className='bg-white'>
-                    <SelectValue placeholder="Select Bank" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bankCodes.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <label htmlFor="accountNumber" className="block mb-2 text-sm font-medium text-gray-900 mt-4">
-                  Account Number
-                </label>
-                <Input
-                  type="text"
-                  id="accountNumber"
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                  className="mb-4 bg-white font-extrabold"
-                  placeholder={`Enter your account number`}
-                />
-
-              </>
-            )}
-
-            {crossBorderReceiver != 'ZAR' && (
-              <>
-
-                <label htmlFor="amount" className="block mb-2 mt-4 text-sm  text-gray-900">
-                  Recepient Amount (in {crossBorderReceiver})
-                </label>
-
-                <Input
-                  type="number"
-                  id="amount"
-                  // value with currency symbols
-                  value={crossBorderReceiveAmount}
-                  onChange={handleCrossBorderInputChange}
-                  className="mb-4 bg-white font-extrabold"
-                  disabled={true}
-                />
-                <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
-                  Account Name
-                </label>
-                <Input
-                  type="text"
-                  id="accountName"
-                  value={accountName}
-                  onChange={(e) => setAccountName(e.target.value)}
-                  className="mb-4 bg-white font-extrabold"
-                />
-                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
-                  Phone Number
-                </label>
-                <Input
-                  type="text"
-                  id="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mb-4 bg-white font-extrabold"
-                />
-                <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
-                  Network
-                </label>
-                <Select onValueChange={setNetwork} defaultValue={network}>
-                  <SelectTrigger className='bg-white'>
-                    <SelectValue placeholder="Select Network" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {currencyProviders[crossBorderReceiver].map((provider) => (
-                      <SelectItem key={provider} value={provider}>
-                        {provider}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-              </>
-            )}
-
-            <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-4">
               <Button onClick={onBack} variant="outline">
                 Back
               </Button>
@@ -507,7 +320,9 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 Next
               </Button>
             </div>
+
           </div>
+          
         </>
       )}
 

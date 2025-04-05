@@ -31,6 +31,7 @@ const currencyProviders: { [key: string]: string[] } = {
   MWK: ['AIRTEL', 'TNM'],
   UGX: ['MTN'],
   RWF: ['MTN', 'AIRTEL'],
+  ZAR: ['BANK'],
 };
 
 const bankCodes = [
@@ -117,6 +118,7 @@ interface FormData {
     totalFee: number;
     senderDetails: {};
     recieverDetails: {};
+    paymentMethod: string;
   }
   otpCode: string;
   email: string;
@@ -188,6 +190,9 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       receiveAmount: 0,
       exchangeRate: 0,
       totalFee: 0,
+      senderDetails: {},
+      recieverDetails: {},
+      paymentMethod: ''
     },
     otpCode: '',
     email: '',

@@ -14,10 +14,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const [amount, setAmount] = useState(formData.amount);
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
   const [buttonActive, setButtonActive] = useState(false)
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [network, setNetwork] = useState(formData.mobileWallet.network);
-  const [accountName, setAccountName] = useState(formData.mobileWallet.accountName);
-  const [fullname, setFullname] = useState(formData.bankDetails.fullname);
   const [crossBorderSender, setCrossBorderSender] = useState('ZAR')
   const [crossBorderReciever, setCrossBorderReciever] = useState('')
   const [crossBorderSendAmount, setCrossBorderSendAmount] = useState(0)
@@ -68,24 +64,52 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   };
 
   const handleSubmit = () => {
-    if (receiveAmount >= 25) {
-      setFormData((prev) => ({
-        ...prev,
-        receiveAmount,
-      }));
-      onNext();
-    } else {
-      alert('Minimum Value of 25 UZAR')
+    if (formData.action == 'sell') {
+      if (receiveAmount >= 25) {
+        setFormData((prev) => ({
+          ...prev,
+          receiveAmount,
+        }));
+        onNext();
+      } else {
+        alert('Minimum Value of 25 UZAR')
+      }
+    }
+
+    if (formData.action == 'cross-border') {
+      if (crossBorderSendAmount > 0) {
+        onNext();
+      } else {
+        alert('Please enter all details')
+      }
+    }
+
+    if (formData.action == 'buy') {
+      if (amount > 0 && receiveAmount > 0) {
+        onNext();
+      } else {
+        alert('Please enter all details')
+      }
     }
   };
 
   useEffect(() => {
-    if (receiveAmount > 0 && amount > 0) {
-      setButtonActive(true)
-    } else {
-      setButtonActive(false)
+    if (formData.action == 'buy') {
+      if (receiveAmount > 0 && amount > 0) {
+        setButtonActive(true)
+      } else {
+        setButtonActive(false)
+      }
     }
-  }, [receiveAmount, amount])
+
+    if (formData.action == 'cross-border') {
+      if (crossBorderReceiveAmount > 0 && crossBorderSendAmount > 0 && formData.crossBorder.paymentMethod !== '') {
+        setButtonActive(true)
+      } else {
+        setButtonActive(false)
+      }
+    }
+  }, [crossBorderReceiveAmount, crossBorderSendAmount, formData.crossBorder.paymentMethod])
 
   // get and calculate recieve amount
   useEffect(() => {
@@ -109,7 +133,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     console.log('Recieve Amount:', crossBorderReceiveAmount);
   }, [crossBorderSender, crossBorderSendAmount, formData.crossBorder.exchangeRate, formData.action, setFormData]);
 
-  
+
   return (
     <>
       {formData.action === 'buy' && (
@@ -410,6 +434,36 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               />
               {/* <p className='font-semibold text-sm'>1 {formData.crossBorder.sendCurrency} = {Number((formData.crossBorder.exchangeRate).toFixed(2))} {formData.crossBorder.receiveCurrency}</p>        */}
             </div>
+
+            {formData.crossBorder.sendCurrency !== '' && (
+              <>
+              <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
+              Payment Method
+            </label>
+            <Select onValueChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                crossBorder: {
+                  ...prev.crossBorder,
+                  paymentMethod: value,
+                },
+              }))
+          
+            }}>
+              <SelectTrigger className='bg-white font-extrabold'>
+                <SelectValue placeholder="Select Method" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencyProviders[formData.crossBorder.sendCurrency].map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+              </>
+            )}
+            
 
             <div className='mt-2'>
               <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4 m-auto">
