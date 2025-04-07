@@ -317,6 +317,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
               <div className='p-6 flex flex-col sm:m-5'>
                 <div className='border p-4 rounded-lg'>
+                  <p>Your Details</p>
                 <label htmlFor="bankCode" className="block mb-2 mt-2 text-sm font-medium text-gray-900">
                     Bank
                   </label>
@@ -387,7 +388,9 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               <>
                 {/* Get the sender mobile wallet details */}
                 <div className='p-6 flex flex-col sm:m-5'>
+                <p>Your Details</p>
                   <div className='border p-4 rounded-lg'>
+                  
                     <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
                       Account Name
                     </label>
@@ -427,10 +430,12 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 </div>
               </>)}
 
-          {formData.receiveCurrency == 'ZAR' ? (<>
+          {formData.crossBorder.receiveCurrency == 'ZAR' ? (<>
+          <p>HERE BANK DETAILS</p>
             {/* get Bank details for reciepient */}
           </>) : (
             <>
+            <p>HERE MOBILE WALLET</p>
               {/* get mobile wallet details for reciepient */}
             </>)}
 

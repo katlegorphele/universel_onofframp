@@ -344,8 +344,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         <>
           {/* Fields for Cross Border */}
           <div className="p-6 flex flex-col sm:w-full">
-
-            {/* <h2 className="text-xl font-bold mb-4">Step 1: Enter Amount</h2> */}
             <div className='flex flex-col gap-2 justify-items-between'>
               <div>
                 <div className='flex flex-col flex-nowrap md:w-1/3'>
@@ -471,17 +469,17 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               {/* <p className='font-semibold text-sm'>1 {formData.crossBorder.sendCurrency} = {Number((formData.crossBorder.exchangeRate).toFixed(2))} {formData.crossBorder.receiveCurrency}</p>        */}
             </div>
 
-            {formData.crossBorder.sendCurrency !== '' && (
+            {formData.crossBorder.receiveCurrency !== '' && (
               <>
-                <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
-                  Payment Method
+                <label htmlFor="recieveMethod" className="block mb-2 text-sm font-medium text-gray-900">
+                  Using
                 </label>
                 <Select onValueChange={(value) => {
                   setFormData((prev) => ({
                     ...prev,
                     crossBorder: {
                       ...prev.crossBorder,
-                      paymentMethod: value,
+                      recieverDetails: {'recieveCurrency':value},
                     },
                   }))
 

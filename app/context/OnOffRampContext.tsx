@@ -232,7 +232,6 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       fetchCrossBorderExchangeRates();
     }
 
-    console.log('Cross Border Exchange Rate:', formData.crossBorder.exchangeRate);
   }, [formData.crossBorder.sendCurrency, formData.crossBorder.exchangeRate, formData.crossBorder.receiveCurrency, formData.crossBorder.sendAmount]);
 
 
