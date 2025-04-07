@@ -207,9 +207,9 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
     const fetchExchangeRates = async () => {
       let url = '';
       if (formData.receiveCurrency === 'UZAR') {
-        url = 'https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR';
+        url = 'https://v6.exchangerate-api.com/v6/d25d28a877b7ab63c582f16d/latest/ZAR';
       } else {
-        url = 'https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/USD';
+        url = 'https://v6.exchangerate-api.com/v6/d25d28a877b7ab63c582f16d/latest/USD';
       }
       const response = await fetch(url);
       const data = await response.json();
@@ -222,7 +222,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
 
   useEffect(() => {
     const fetchCrossBorderExchangeRates = async () => {
-      let url = `https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/${formData.crossBorder.sendCurrency}`;
+      let url = `https://v6.exchangerate-api.com/v6/d25d28a877b7ab63c582f16d/latest/${formData.crossBorder.sendCurrency}`;
       const response = await fetch(url);
       console.log('Response:', response);
       const data = await response.json();
@@ -234,7 +234,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       fetchCrossBorderExchangeRates();
     }
 
-  }, [formData.crossBorder.sendCurrency, formData.crossBorder.exchangeRate, formData.crossBorder.receiveCurrency, formData.crossBorder.sendAmount]);
+  }, [formData.crossBorder.sendCurrency, formData.crossBorder.receiveCurrency, formData.crossBorder.sendAmount]);
 
 
   //useEffect to set receive amount which is amount * exchange rate

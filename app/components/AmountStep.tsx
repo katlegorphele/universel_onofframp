@@ -21,6 +21,10 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
 
   const wallet = useSwitchActiveWalletChain();
+
+  useEffect(() => {
+    console.log('Form Data:', formData.crossBorder);
+  }, [formData])
   
 
 

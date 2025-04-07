@@ -27,6 +27,40 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const [crossBorderReceiveAmount, setcrossBorderReceiveAmount] = useState(formData.crossBorder.receiveAmount)
   const account = useActiveAccount()
 
+  // state variables needed
+  // sender: if zar: bank, account, fullname
+  // if not: wallet address, account name, network
+  const [senderBankDetails, setSenderBankDetails] = useState({
+    fullname: '',
+    phoneNumber: '',
+    paymentMethod: '',
+    bankCode: '',
+    address: '',
+    accountNumber: '',
+  });
+
+  const [senderMobileDetails, setsenderMobileDetails] = useState({
+    phoneNumber: '',
+    network: '',
+    accountName: ''
+  });
+
+  const [receiverBankDetails, setreceiverBankDetails] = useState({
+    fullname: '',
+    phoneNumber: '',
+    paymentMethod: '',
+    bankCode: '',
+    address: '',
+    accountNumber: '',
+  });
+
+  const [receiverMobileDetails, setreceiverMobileDetails] = useState({
+    phoneNumber: '',
+    network: '',
+    accountName: ''
+  });
+
+
   useEffect(() => {
     if (account) {
       setWalletAddress(account.address)
@@ -38,7 +72,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     if (formData.crossBorder.sendAmount > 0 && formData.action == 'cross-border') {
       const zarAmount = formData.crossBorder.sendAmount / formData.exchangeRate;
       const fetchTargetExchangeRate = async () => {
-        const url = `https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR`;
+        const url = `https://v6.exchangerate-api.com/v6/d25d28a877b7ab63c582f16d/latest/ZAR`;
         const response = await fetch(url);
         const data = await response.json();
         const targetRate = data.conversion_rates[formData.crossBorder.sendCurrency];
@@ -48,99 +82,99 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
       fetchTargetExchangeRate()
     }
-  }, [formData.crossBorder.sendAmount, formData.exchangeRate, formData.crossBorder.sendCurrency, formData.action, formData.crossBorder.receiveCurrency]);
+  }, [formData.crossBorder.sendAmount, formData.exchangeRate, formData.crossBorder.sendCurrency, formData.crossBorder.receiveCurrency]);
 
 
 
-  useEffect(() => {
-    if (formData.action === 'buy') {
-      if (formData.currency === 'ZAR') {
-        if (
-          phoneNumber == '' ||
-          paymentMethod == '' ||
-          fullname == '' ||
-          walletAddress == ''
-        ) {
-          setButtonActive(false)
-        } else {
-          setButtonActive(true)
-        }
-      } else {
-        if (
-          phoneNumber == '' ||
-          accountName == '' ||
-          phoneNumber == '' ||
-          walletAddress == '' ||
-          network == ''
-        ) {
+  // useEffect(() => {
+  //   if (formData.action === 'buy') {
+  //     if (formData.currency === 'ZAR') {
+  //       if (
+  //         phoneNumber == '' ||
+  //         paymentMethod == '' ||
+  //         fullname == '' ||
+  //         walletAddress == ''
+  //       ) {
+  //         setButtonActive(false)
+  //       } else {
+  //         setButtonActive(true)
+  //       }
+  //     } else {
+  //       if (
+  //         phoneNumber == '' ||
+  //         accountName == '' ||
+  //         phoneNumber == '' ||
+  //         walletAddress == '' ||
+  //         network == ''
+  //       ) {
 
-          setButtonActive(false)
-        } else {
-          setButtonActive(true)
-        }
-      }
-    }
+  //         setButtonActive(false)
+  //       } else {
+  //         setButtonActive(true)
+  //       }
+  //     }
+  //   }
 
-    if (formData.action === 'sell') {
-      if (formData.currency === 'ZAR') {
-        if (
-          walletAddress == '' ||
-          fullname == '' ||
-          address == '' ||
-          phoneNumber == '' ||
-          bankCode == '' ||
-          accountNumber == '' ||
-          paymentMethod == ''
+  //   if (formData.action === 'sell') {
+  //     if (formData.currency === 'ZAR') {
+  //       if (
+  //         walletAddress == '' ||
+  //         fullname == '' ||
+  //         address == '' ||
+  //         phoneNumber == '' ||
+  //         bankCode == '' ||
+  //         accountNumber == '' ||
+  //         paymentMethod == ''
 
-        ) {
-          setButtonActive(false)
-        } else {
-          setButtonActive(true)
-        }
-      } else {
-        if (
-          phoneNumber == '' ||
-          accountName == '' ||
-          walletAddress == '' ||
-          network == ''
-        ) {
+  //       ) {
+  //         setButtonActive(false)
+  //       } else {
+  //         setButtonActive(true)
+  //       }
+  //     } else {
+  //       if (
+  //         phoneNumber == '' ||
+  //         accountName == '' ||
+  //         walletAddress == '' ||
+  //         network == ''
+  //       ) {
 
-          setButtonActive(false)
-        } else {
-          setButtonActive(true)
-        }
-      }
+  //         setButtonActive(false)
+  //       } else {
+  //         setButtonActive(true)
+  //       }
+  //     }
 
-    }
+  //   }
 
-    if (formData.action === 'cross-border') {
-      if (formData.crossBorder.receiveCurrency === 'ZAR') {
-        if (
-          fullname == '' ||
-          address == '' ||
-          phoneNumber == '' ||
-          // bankCode == '' ||
-          accountNumber == ''
-        ) {
-          setButtonActive(false)
-        } else {
-          setButtonActive(true)
-        }
-      }
+  //   if (formData.action === 'cross-border') {
+  //     if (formData.crossBorder.receiveCurrency === 'ZAR') {
+  //       if (
+  //         fullname == '' ||
+  //         address == '' ||
+  //         phoneNumber == '' ||
+  //         // bankCode == '' ||
+  //         accountNumber == ''
+  //       ) {
+  //         setButtonActive(false)
+  //       } else {
+  //         setButtonActive(true)
+  //       }
+  //     }
 
-      if (formData.crossBorder.receiveCurrency !== 'ZAR') {
-        if (
-          accountName == '' ||
-          phoneNumber == '' ||
-          network == ''
-        ) {
-          setButtonActive(false)
-        } else {
-          setButtonActive(true)
-        }
-      }
-    }
-  }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName, formData.currency, formData.action, address, bankCode, accountNumber, formData.crossBorder.receiveCurrency])
+  //     if (formData.crossBorder.receiveCurrency !== 'ZAR') {
+  //       if (
+  //         accountName == '' ||
+  //         phoneNumber == '' ||
+  //         network == ''
+  //       ) {
+  //         setButtonActive(false)
+  //       } else {
+  //         setButtonActive(true)
+  //       }
+  //     }
+  //   }
+  // }, [phoneNumber, paymentMethod, fullname, walletAddress, network, accountName, formData.currency, formData.action, address, bankCode, accountNumber, formData.crossBorder.receiveCurrency])
 
 
   useEffect(() => {
@@ -162,24 +196,42 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       },
       crossBorder: {
         sendCurrency: formData.crossBorder.sendCurrency,
-        receiveCurrency: crossBorderReceiver,
+        receiveCurrency: formData.crossBorder.receiveCurrency,
         sendAmount: formData.crossBorder.sendAmount,
-        receiveAmount: crossBorderReceiveAmount,
+        receiveAmount: formData.crossBorder.receiveAmount,
         exchangeRate: formData.exchangeRate,
         totalFee: 0,
-        senderDetails: formData.crossBorder.senderDetails,
-        recieverDetails: formData.crossBorder.recieverDetails,
-        paymentMethod: formData.crossBorder.paymentMethod,
+        // sender details which can be mobile or wallet ,
+        senderDetails: formData.crossBorder.sendCurrency == 'ZAR' ? {
+          senderBankDetails
+        } : {
+          senderMobileDetails
+        },
+        recieverDetails: formData.crossBorder.receiveCurrency == 'ZAR' ? {
+          receiverBankDetails
+        } : {
+          receiverMobileDetails
+        },
+        senderPaymentMethod: formData.crossBorder.senderPaymentMethod,
+        recieverPaymentMethod: formData.crossBorder.recieverPaymentMethod
       },
       walletAddress
     }));
-  }, [phoneNumber, setFormData, network, accountName, fullname, paymentMethod, walletAddress, accountNumber, address, bankCode, crossBorderReceiveAmount, crossBorderReceiver, formData.crossBorder.sendAmount, formData.crossBorder.sendCurrency, formData.exchangeRate]);
+  }, [phoneNumber, setFormData,senderBankDetails,senderMobileDetails, receiverBankDetails, receiverMobileDetails, network, accountName, fullname, paymentMethod, walletAddress, accountNumber, address, bankCode, crossBorderReceiveAmount, crossBorderReceiver, formData.crossBorder.sendAmount, formData.crossBorder.sendCurrency, formData.exchangeRate]);
 
 
   const handleSubmit = () => {
     onNext()
   };
 
+  useEffect(() => {
+    const logFormData = () => {
+      console.log('Reciever Data:', formData.crossBorder.recieverDetails);
+      console.log('Sender Bank Details:', formData.crossBorder.senderDetails);
+    }
+
+    logFormData()
+  }, [formData])
 
 
 
@@ -194,6 +246,25 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     }))
 
   };
+
+  const updateForm = () => {
+    setFormData((prev) => ({
+      ...prev,
+      crossBorder: {
+        ...prev.crossBorder,
+        sendCurrency: formData.crossBorder.sendCurrency,
+        receiveCurrency: formData.crossBorder.receiveCurrency,
+        sendAmount: formData.crossBorder.sendAmount,
+        receiveAmount: crossBorderReceiveAmount,
+        exchangeRate: formData.exchangeRate,
+        totalFee: 0,
+        senderDetails: {},
+        recieverDetails: {},
+        senderPaymentMethod: formData.crossBorder.senderPaymentMethod,
+        recieverPaymentMethod: formData.crossBorder.recieverPaymentMethod
+      }
+    }))
+  }
 
   return (
     <>
@@ -314,128 +385,271 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
           {formData.crossBorder.sendCurrency == 'ZAR' ?
             (<>
               {/* Get the sender bank details */}
-
               <div className='p-6 flex flex-col sm:m-5'>
-                <div className='border p-4 rounded-lg'>
-                  <p>Your Details</p>
-                <label htmlFor="bankCode" className="block mb-2 mt-2 text-sm font-medium text-gray-900">
-                    Bank
-                  </label>
-                  <Select onValueChange={(value) => {
-                    setBankCode(value)
-                  }
-                  } defaultValue={formData.bankDetails.bankCode}>
-                    <SelectTrigger className='bg-white'>
-                      <SelectValue placeholder="Select Bank" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {bankCodes.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <label>Bank</label>
+                <Select onValueChange={(value) => {
+                  setSenderBankDetails((prev) => ({
+                    ...prev,
+                    bankCode: value
+                  }))
+                }
+                } defaultValue={formData.bankDetails.bankCode}>
+                  <SelectTrigger className='bg-white'>
+                    <SelectValue placeholder="Select Bank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bankCodes.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-                  <label htmlFor="accountNumber" className="block mb-2 text-sm font-medium text-gray-900 mt-4">
-                    Account Number
-                  </label>
-                  <Input
-                    type="text"
-                    id="accountNumber"
-                    value={accountNumber}
-                    onChange={(e) => setAccountNumber(e.target.value)}
-                    className="mb-4 bg-white font-extrabold"
-                    placeholder={`Enter your account number`}
-                  />
-                  <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
-                    Full Names
-                  </label>
-                  <Input
-                    type="text"
-                    id="fullname"
-                    value={fullname}
-                    onChange={(e) => setFullname(e.target.value)}
-                    className="mb-4 bg-white font-extrabold"
-                  />
-                  <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
-                    Physical Address
-                  </label>
-                  <Input
-                    type="text"
-                    id="address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="mb-4 bg-white font-extrabold"
-                  />
-                  <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
-                    Phone Number
-                  </label>
-                  <Input
-                    type="text"
-                    id="phoneNumber"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="mb-4 bg-white font-extrabold"
-                  />
+                <label htmlFor="accountNumber" className="block mb-2 text-sm font-medium text-gray-900 mt-4">
+                  Account Number
+                </label>
+                <Input
+                  type="text"
+                  id="accountNumber"
+                  value={accountNumber}
+                  onChange={(e) => setSenderBankDetails((prev) => ({
+                    ...prev,
+                    accountNumber: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                  placeholder={`Enter your account number`}
+                />
 
-                  
-                </div>
+                <label htmlFor='crossName' className='block mb-2 text-sm font-medium text-gray-900'>
+                  Full Name
+                </label>
+                <Input
+                  type="text"
+                  id="crossName"
+                  // value={fullname}
+                  onChange={(e) => setSenderBankDetails((prev) => ({
+                    ...prev,
+                    fullname: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                  placeholder={`Enter your full name`}
+                />
+
+                <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
+                  Physical Address
+                </label>
+                <Input
+                  type="text"
+                  id="address"
+                  // value={address}
+                  onChange={(e) => setSenderBankDetails((prev) => ({
+                    ...prev,
+                    address: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
+
+                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  // value={phoneNumber}
+                  onChange={(e) => setSenderBankDetails((prev) => ({
+                    ...prev,
+                    phoneNumber: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
               </div>
 
 
             </>) : (
               <>
-                {/* Get the sender mobile wallet details */}
-                <div className='p-6 flex flex-col sm:m-5'>
-                <p>Your Details</p>
-                  <div className='border p-4 rounded-lg'>
-                  
-                    <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
-                      Account Name
-                    </label>
-                    <Input
-                      type="text"
-                      id="accountName"
-                      value={accountName}
-                      onChange={(e) => setAccountName(e.target.value)}
-                      className="mb-4 bg-white font-extrabold"
-                    />
-                    <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
-                      Phone Number
-                    </label>
-                    <Input
-                      type="text"
-                      id="phoneNumber"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="mb-4 bg-white font-extrabold"
-                    />
-                    <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
-                      Network
-                    </label>
-                    <Select onValueChange={setNetwork} defaultValue={network}>
-                      <SelectTrigger className='bg-white'>
-                        <SelectValue placeholder="Select Network" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {currencyProviders[formData.currency].map((provider) => (
-                          <SelectItem key={provider} value={provider}>
-                            {provider}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+              <div className='p-6 flex flex-col sm:m-5'>
+                <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
+                  Account Name
+                </label>
+                <Input
+                  type="text"
+                  id="accountName"
+                  onChange={(e) => setsenderMobileDetails((prev) => ({
+                    ...prev,
+                    accountName: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
+
+                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  onChange={(e) => setsenderMobileDetails((prev) => ({
+                    ...prev,
+                    phoneNumber: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
+
+                <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
+                  Network
+                </label>
+                <Select onValueChange={(value) => setsenderMobileDetails((prev) => ({
+                  ...prev,
+                  network: value
+                }))} defaultValue={network}>
+                  <SelectTrigger className='bg-white'>
+                    <SelectValue placeholder="Select Network" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyProviders[formData.crossBorder.receiveCurrency].map((provider) => (
+                      <SelectItem key={provider} value={provider}>
+                        {provider}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
                 </div>
+
               </>)}
 
           {formData.crossBorder.receiveCurrency == 'ZAR' ? (<>
-          <p>HERE BANK DETAILS</p>
+            <p>HERE BANK DETAILS</p>
+            <div className='p-6 flex flex-col sm:m-5'>
+                <label>Bank</label>
+                <Select onValueChange={(value) => {
+                  setreceiverBankDetails((prev) => ({
+                    ...prev,
+                    bankCode: value
+                  }))
+                }
+                } defaultValue={formData.bankDetails.bankCode}>
+                  <SelectTrigger className='bg-white'>
+                    <SelectValue placeholder="Select Bank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bankCodes.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <label htmlFor="accountNumber" className="block mb-2 text-sm font-medium text-gray-900 mt-4">
+                  Account Number
+                </label>
+                <Input
+                  type="text"
+                  id="accountNumber"
+                  value={accountNumber}
+                  onChange={(e) => setreceiverBankDetails((prev) => ({
+                    ...prev,
+                    accountNumber: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                  placeholder={`Enter your account number`}
+                />
+
+                <label htmlFor='crossName' className='block mb-2 text-sm font-medium text-gray-900'>
+                  Full Name
+                </label>
+                <Input
+                  type="text"
+                  id="crossName"
+                  // value={fullname}
+                  onChange={(e) => setreceiverBankDetails((prev) => ({
+                    ...prev,
+                    fullname: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                  placeholder={`Enter your full name`}
+                />
+
+                <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
+                  Physical Address
+                </label>
+                <Input
+                  type="text"
+                  id="address"
+                  // value={address}
+                  onChange={(e) => setreceiverBankDetails((prev) => ({
+                    ...prev,
+                    address: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
+
+                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  // value={phoneNumber}
+                  onChange={(e) => setreceiverBankDetails((prev) => ({
+                    ...prev,
+                    phoneNumber: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
+              </div>
             {/* get Bank details for reciepient */}
           </>) : (
             <>
-            <p>HERE MOBILE WALLET</p>
+              <p> RECEIPIENT MOBILE WALLET DETAILS</p>
+              <div className='p-6 flex flex-col sm:m-5'>
+                <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
+                  Account Name
+                </label>
+                <Input
+                  type="text"
+                  id="accountName"
+                  onChange={(e) => setreceiverMobileDetails((prev) => ({
+                    ...prev,
+                    accountName: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
+
+                <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  onChange={(e) => setreceiverMobileDetails((prev) => ({
+                    ...prev,
+                    phoneNumber: e.target.value
+                  }))}
+                  className="mb-4 bg-white font-extrabold"
+                />
+
+                <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
+                  Network
+                </label>
+                <Select onValueChange={(value) => setreceiverMobileDetails((prev) => ({
+                  ...prev,
+                  network: value
+                }))} defaultValue={network}>
+                  <SelectTrigger className='bg-white'>
+                    <SelectValue placeholder="Select Network" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyProviders[formData.crossBorder.receiveCurrency].map((provider) => (
+                      <SelectItem key={provider} value={provider}>
+                        {provider}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                </div>
               {/* get mobile wallet details for reciepient */}
             </>)}
 
@@ -443,7 +657,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             <Button onClick={onBack} variant="outline">
               Back
             </Button>
-            <Button disabled={!buttonActive} onClick={handleSubmit}>
+            <Button  onClick={handleSubmit}>
               Next
             </Button>
           </div>
