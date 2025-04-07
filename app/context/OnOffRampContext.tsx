@@ -118,7 +118,8 @@ interface FormData {
     totalFee: number;
     senderDetails: {};
     recieverDetails: {};
-    paymentMethod: string;
+    senderPaymentMethod: string;
+    recieverPaymentMethod: string;
   }
   otpCode: string;
   email: string;
@@ -192,7 +193,8 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
       totalFee: 0,
       senderDetails: {},
       recieverDetails: {},
-      paymentMethod: ''
+      senderPaymentMethod: '',
+      recieverPaymentMethod: '',
     },
     otpCode: '',
     email: '',

@@ -13,7 +13,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   const { formData, setFormData, currencyProviders, currencyOptions, chainOptions, receiveCurrencyOptions, bankCodes } = useOnOffRampContext();
   const [amount, setAmount] = useState(formData.amount);
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
-  const [buttonActive, setButtonActive] = useState(true)
+  const [buttonActive, setButtonActive] = useState(false)
   const [crossBorderSender, setCrossBorderSender] = useState('ZAR')
   const [crossBorderReciever, setCrossBorderReciever] = useState('')
   const [crossBorderSendAmount, setCrossBorderSendAmount] = useState(0)
@@ -21,7 +21,25 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
 
   const wallet = useSwitchActiveWalletChain();
+  
 
+
+  useEffect(() => {
+    if (formData.action == 'cross-border') {
+      if (
+        formData.crossBorder.sendCurrency == '' ||
+        formData.crossBorder.senderPaymentMethod == '' ||
+        formData.crossBorder.recieverPaymentMethod == '' ||
+        formData.crossBorder.receiveCurrency == '' ||
+        formData.crossBorder.sendAmount <= 0 ||
+        formData.crossBorder.receiveAmount <= 0 
+      ) {
+        setButtonActive(false)
+      } else {
+        setButtonActive(true)
+      }
+    }
+  })
 
   useEffect(() => {
     if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
@@ -93,25 +111,29 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
   };
 
-  useEffect(() => {
-    if (formData.action == 'buy') {
-      if (amount > 0) {
-        setButtonActive(true)
-      } else {
-        setButtonActive(false)
-      }
-    }
+  // useEffect(() => {
+  //   if (formData.action == 'buy') {
+  //     if (amount > 0) {
+  //       setButtonActive(true)
+  //     } else {
+  //       setButtonActive(false)
+  //     }
+  //   }
 
-    if (formData.action == 'cross-border') {
-      if (crossBorderReceiveAmount > 0 && crossBorderSendAmount > 0 && formData.crossBorder.paymentMethod !== '') {
-        setButtonActive(true)
-      } else {
-        setButtonActive(false)
-      }
-    }
-  }, [crossBorderReceiveAmount, crossBorderSendAmount, formData.crossBorder.paymentMethod, amount, receiveAmount])
+  //   if (formData.action == 'cross-border') {
+  //     if (crossBorderReceiveAmount > 0 && crossBorderSendAmount > 0 && formData.crossBorder.senderPaymentMethod !== '') {
+  //       setButtonActive(false)
+  //     } else {
+  //       setButtonActive(true)
+  //     }
+  //   }
+  // }, [crossBorderReceiveAmount, crossBorderSendAmount, formData.crossBorder.senderPaymentMethod, amount, receiveAmount])
 
   // get and calculate recieve amount
+
+  // use effect for the next button
+
+
   useEffect(() => {
     if (formData.action == 'cross-border') {
       if (crossBorderSender && crossBorderSendAmount > 0) {
@@ -131,7 +153,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
   }, [crossBorderSender, crossBorderSendAmount, formData.crossBorder.exchangeRate, formData.action, setFormData]);
 
-
+  console.log('Current State',buttonActive)
   return (
     <>
       {formData.action === 'buy' && (
@@ -227,6 +249,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 Next
               </Button>
             </div>
+
+            
             <div className='flex justify-center mt-2'>
               _______________________________
             </div>
@@ -384,7 +408,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                       ...prev,
                       crossBorder: {
                         ...prev.crossBorder,
-                        senderDetails: {'name': value},
+                        senderPaymentMethod: value,
                       },
                     }))
                     // setCrossBorderSender(value)
@@ -479,7 +503,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     ...prev,
                     crossBorder: {
                       ...prev.crossBorder,
-                      recieverDetails: {'recieveCurrency':value},
+                      recieverPaymentMethod: value,
                     },
                   }))
 
@@ -487,10 +511,10 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   <SelectTrigger className='bg-white font-extrabold'>
                     <SelectValue placeholder="Select Method" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent defaultValue={formData.crossBorder.recieverPaymentMethod}>
                       {formData.crossBorder.receiveCurrency !== '' ? (
                         currencyProviders[formData.crossBorder.receiveCurrency].map((option) => (
-                          <SelectItem key={option} value={option}>
+                          <SelectItem key={option} value={option} defaultValue={formData.crossBorder.recieverPaymentMethod}>
                             {option}
                           </SelectItem>
                         ))
@@ -523,6 +547,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
         </>
       )}
+
+      
     </>
   );
 }
