@@ -10,8 +10,9 @@ import { useActiveAccount } from 'thirdweb/react';
 
 
 
+
 const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const { formData, setFormData, currencyProviders, bankCodes, currencyOptions, paymentMethodsZAR,paymentMethodsZARforSelling } = useOnOffRampContext();
+  const { formData, setFormData, currencyProviders, bankCodes, currencyOptions, paymentMethodsZAR, paymentMethodsZARforSelling } = useOnOffRampContext();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [network, setNetwork] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -27,7 +28,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   const account = useActiveAccount()
 
   useEffect(() => {
-    if(account) {
+    if (account) {
       setWalletAddress(account.address)
     }
   }, [account])
@@ -90,7 +91,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
           bankCode == '' ||
           accountNumber == '' ||
           paymentMethod == ''
-          
+
         ) {
           setButtonActive(false)
         } else {
@@ -217,7 +218,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
               onChange={(e) => setWalletAddress(e.target.value)}
               className="mb-4 bg-white font-extrabold"
               disabled={true}
-              
+
             />
             {currencyProviders[formData.currency] ? (
               <>
@@ -310,19 +311,140 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
       {formData.action === 'cross-border' && (
         <>
-          <div className="p-6 rounded-lg">
+          {formData.crossBorder.sendCurrency == 'ZAR' ?
+            (<>
+              {/* Get the sender bank details */}
+
+              <div className='p-6 flex flex-col sm:m-5'>
+                <div className='border p-4 rounded-lg'>
+                <label htmlFor="bankCode" className="block mb-2 mt-2 text-sm font-medium text-gray-900">
+                    Bank
+                  </label>
+                  <Select onValueChange={(value) => {
+                    setBankCode(value)
+                  }
+                  } defaultValue={formData.bankDetails.bankCode}>
+                    <SelectTrigger className='bg-white'>
+                      <SelectValue placeholder="Select Bank" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bankCodes.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <label htmlFor="accountNumber" className="block mb-2 text-sm font-medium text-gray-900 mt-4">
+                    Account Number
+                  </label>
+                  <Input
+                    type="text"
+                    id="accountNumber"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                    className="mb-4 bg-white font-extrabold"
+                    placeholder={`Enter your account number`}
+                  />
+                  <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">
+                    Full Names
+                  </label>
+                  <Input
+                    type="text"
+                    id="fullname"
+                    value={fullname}
+                    onChange={(e) => setFullname(e.target.value)}
+                    className="mb-4 bg-white font-extrabold"
+                  />
+                  <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">
+                    Physical Address
+                  </label>
+                  <Input
+                    type="text"
+                    id="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="mb-4 bg-white font-extrabold"
+                  />
+                  <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                    Phone Number
+                  </label>
+                  <Input
+                    type="text"
+                    id="phoneNumber"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="mb-4 bg-white font-extrabold"
+                  />
+
+                  
+                </div>
+              </div>
+
+
+            </>) : (
+              <>
+                {/* Get the sender mobile wallet details */}
+                <div className='p-6 flex flex-col sm:m-5'>
+                  <div className='border p-4 rounded-lg'>
+                    <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
+                      Account Name
+                    </label>
+                    <Input
+                      type="text"
+                      id="accountName"
+                      value={accountName}
+                      onChange={(e) => setAccountName(e.target.value)}
+                      className="mb-4 bg-white font-extrabold"
+                    />
+                    <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900">
+                      Phone Number
+                    </label>
+                    <Input
+                      type="text"
+                      id="phoneNumber"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="mb-4 bg-white font-extrabold"
+                    />
+                    <label htmlFor="network" className="block mb-2 text-sm font-medium text-gray-900">
+                      Network
+                    </label>
+                    <Select onValueChange={setNetwork} defaultValue={network}>
+                      <SelectTrigger className='bg-white'>
+                        <SelectValue placeholder="Select Network" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currencyProviders[formData.currency].map((provider) => (
+                          <SelectItem key={provider} value={provider}>
+                            {provider}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </>)}
+
+          {formData.receiveCurrency == 'ZAR' ? (<>
+            {/* get Bank details for reciepient */}
+          </>) : (
+            <>
+              {/* get mobile wallet details for reciepient */}
+            </>)}
 
           <div className="flex justify-between mt-4">
-              <Button onClick={onBack} variant="outline">
-                Back
-              </Button>
-              <Button disabled={!buttonActive} onClick={handleSubmit}>
-                Next
-              </Button>
-            </div>
-
+            <Button onClick={onBack} variant="outline">
+              Back
+            </Button>
+            <Button disabled={!buttonActive} onClick={handleSubmit}>
+              Next
+            </Button>
           </div>
-          
+
+
+
         </>
       )}
 
@@ -382,21 +504,21 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
                 className="mb-4 bg-white font-extrabold"
               />
 
-<label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
-                  How would you like to offramp?
-                </label>
-                <Select onValueChange={setPaymentMethod} defaultValue={paymentMethod}>
-                  <SelectTrigger className='bg-white'>
-                    <SelectValue placeholder="Select Payment Method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {paymentMethodsZARforSelling.map((method) => (
-                      <SelectItem key={method} value={method}>
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <label htmlFor="paymentMethod" className="block mb-2 text-sm font-medium text-gray-900">
+                How would you like to offramp?
+              </label>
+              <Select onValueChange={setPaymentMethod} defaultValue={paymentMethod}>
+                <SelectTrigger className='bg-white'>
+                  <SelectValue placeholder="Select Payment Method" />
+                </SelectTrigger>
+                <SelectContent>
+                  {paymentMethodsZARforSelling.map((method) => (
+                    <SelectItem key={method} value={method}>
+                      {method}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
               <label htmlFor="bankCode" className="block mb-2 mt-2 text-sm font-medium text-gray-900">
                 Bank
