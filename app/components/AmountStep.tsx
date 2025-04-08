@@ -36,52 +36,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
   const wallet = useSwitchActiveWalletChain();
 
-  // useEffect(() => {
-  //   console.log('FORM DATA', formData)
-  //   if (formData.action == 'cross-border') {
-  //     if (
-  //       formData.crossBorder.sendCurrency == '' ||
-  //       formData.crossBorder.senderPaymentMethod == '' ||
-  //       formData.crossBorder.recieverPaymentMethod == '' ||
-  //       formData.crossBorder.receiveCurrency == '' ||
-  //       formData.crossBorder.sendAmount <= 0 ||
-  //       formData.crossBorder.receiveAmount <= 0 
-  //     ) {
-  //       setButtonActive(false)
-  //     } else {
-  //       setButtonActive(true)
-  //     }
-  //   }
-
-  //   if (formData.action == 'sell') {
-  //     if (
-  //       formData.currency == '' ||
-  //       formData.chain == '' ||
-  //       formData.receiveCurrency == '' ||
-  //       amount <= 0 ||
-  //       receiveAmount <= 0
-  //     ) {
-  //       setButtonActive(false)
-  //     } else {
-  //       setButtonActive(true)
-  //     }
-  //   }
-  //   if (formData.action == 'buy') {
-  //     if (
-  //       formData.currency == '' ||
-  //       formData.chain == '' ||
-  //       formData.receiveCurrency == '' ||
-  //       amount <= 0 ||
-  //       receiveAmount <= 0
-  //     ) {
-  //       setButtonActive(false)
-  //     }
-  //     else {
-  //       setButtonActive(true)
-  //     }
-  //   }
-  // }, [formData, amount, receiveAmount, crossBorderSender, crossBorderReciever, crossBorderSendAmount, crossBorderReceiveAmount]);
-
   useEffect(() => {
 
     if (formData.action == 'buy') {
@@ -89,11 +43,12 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         formData.currency == '' ||
         formData.chain == '' ||
         formData.receiveCurrency == '' ||
-        amount <= 0 ||
-        receiveAmount <= 0
+        amount <= 0 
+        // receiveAmount <= 0
       ) {
         setButtonActive(false)
-      } else {
+      }
+      else {
         setButtonActive(true)
       }
     }
@@ -111,7 +66,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         setButtonActive(true)
       }
     }
-  })
+  }, [formData, amount, receiveAmount]);
 
   useEffect(() => {
     if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
@@ -209,7 +164,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
   }, [crossBorderSender, crossBorderSendAmount, formData.crossBorder.exchangeRate, formData.action, setFormData]);
 
-  console.log('Current State',buttonActive)
   return (
     <>
       {formData.action === 'buy' && (
