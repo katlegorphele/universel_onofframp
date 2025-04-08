@@ -219,6 +219,7 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
          console.error("Failed to fetch cross-border exchange rates:", error);
          setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, exchangeRate: 0 } }));
          // Optionally set an error state here
+         
       }
     }
 

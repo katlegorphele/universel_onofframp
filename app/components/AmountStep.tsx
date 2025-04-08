@@ -83,20 +83,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   // }, [formData, amount, receiveAmount, crossBorderSender, crossBorderReciever, crossBorderSendAmount, crossBorderReceiveAmount]);
 
   useEffect(() => {
-    // if (formData.action == 'cross-border') {
-    //   if (
-    //     formData.crossBorder.sendCurrency == '' ||
-    //     formData.crossBorder.senderPaymentMethod == '' ||
-    //     formData.crossBorder.recieverPaymentMethod == '' ||
-    //     formData.crossBorder.receiveCurrency == '' ||
-    //     formData.crossBorder.sendAmount <= 0 ||
-    //     formData.crossBorder.receiveAmount <= 0
-    //   ) {
-    //     setButtonActive(false)
-    //   } else {
-    //     setButtonActive(true)
-    //   }
-    // }
 
     if (formData.action == 'buy') {
       if (
@@ -297,8 +283,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               type="number"
               id="amount"
               pattern="[0-9]*"
-              // value with currency symbols
-
               onChange={handleInputChange}
               className="md:mb-4 bg-white font-extrabold"
             />
