@@ -20,71 +20,7 @@ const transactionContract = getContract({
   address: rampContractAddress,
 });
 
-const currencyProviders: { [key: string]: string[] } = {
-  KES: ['MPESA'],
-  GHS: ['MTN', 'VODAFONE'],
-  ZMW: ['MTN', 'AIRTEL',],
-  XOF: ['MTN', 'ORANGE'],
-  XAF: ['MTN', 'ORANGE'],
-  CDF: ['AIRTEL', 'ORANGE'],
-  TZS: ['AIRTEL', 'TIGO'],
-  MWK: ['AIRTEL', 'TNM'],
-  UGX: ['MTN'],
-  RWF: ['MTN', 'AIRTEL'],
-  ZAR: ['BANK'],
-};
-
-const bankCodes = [
-  // Banks
-  { value: '6320', label: 'ABSA' },
-  { value: '4300', label: 'African Bank'},
-  { value: '4620', label: 'BidVest Bank'},
-  { value: '4700', label: 'Capitec' },
-  { value: '4701', label: 'Capitec Business Bank'},
-  { value: '6799', label: 'Discovery Bank'},
-  { value: '2500', label: 'FNB' },
-  { value: '5800', label: 'Investec Bank Limited' },
-  { value: '1987', label: 'Nedbank' },
-  { value: '5100', label: 'Standard Bank' },
-  { value: '6789', label: 'TymeBank' },
-];
-
-const currencyOptions = [
-  // EDIT HERE TO ADD MORE CURRENCIES 
-  { value: 'ZAR', label: 'South African Rand (ZAR)' },
-  { value: 'CDF', label: 'Congolese Franc (CFD)' },
-  { value: 'GHS', label: 'Ghanaian Cedi (GHS)' },
-  { value: 'KES', label: 'Kenyan Shillings (KES)' },
-  { value: "MWK", label: "Malawian Kwacha ()" },
-  { value: 'RWF', label: 'Rwandan Franc (RWF)' },
-  { value: 'TZS', label: 'Tanzanian Shilling (TZS)' },
-  { value: 'UGX', label: 'Ugandan Shilling (UGX)' },
-  { value: 'XAF', label: 'C African CFA Franc (XAF)' },
-  { value: 'XOF', label: 'W African CFA Franc (XOF)' },
-  { value: 'ZMW', label: 'Zambian Kwacha (ZMW)' },
-  // { value: 'NGN', label: 'Nigerian Naira' },
-];
-
-const chainOptions = [
-  // ALL SUPPORTED CHAINS
-
-  { value: 'ARBITRUM', label: 'ARBITRUM' },
-  // { value: 'ETHEREUM', label: 'ETHEREUM' },
-  { value: 'BASE', label: 'BASE' },
-  { value: 'LISK', label: 'LISK' },
-
-];
-
-const receiveCurrencyOptions = [
-  // AVAILABLE TOKENS
-  { value: 'UZAR', label: 'UZAR' },
-  { value: 'USDC', label: 'USDC' },
-  // { value: 'USDT', label: 'USDT' },
-];
-
-const paymentMethodsZAR = ['CARD', 'BANK'];
-const paymentMethodsZARforSelling = ['E-WALLET / CASH SEND', 'BANK TRANSFER'];
-
+// Static data moved to app/config/formOptions.ts
 
 interface FormData {
   amount: number;
@@ -131,28 +67,57 @@ interface OnOffRampContextType {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   uzarContract: typeof uzarContract;
   transactionContract: typeof transactionContract;
-  currencyProviders : typeof currencyProviders;
-  bankCodes: typeof bankCodes;
-  currencyOptions: typeof currencyOptions;
-  chainOptions: typeof chainOptions;
-  receiveCurrencyOptions: typeof receiveCurrencyOptions;
-  paymentMethodsZAR: typeof paymentMethodsZAR;
-  paymentMethodsZARforSelling: typeof paymentMethodsZARforSelling
-
+  // Static data types removed
 }
 
+// Define a default state object matching the FormData interface
+const defaultFormData: FormData = {
+  amount: 0,
+  currency: 'ZAR',
+  chain: 'LISK',
+  receiveCurrency: 'UZAR',
+  receiveAmount: 0,
+  exchangeRate: 0,
+  totalFee: 0,
+  walletAddress: '',
+  mobileWallet: {
+    phoneNumber: '',
+    network: '',
+    accountName: ''
+  },
+  bankDetails: {
+    fullname: '',
+    phoneNumber: '',
+    paymentMethod: '',
+    bankCode: '',
+    address: '',
+    accountNumber: '',
+    country: ''
+  },
+  crossBorder: {
+    sendCurrency: '',
+    receiveCurrency: '',
+    sendAmount: 0,
+    receiveAmount: 0,
+    exchangeRate: 0,
+    totalFee: 0,
+    senderDetails: {},
+    recieverDetails: {},
+    senderPaymentMethod: '',
+    recieverPaymentMethod: '',
+  },
+  otpCode: '',
+  email: '',
+  action: 'buy',
+};
+
+
 const OnOffRampContext = createContext<OnOffRampContextType>({
-  formData: {} as FormData,
+  formData: defaultFormData, // Use the default object
   setFormData: () => {},
   uzarContract,
   transactionContract,
-  currencyProviders,
-  bankCodes,
-  currencyOptions,
-  chainOptions,
-  receiveCurrencyOptions,
-  paymentMethodsZAR,
-  paymentMethodsZARforSelling
+  // Static data removed from default context value
 });
 
 interface OnOffRampProviderProps {
@@ -160,111 +125,150 @@ interface OnOffRampProviderProps {
 }
 
 export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }) => {
-  
-  const [formData, setFormData] = useState({
-    amount: 0,
-    currency: 'ZAR',
-    chain: 'LISK',
-    receiveCurrency: 'UZAR',
-    receiveAmount: 0,
-    exchangeRate: 0,
-    totalFee: 0,
-    walletAddress: '',
-    mobileWallet: {
-      phoneNumber: '',
-      network: '',
-      accountName: ''
-    },
-    bankDetails: {
-      fullname: '',
-      phoneNumber: '',
-      paymentMethod: '',
-      bankCode: '',
-      address: '',
-      accountNumber: '',
-      country: ''
-    },
-    crossBorder: {
-      sendCurrency: '',
-      receiveCurrency: '',
-      sendAmount: 0,
-      receiveAmount: 0,
-      exchangeRate: 0,
-      totalFee: 0,
-      senderDetails: {},
-      recieverDetails: {},
-      senderPaymentMethod: '',
-      recieverPaymentMethod: '',
-    },
-    otpCode: '',
-    email: '',
-    action: 'buy',
 
-  } as FormData);
-  
+  const [formData, setFormData] = useState<FormData>(defaultFormData); // Use default state and type
+
 
   useEffect(() => {
     const fetchExchangeRates = async () => {
-      let url = '';
-      if (formData.receiveCurrency === 'UZAR') {
-        url = 'https://v6.exchangerate-api.com/v6/d25d28a877b7ab63c582f16d/latest/ZAR';
-      } else {
-        url = 'https://v6.exchangerate-api.com/v6/d25d28a877b7ab63c582f16d/latest/USD';
+      // Use environment variable for API key
+      const apiKey = process.env.NEXT_PUBLIC_EXCHANGERATE_API_KEY;
+      if (!apiKey) {
+        console.error("NEXT_PUBLIC_EXCHANGERATE_API_KEY environment variable is missing.");
+        return; // Don't proceed if key is missing
       }
-      const response = await fetch(url);
-      const data = await response.json();
-      const rate = data.conversion_rates[formData.currency];
-      setFormData((prev) => ({ ...prev, exchangeRate: rate }));
+      // Ensure currency is set before fetching
+      if (!formData.currency) {
+        return;
+      }
+
+      let url = '';
+      // Determine API endpoint based on receiveCurrency
+      if (formData.receiveCurrency === 'UZAR') {
+        url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/ZAR`;
+      } else {
+        // Assuming other tokens are pegged to USD or require USD rate
+        url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`;
+      }
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          // Throw an error for bad responses (4xx, 5xx)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        // Check for API-specific errors
+        if (data.result === 'error') {
+           throw new Error(`API error: ${data['error-type']}`);
+        }
+        // Ensure the target currency exists in the rates
+        if (data.conversion_rates && data.conversion_rates[formData.currency]) {
+          const rate = data.conversion_rates[formData.currency];
+          setFormData((prev) => ({ ...prev, exchangeRate: rate }));
+        } else {
+          console.warn(`Currency ${formData.currency} not found in exchange rates.`);
+          setFormData((prev) => ({ ...prev, exchangeRate: 0 })); // Reset or handle appropriately
+        }
+      } catch (error) {
+        console.error("Failed to fetch exchange rates:", error);
+        setFormData((prev) => ({ ...prev, exchangeRate: 0 })); // Reset rate on error
+        // Optionally, set a user-facing error state here
+      }
     };
 
     fetchExchangeRates();
-  }, [formData.receiveCurrency, formData.currency, formData.crossBorder.sendCurrency]);
+    // Dependency array includes currencies that affect the API call or rate lookup
+  }, [formData.receiveCurrency, formData.currency]);
 
   useEffect(() => {
     const fetchCrossBorderExchangeRates = async () => {
-      let url = `https://v6.exchangerate-api.com/v6/d25d28a877b7ab63c582f16d/latest/${formData.crossBorder.sendCurrency}`;
-      const response = await fetch(url);
-      console.log('Response:', response);
-      const data = await response.json();
-      const rate = data.conversion_rates[formData.crossBorder.receiveCurrency];
-      setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, exchangeRate: rate } }));
+       // Use environment variable for API key
+      const apiKey = process.env.NEXT_PUBLIC_EXCHANGERATE_API_KEY;
+      if (!apiKey) {
+        console.error("NEXT_PUBLIC_EXCHANGERATE_API_KEY environment variable is missing.");
+        return; // Don't proceed if key is missing
+      }
+      // Ensure both send and receive currencies are set
+      if (!formData.crossBorder.sendCurrency || !formData.crossBorder.receiveCurrency) {
+          console.warn("Cross-border currencies not fully selected.");
+          return; // Don't fetch if currencies are missing
+      }
+
+      let url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${formData.crossBorder.sendCurrency}`;
+
+      try {
+        const response = await fetch(url);
+         if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        // console.log('Cross-border Response:', response); // Keep for debugging if needed
+        const data = await response.json();
+         if (data.result === 'error') {
+           throw new Error(`API error: ${data['error-type']}`);
+        }
+        // Ensure the target currency exists
+        if (data.conversion_rates && data.conversion_rates[formData.crossBorder.receiveCurrency]) {
+          const rate = data.conversion_rates[formData.crossBorder.receiveCurrency];
+          setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, exchangeRate: rate } }));
+        } else {
+           console.warn(`Currency ${formData.crossBorder.receiveCurrency} not found in cross-border rates for ${formData.crossBorder.sendCurrency}.`);
+           setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, exchangeRate: 0 } }));
+        }
+      } catch (error) {
+         console.error("Failed to fetch cross-border exchange rates:", error);
+         setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, exchangeRate: 0 } }));
+         // Optionally set an error state here
+      }
     }
 
-    if (formData.crossBorder.receiveCurrency !== '' && formData.crossBorder.sendAmount > 0) {
+    // Trigger only when relevant cross-border fields change and amount is positive
+    if (formData.crossBorder.sendCurrency && formData.crossBorder.receiveCurrency && formData.crossBorder.sendAmount > 0) {
       fetchCrossBorderExchangeRates();
+    } else {
+      // Reset rate if conditions aren't met
+       setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, exchangeRate: 0 } }));
     }
-
+    // Dependencies that trigger the cross-border rate fetch
   }, [formData.crossBorder.sendCurrency, formData.crossBorder.receiveCurrency, formData.crossBorder.sendAmount]);
 
 
-  //useEffect to set receive amount which is amount * exchange rate
+  //useEffect to calculate cross-border receive amount
   useEffect(() => {
-    const crossBorderReceiveAmount = formData.crossBorder.sendAmount * formData.crossBorder.exchangeRate;
-    console.log('Cross Border Receive Amount:', crossBorderReceiveAmount);
-    setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, receiveAmount: crossBorderReceiveAmount } }));
+    // Ensure exchange rate is a valid positive number before calculating
+    if (typeof formData.crossBorder.exchangeRate === 'number' && formData.crossBorder.exchangeRate > 0) {
+       const crossBorderReceiveAmount = formData.crossBorder.sendAmount * formData.crossBorder.exchangeRate;
+       // console.log('Cross Border Receive Amount Calculated:', crossBorderReceiveAmount); // Keep for debugging
+       // Round to a reasonable number of decimal places if necessary
+       setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, receiveAmount: crossBorderReceiveAmount } }));
+    } else {
+       // Reset receive amount if rate is invalid or zero
+       setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, receiveAmount: 0 } }));
+    }
   }
-  , [formData.crossBorder.receiveCurrency]);
+  // Depend on the values used in the calculation
+  , [formData.crossBorder.sendAmount, formData.crossBorder.exchangeRate]);
 
-  //useEffect to set total fee which is 3% of amount
+  //useEffect to calculate the general total fee (3% of amount)
   useEffect(() => {
-    const fee = (formData.amount * 3) / 100;
-    setFormData((prev) => ({ ...prev, totalFee: fee }));
-    
-  }, [formData.amount]);
+    // Ensure amount is a valid positive number
+    if (typeof formData.amount === 'number' && formData.amount >= 0) {
+      const fee = (formData.amount * 3) / 100;
+      setFormData((prev) => ({ ...prev, totalFee: fee }));
+    } else {
+      // Reset fee if amount is invalid
+      setFormData((prev) => ({ ...prev, totalFee: 0 }));
+    }
+  }, [formData.amount]); // Only depends on the main amount
+
 
   return (
-    <OnOffRampContext.Provider value={{ 
-      formData, 
-      setFormData, 
-      uzarContract, 
-      transactionContract, 
-      currencyProviders,
-      bankCodes, 
-      currencyOptions,
-      chainOptions,
-      receiveCurrencyOptions,
-      paymentMethodsZAR,
-      paymentMethodsZARforSelling
+    <OnOffRampContext.Provider value={{
+      formData,
+      setFormData,
+      uzarContract,
+      transactionContract,
+      // Static data removed from provider value
       }}>
       {children}
     </OnOffRampContext.Provider>

@@ -9,11 +9,48 @@ import { getDynamicContract, getTokenAddress, validateTokenNetwork } from '../ut
 import { Loader2 } from 'lucide-react';
 
 const OrderStep = ({ onBack }: { onBack: () => void }) => {
-  const { formData, bankCodes } = useOnOffRampContext();
+  const { formData } = useOnOffRampContext();
+  const {bankCodes} = require('../config/formOptions')
   const [loading, setLoading] = useState(false);
   const account = useActiveAccount()
-  const bankName =
-    bankCodes.find((bank) => bank.value === formData.bankDetails.bankCode)?.label ||
+
+  interface BankDetails {
+    bankCode: string;
+    paymentMethod: string;
+    accountNumber?: string;
+    phoneNumber?: string;
+  }
+
+  interface MobileWallet {
+    phoneNumber: string;
+    network: string;
+  }
+
+  interface CrossBorderDetails {
+    sendCurrency: string;
+    receiveCurrency: string;
+    sendAmount: number;
+    receiveAmount: number;
+    exchangeRate: number;
+  }
+
+  interface FormData {
+    action: 'buy' | 'sell' | 'cross-border';
+    amount: number;
+    receiveAmount: number;
+    receiveCurrency: string;
+    chain: string;
+    walletAddress: string;
+    email: string;
+    currency: string;
+    bankDetails: BankDetails;
+    mobileWallet: MobileWallet;
+    totalFee: number;
+    crossBorder?: CrossBorderDetails;
+  }
+
+  const bankName: string =
+    bankCodes.find((bank: { value: string; label: string }) => bank.value === formData.bankDetails.bankCode)?.label ||
     'Unknown Bank';
     
   const TransferToken = async () => {
@@ -249,11 +286,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     try {
       setLoading(true)
       const response = await axios.post('api/cross-border', {
-        amount: formData.amount,
-        bankDetails: formData.bankDetails,
-        walletAddress: formData.walletAddress,
-        email: formData.email,
-        currency: formData.currency
+        crossBorder: formData.crossBorder,
       });
 
       if (response.data.success) {
@@ -292,7 +325,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
           {formData.action === 'buy' && (
             <>
-              <div></div>
+              
               {formData.currency === 'ZAR' ? (
                 <>
                   <div className='text-wrap'>
@@ -374,23 +407,12 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
           {formData.action === 'cross-border' && (
             <>
-              <div></div>
-              {formData.currency === 'ZAR' ? (
-                <>
-                  <div></div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <p className='font-bold'>Sender Country: {formData.crossBorder.sendCurrency} </p>
-                    <p className='font-bold'>Recepient Country: {formData.crossBorder.receiveCurrency} </p>
-                    <p className='font-bold'>Send Amount: {formData.crossBorder.sendAmount}</p>
-                    <p className='font-bold'>Receive Amount: {formData.crossBorder.receiveAmount}</p>
-                    <p className='font-bold'>Exchange Rate: {formData.crossBorder.exchangeRate}</p>
-
-                  </div>
-                </>
-              )}
+              <div>
+                <p><span className='font-bold'>Send Amount:</span> {formData.crossBorder?.sendAmount} {formData.crossBorder?.sendCurrency}</p>
+                <p><span className='font-bold'>Receive Amount:</span> {formData.crossBorder?.receiveAmount} {formData.crossBorder?.receiveCurrency}</p>
+                <p><span className='font-bold'>Receiver Details:</span> {JSON.stringify(formData.crossBorder?.recieverDetails)}</p>
+                <p><span className='font-bold'>Sender Details:</span> {JSON.stringify(formData.crossBorder?.senderDetails)}</p>
+              </div>
             </>
           )}
         </div>

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     try {
+        const {crossBorder} = await req.json();
+        console.log(crossBorder)
 
         return NextResponse.json({
             success: true,

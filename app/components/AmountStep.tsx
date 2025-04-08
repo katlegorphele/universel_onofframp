@@ -7,10 +7,24 @@ import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import { useSwitchActiveWalletChain } from 'thirdweb/react';
 import { defineChain } from 'thirdweb';
+// Import static data
+import {
+  currencyProviders,
+  currencyOptions,
+  chainOptions,
+  receiveCurrencyOptions,
+  // bankCodes // Not used in this component currently, uncomment if needed
+} from '../config/formOptions';
 
+// Define type for option objects used in Select components
+interface SelectOption {
+  value: string;
+  label: string;
+}
 
 const AmountStep = ({ onNext }: { onNext: () => void }) => {
-  const { formData, setFormData, currencyProviders, currencyOptions, chainOptions, receiveCurrencyOptions, bankCodes } = useOnOffRampContext();
+  // Remove static data from context destructuring
+  const { formData, setFormData } = useOnOffRampContext();
   const [amount, setAmount] = useState(formData.amount);
   const [receiveAmount, setReceiveAmount] = useState(formData.receiveAmount);
   const [buttonActive, setButtonActive] = useState(false)
@@ -22,21 +36,89 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
   const wallet = useSwitchActiveWalletChain();
 
-  useEffect(() => {
-    console.log('Form Data:', formData.crossBorder);
-  }, [formData])
-  
+  // useEffect(() => {
+  //   console.log('FORM DATA', formData)
+  //   if (formData.action == 'cross-border') {
+  //     if (
+  //       formData.crossBorder.sendCurrency == '' ||
+  //       formData.crossBorder.senderPaymentMethod == '' ||
+  //       formData.crossBorder.recieverPaymentMethod == '' ||
+  //       formData.crossBorder.receiveCurrency == '' ||
+  //       formData.crossBorder.sendAmount <= 0 ||
+  //       formData.crossBorder.receiveAmount <= 0 
+  //     ) {
+  //       setButtonActive(false)
+  //     } else {
+  //       setButtonActive(true)
+  //     }
+  //   }
 
+  //   if (formData.action == 'sell') {
+  //     if (
+  //       formData.currency == '' ||
+  //       formData.chain == '' ||
+  //       formData.receiveCurrency == '' ||
+  //       amount <= 0 ||
+  //       receiveAmount <= 0
+  //     ) {
+  //       setButtonActive(false)
+  //     } else {
+  //       setButtonActive(true)
+  //     }
+  //   }
+  //   if (formData.action == 'buy') {
+  //     if (
+  //       formData.currency == '' ||
+  //       formData.chain == '' ||
+  //       formData.receiveCurrency == '' ||
+  //       amount <= 0 ||
+  //       receiveAmount <= 0
+  //     ) {
+  //       setButtonActive(false)
+  //     }
+  //     else {
+  //       setButtonActive(true)
+  //     }
+  //   }
+  // }, [formData, amount, receiveAmount, crossBorderSender, crossBorderReciever, crossBorderSendAmount, crossBorderReceiveAmount]);
 
   useEffect(() => {
-    if (formData.action == 'cross-border') {
+    // if (formData.action == 'cross-border') {
+    //   if (
+    //     formData.crossBorder.sendCurrency == '' ||
+    //     formData.crossBorder.senderPaymentMethod == '' ||
+    //     formData.crossBorder.recieverPaymentMethod == '' ||
+    //     formData.crossBorder.receiveCurrency == '' ||
+    //     formData.crossBorder.sendAmount <= 0 ||
+    //     formData.crossBorder.receiveAmount <= 0
+    //   ) {
+    //     setButtonActive(false)
+    //   } else {
+    //     setButtonActive(true)
+    //   }
+    // }
+
+    if (formData.action == 'buy') {
       if (
-        formData.crossBorder.sendCurrency == '' ||
-        formData.crossBorder.senderPaymentMethod == '' ||
-        formData.crossBorder.recieverPaymentMethod == '' ||
-        formData.crossBorder.receiveCurrency == '' ||
-        formData.crossBorder.sendAmount <= 0 ||
-        formData.crossBorder.receiveAmount <= 0 
+        formData.currency == '' ||
+        formData.chain == '' ||
+        formData.receiveCurrency == '' ||
+        amount <= 0 ||
+        receiveAmount <= 0
+      ) {
+        setButtonActive(false)
+      } else {
+        setButtonActive(true)
+      }
+    }
+
+    if (formData.action == 'sell') {
+      if (
+        formData.currency == '' ||
+        formData.chain == '' ||
+        formData.receiveCurrency == '' ||
+        amount <= 0 ||
+        receiveAmount <= 0
       ) {
         setButtonActive(false)
       } else {
@@ -47,9 +129,15 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
   useEffect(() => {
     if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
-      setReceiveAmount(amount / formData.exchangeRate);
+      setFormData((prev) => ({
+        ...prev,
+        receiveAmount: amount / formData.exchangeRate,
+      }));
     } else {
-      setReceiveAmount(amount * formData.exchangeRate);
+      setFormData((prev) => ({
+        ...prev,
+        receiveAmount: amount * formData.exchangeRate,
+      }));
     }
   }, [amount, formData.exchangeRate, formData.action]);
 
@@ -88,8 +176,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     if (formData.action == 'sell') {
       if (receiveAmount >= 25) {
         setFormData((prev) => ({
-          ...prev,
-          receiveAmount,
+          ...prev,  
+          receiveAmount: Number((receiveAmount).toFixed(2)),
         }));
         onNext();
       } else {
@@ -114,28 +202,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       }
     }
   };
-
-  // useEffect(() => {
-  //   if (formData.action == 'buy') {
-  //     if (amount > 0) {
-  //       setButtonActive(true)
-  //     } else {
-  //       setButtonActive(false)
-  //     }
-  //   }
-
-  //   if (formData.action == 'cross-border') {
-  //     if (crossBorderReceiveAmount > 0 && crossBorderSendAmount > 0 && formData.crossBorder.senderPaymentMethod !== '') {
-  //       setButtonActive(false)
-  //     } else {
-  //       setButtonActive(true)
-  //     }
-  //   }
-  // }, [crossBorderReceiveAmount, crossBorderSendAmount, formData.crossBorder.senderPaymentMethod, amount, receiveAmount])
-
-  // get and calculate recieve amount
-
-  // use effect for the next button
 
 
   useEffect(() => {
@@ -176,7 +242,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
                   <SelectContent>
-                    {currencyOptions.map((option) => (
+                    {/* Add explicit type to option */}
+                    {currencyOptions.map((option: SelectOption) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -193,7 +260,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     <SelectValue placeholder="Select Chain" />
                   </SelectTrigger>
                   <SelectContent>
-                    {chainOptions.map((option) => (
+                    {/* Add explicit type to option */}
+                    {chainOptions.map((option: SelectOption) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -210,7 +278,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     <SelectValue placeholder="Select Token" />
                   </SelectTrigger>
                   <SelectContent>
-                    {receiveCurrencyOptions.map((option) => (
+                    {/* Add explicit type to option */}
+                    {receiveCurrencyOptions.map((option: SelectOption) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -240,7 +309,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             <Input
               type="number"
               id="receiveAmount"
-              value={amount > 0 ? Number((receiveAmount).toFixed(2)) : 0}
+              value={amount > 0 ? Number((formData.receiveAmount).toFixed(2)) : 0}
               readOnly
               className="mb-4 bg-white font-extrabold"
               disabled={true}
@@ -282,7 +351,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
                   <SelectContent>
-                    {currencyOptions.map((option) => (
+                    {/* Add explicit type to option */}
+                    {currencyOptions.map((option: SelectOption) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -299,7 +369,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     <SelectValue placeholder="Select Chain" />
                   </SelectTrigger>
                   <SelectContent>
-                    {chainOptions.map((option) => (
+                    {/* Add explicit type to option */}
+                    {chainOptions.map((option: SelectOption) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -316,7 +387,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     <SelectValue placeholder="Select Receive Currency" />
                   </SelectTrigger>
                   <SelectContent>
-                    {receiveCurrencyOptions.map((option) => (
+                    {/* Add explicit type to option */}
+                    {receiveCurrencyOptions.map((option: SelectOption) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -394,7 +466,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                       <SelectValue placeholder="Select Currency" />
                     </SelectTrigger>
                     <SelectContent>
-                      {currencyOptions.map((option) => (
+                      {/* Add explicit type to option */}
+                      {currencyOptions.map((option: SelectOption) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
@@ -423,8 +496,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                       <SelectValue placeholder="Select Currency" />
                     </SelectTrigger>
                     <SelectContent>
+                      {/* Add explicit type to option */}
                       {formData.crossBorder.sendCurrency !== '' ? (
-                        currencyProviders[formData.crossBorder.sendCurrency].map((option) => (
+                        currencyProviders[formData.crossBorder.sendCurrency].map((option: string) => (
                           <SelectItem key={option} value={option}>
                             {option}
                           </SelectItem>
@@ -470,13 +544,14 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 defaultValue={formData.crossBorder.receiveCurrency}
               >
                 <SelectTrigger className='bg-white font-extrabold'>
-                  <SelectValue placeholder="Select Currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currencyOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
+                      <SelectValue placeholder="Select Currency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {/* Add explicit type to option */}
+                      {currencyOptions.map((option: SelectOption) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -515,9 +590,10 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   <SelectTrigger className='bg-white font-extrabold'>
                     <SelectValue placeholder="Select Method" />
                   </SelectTrigger>
-                  <SelectContent defaultValue={formData.crossBorder.recieverPaymentMethod}>
+                    <SelectContent defaultValue={formData.crossBorder.recieverPaymentMethod}>
+                      {/* Add explicit type to option */}
                       {formData.crossBorder.receiveCurrency !== '' ? (
-                        currencyProviders[formData.crossBorder.receiveCurrency].map((option) => (
+                        currencyProviders[formData.crossBorder.receiveCurrency].map((option: string) => (
                           <SelectItem key={option} value={option} defaultValue={formData.crossBorder.recieverPaymentMethod}>
                             {option}
                           </SelectItem>
