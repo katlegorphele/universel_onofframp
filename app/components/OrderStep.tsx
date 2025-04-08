@@ -238,38 +238,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     }
   }
 
-  // DO NOT DELETE THIS FUNCTION. COULD ALSO BE USEFUL FOR CROSS BORDER IMPLEMENTATION
-  // const  handleUZARBuy = async () => {
-  //   try {
-  //     setLoading(true)
-  //     const response = await axios.post('api/buy-token', {
-  //       bankDetails: formData.bankDetails,
-  //       amount: formData.amount / await fetchUSDRate(formData.currency),
-  //       currency: formData.currency,
-  //       chain: formData.chain,
-  //       token: 'USDT',
-  //       fiatAmount: formData.amount,
-  //       receiverAddress: process.env.NEXT_PUBLIC_ESCROW_WALLET,
-  //       walletAddress: formData.walletAddress,
-  //       mobileWallet: formData.mobileWallet,
-  //       email: formData.email,
-  //     });
-
-  //     if (response.data.success) {
-  //       alert(response.data.message)
-  //       // redirect to payment link
-
-  //     } else {
-  //       console.log(response.data.message)
-  //     }
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //     alert('An error occurred');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
-
   const handleSell = async () => {
     setLoading(true)
     try {

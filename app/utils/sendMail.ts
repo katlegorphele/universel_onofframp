@@ -121,42 +121,49 @@ export async function sendPaymentTransactionEmail(
 
 export async function sendCrossBorderEmail(
 
-    // crossBorder: {
-    //     sendCurrency: '',
-    //     receiveCurrency: '',
-    //     sendAmount: 0,
-    //     receiveAmount: 0,
-    //     exchangeRate: 0,
-    //     totalFee: 0,
-    //     senderDetails: {},
-    //     recieverDetails: {},
-    //     senderPaymentMethod: '',
-    //     recieverPaymentMethod: '',
-    //   },
     recipientEmail: string | undefined,
     sendAmount: number,
     sendCurrency: string,
     recieverDetails: ReceiverDetails ,
     senderDetails: SenderDetails ,
-
-
 ) {
     if (!recipientEmail) return;
     try {
+        const senderName = getSenderName(senderDetails);
+        const senderPhone = getSenderPhone(senderDetails);
+        const senderPaymentMethod = getSenderPaymentMethod(senderDetails);
+
+        const receiverName = getReceiverName(recieverDetails);
+        const receiverPhone = getReceiverPhone(recieverDetails);
+        const receiverPaymentMethod = getReceiverPaymentMethod(recieverDetails);
+
         await transporter.sendMail({
             from: 'UZAR Team',
             to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
             subject: `Cross Border Transaction`,
             text: `
-            
-            New cross-border transaction initiated:
-
-      Regards
-
-      UZAR Team
+                New cross-border transaction initiated:
+                
+                Sender Details:
+                Name: ${senderName}
+                Phone: ${senderPhone}
+                Payment Method: ${senderPaymentMethod}
+                
+                Receiver Details:
+                Name: ${receiverName}
+                Phone: ${receiverPhone}
+                Payment Method: ${receiverPaymentMethod}
+                
+                Transaction:
+                - Sent: ${sendAmount} ${sendCurrency}
+                
+                Regards
+                UZAR Team
             `
+        });
 
-        })
+
+        console.log('Sender details', senderDetails);
     }
     catch (error) {
         console.error('Failed to send email notification:', error);
@@ -169,60 +176,42 @@ export async function sendCrossBorderToUs(
     sendCurrency: string,
     receiveAmount: number,
     receiveCurrency: string,
-    senderBankDetails: {
-        fullname: string;
-        phoneNumber: string;
-        paymentMethod: string;
-        bankCode: string;
-        address: string;
-        accountNumber: string;
-        country: string;
-    } | undefined,
-    senderMobileWallet: {
-        phoneNumber: string;
-        network: string;
-        accountName: string;
-    } | undefined,
-    recieverBankDetails: {
-        fullname: string;
-        phoneNumber: string;
-        paymentMethod: string;
-        bankCode: string;
-        address: string;
-        accountNumber: string;
-        country: string;
-    } | undefined,
-    recieverMobileWallet: {
-        phoneNumber: string;
-        network: string;
-        accountName: string;
-    } | undefined,
+    senderDetails: SenderDetails,
+    receiverDetails: ReceiverDetails,
 ) {
     try {
+        const senderName = getSenderName(senderDetails);
+        const senderPhone = getSenderPhone(senderDetails);
+        const senderPaymentMethod = getSenderPaymentMethod(senderDetails);
+
+        const receiverName = getReceiverName(receiverDetails);
+        const receiverPhone = getReceiverPhone(receiverDetails);
+        const receiverPaymentMethod = getReceiverPaymentMethod(receiverDetails);
+
+
         await transporter.sendMail({
             from: 'UZAR Team',
             to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
             subject: `Cross Border Transaction`,
             text: `
-      New cross-border transaction initiated:
-
-      Sender Details:
-      Name: ${senderBankDetails?.fullname || senderMobileWallet?.accountName}
-      Phone Number: ${senderBankDetails?.phoneNumber || senderMobileWallet?.phoneNumber}
-      Payment Method: ${senderBankDetails?.paymentMethod || senderMobileWallet?.network}
-
-      Receiver Details:
-      Name: ${recieverBankDetails?.fullname || recieverMobileWallet?.accountName}
-      Phone Number: ${recieverBankDetails?.phoneNumber || recieverMobileWallet?.phoneNumber}
-      Payment Method: ${recieverBankDetails?.paymentMethod || recieverMobileWallet?.network}
-
-      Transaction Details:
-      - Amount Sent: ${sendAmount} ${sendCurrency}
-      - Amount Received: ${receiveAmount} ${receiveCurrency}
-
-      Regards
-
-      UZAR Team
+                New cross-border transaction initiated:
+                
+                Sender Details:
+                Name: ${senderName}
+                Phone: ${senderPhone}
+                Payment Method: ${senderPaymentMethod}
+                
+                Receiver Details:
+                Name: ${receiverName}
+                Phone: ${receiverPhone}
+                Payment Method: ${receiverPaymentMethod}
+                
+                Transaction Details:
+                - Amount Sent: ${sendAmount} ${sendCurrency}
+                - Amount Received: ${receiveAmount} ${receiveCurrency}
+                
+                Regards
+                UZAR Team
             `
         });
     } catch (error) {
@@ -381,5 +370,34 @@ export async function sendTransferEmail(
     } catch (error) {
         console.error('Failed to send email notification:', error);
     }
+}
+
+// Type guard functions
+function isBankDetails(details: SenderDetails | ReceiverDetails): details is BankDetails {
+    return 'fullname' in details;
+}
+
+function getSenderName(details: SenderDetails): string {
+    return isBankDetails(details) ? details.fullname : details.accountName;
+}
+
+function getSenderPhone(details: SenderDetails): string {
+    return details.phoneNumber;
+}
+
+function getSenderPaymentMethod(details: SenderDetails): string {
+    return isBankDetails(details) ? details.paymentMethod : details.network;
+}
+
+function getReceiverName(details: ReceiverDetails): string {
+    return isBankDetails(details) ? details.fullname : details.accountName;
+}
+
+function getReceiverPhone(details: ReceiverDetails): string {
+    return details.phoneNumber;
+}
+
+function getReceiverPaymentMethod(details: ReceiverDetails): string {
+    return isBankDetails(details) ? details.paymentMethod : details.network;
 }
 
