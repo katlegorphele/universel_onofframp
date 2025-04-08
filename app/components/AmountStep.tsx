@@ -66,6 +66,19 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         setButtonActive(true)
       }
     }
+
+    if (formData.action == 'cross-border') {
+      if (
+        formData.crossBorder.sendCurrency == '' ||
+        formData.crossBorder.receiveCurrency == '' ||
+        crossBorderSendAmount <= 0 ||
+        crossBorderReceiveAmount <= 0
+      ) {
+        setButtonActive(false)
+      } else {
+        setButtonActive(true)
+      }
+    }
   }, [formData, amount, receiveAmount]);
 
   useEffect(() => {
@@ -135,12 +148,15 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
 
     if (formData.action == 'buy') {
-      if (amount > 0 && receiveAmount > 0) {
+      if (amount >= 25) {
+        setFormData((prev) => ({
+          ...prev,
+          amount: Number((amount).toFixed(2)),
+        }));
         onNext();
-
       } else {
-        alert('Please enter all details')
-      }
+        alert('Minimum Value of 25 UZAR')
+      } 
     }
   };
 

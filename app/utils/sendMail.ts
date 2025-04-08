@@ -7,6 +7,25 @@ const chainScanURLS = {
     'LISK': 'https://blockscout.lisk.com/tx/'
 }
 
+interface BankDetails {
+    fullname: string;
+    phoneNumber: string;
+    paymentMethod: string;
+    bankCode: string;
+    address: string;
+    accountNumber: string;
+    country: string;
+}
+
+interface MobileWalletDetails {
+    phoneNumber: string;
+    network: string;
+    accountName: string;
+}
+
+type SenderDetails = BankDetails | MobileWalletDetails;
+type ReceiverDetails = BankDetails | MobileWalletDetails;
+
 const bankCodes = [
     // Banks
     { value: '6320', label: 'ABSA' },
@@ -93,6 +112,117 @@ export async function sendPaymentTransactionEmail(
       
       Best regards,
       The UZAR Team
+            `
+        });
+    } catch (error) {
+        console.error('Failed to send email notification:', error);
+    }
+}
+
+export async function sendCrossBorderEmail(
+
+    // crossBorder: {
+    //     sendCurrency: '',
+    //     receiveCurrency: '',
+    //     sendAmount: 0,
+    //     receiveAmount: 0,
+    //     exchangeRate: 0,
+    //     totalFee: 0,
+    //     senderDetails: {},
+    //     recieverDetails: {},
+    //     senderPaymentMethod: '',
+    //     recieverPaymentMethod: '',
+    //   },
+    recipientEmail: string | undefined,
+    sendAmount: number,
+    sendCurrency: string,
+    recieverDetails: ReceiverDetails ,
+    senderDetails: SenderDetails ,
+
+
+) {
+    if (!recipientEmail) return;
+    try {
+        await transporter.sendMail({
+            from: 'UZAR Team',
+            to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+            subject: `Cross Border Transaction`,
+            text: `
+            
+            New cross-border transaction initiated:
+
+      Regards
+
+      UZAR Team
+            `
+
+        })
+    }
+    catch (error) {
+        console.error('Failed to send email notification:', error);
+    }
+
+}
+
+export async function sendCrossBorderToUs(
+    sendAmount: number,
+    sendCurrency: string,
+    receiveAmount: number,
+    receiveCurrency: string,
+    senderBankDetails: {
+        fullname: string;
+        phoneNumber: string;
+        paymentMethod: string;
+        bankCode: string;
+        address: string;
+        accountNumber: string;
+        country: string;
+    } | undefined,
+    senderMobileWallet: {
+        phoneNumber: string;
+        network: string;
+        accountName: string;
+    } | undefined,
+    recieverBankDetails: {
+        fullname: string;
+        phoneNumber: string;
+        paymentMethod: string;
+        bankCode: string;
+        address: string;
+        accountNumber: string;
+        country: string;
+    } | undefined,
+    recieverMobileWallet: {
+        phoneNumber: string;
+        network: string;
+        accountName: string;
+    } | undefined,
+) {
+    try {
+        await transporter.sendMail({
+            from: 'UZAR Team',
+            to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+            subject: `Cross Border Transaction`,
+            text: `
+      New cross-border transaction initiated:
+
+      Sender Details:
+      Name: ${senderBankDetails?.fullname || senderMobileWallet?.accountName}
+      Phone Number: ${senderBankDetails?.phoneNumber || senderMobileWallet?.phoneNumber}
+      Payment Method: ${senderBankDetails?.paymentMethod || senderMobileWallet?.network}
+
+      Receiver Details:
+      Name: ${recieverBankDetails?.fullname || recieverMobileWallet?.accountName}
+      Phone Number: ${recieverBankDetails?.phoneNumber || recieverMobileWallet?.phoneNumber}
+      Payment Method: ${recieverBankDetails?.paymentMethod || recieverMobileWallet?.network}
+
+      Transaction Details:
+      - Amount Sent: ${sendAmount} ${sendCurrency}
+      - Amount Received: ${receiveAmount} ${receiveCurrency}
+
+      Regards
+
+      UZAR Team
             `
         });
     } catch (error) {

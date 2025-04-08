@@ -146,8 +146,8 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       crossBorder: {
         ...prev.crossBorder, // Keep existing crossBorder fields like send/receive currency/amount
         // Conditionally set sender/receiver details based on currency type
-        senderDetails: prev.crossBorder.sendCurrency === 'ZAR' ? senderBankDetails : senderMobileDetails,
-        recieverDetails: prev.crossBorder.receiveCurrency === 'ZAR' ? receiverBankDetails : receiverMobileDetails,
+        senderDetails: formData.crossBorder.sendCurrency === 'ZAR' ? senderBankDetails : senderMobileDetails,
+        recieverDetails: formData.crossBorder.receiveCurrency === 'ZAR' ? receiverBankDetails : receiverMobileDetails,
         // Ensure payment methods are correctly sourced if they change
         // senderPaymentMethod: formData.crossBorder.senderPaymentMethod, // Already in context?
         // recieverPaymentMethod: formData.crossBorder.recieverPaymentMethod // Already in context?

@@ -196,6 +196,11 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   }
 
   const handleBuy = async () => {
+
+    if (formData.receiveCurrency == 'UZAR') {
+      alert('Feature not enabled yet. Please try again later')
+      return
+    }
     try {
       setLoading(true)
       const response = await axios.post('api/buy-token', {
@@ -287,6 +292,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       setLoading(true)
       const response = await axios.post('api/cross-border', {
         crossBorder: formData.crossBorder,
+        email: formData.email,
       });
 
       if (response.data.success) {

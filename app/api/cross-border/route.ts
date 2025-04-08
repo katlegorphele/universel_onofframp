@@ -1,22 +1,18 @@
+import { sendCrossBorderEmail, sendCrossBorderToUs } from "@/app/utils/sendMail";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-    try {
-        const {crossBorder} = await req.json();
-        console.log(crossBorder)
-
-        return NextResponse.json({
-            success: true,
-        })
-
+    const body = await req.json();
+    const { email, crossBorder} = body;
+    
+    try {       
+        // console.log(crossBorder);
+        const { sendAmount, sendCurrency, receiveAmount, receiveCurrency, senderDetails, recieverDetails } = crossBorder;
+        await sendCrossBorderEmail(email, sendAmount, sendCurrency, recieverDetails, senderDetails);
+        // await sendCrossBorderToUs(email, name, phone, message);
+        return NextResponse.json({ message: "Email sent successfully", status: 200, success: true });
     } catch (error) {
-        console.error("Error parsing request body:", error);
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Invalid request body.",
-            },
-            { status: 400 }
-        );
+        console.error("Error sending email:", error);
+        return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
     }
 }
