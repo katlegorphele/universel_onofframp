@@ -8,21 +8,22 @@ interface StepIndicatorProps {
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
   const { formData } = useOnOffRampContext();
+  let steps: string[];
   if (formData.action === 'buy') {
-    var steps = ['Amount', 'Wallet', 'Verify', 'Order'];
+    steps = ['Amount', 'Wallet', 'Verify', 'Order'];
   } else if (formData.action === 'sell') {
-    var steps = ['Amount', 'Wallet', 'Verify', 'Order'];
+    steps = ['Amount', 'Wallet', 'Verify', 'Order'];
   } else if (formData.action === 'cross-border') {
-    var steps = ['Amount', 'Details', 'OTP', 'Order'];
+    steps = ['Amount', 'Details', 'OTP', 'Order'];
   } else {
-    var steps = ['Amount', 'Wallet', 'Verify', 'Order'];
+    steps = ['Amount', 'Wallet', 'Verify', 'Order'];
   }
   
   // const steps = ['Select Asset', 'Select Payment Method', 'Confirm Purchase'];
 
   return (
     <div className="step-indicator flex items-center w-full relative">
-      {steps.map((step, index) => (
+      {steps.map((step: string, index: number) => (
         <div key={index} className="flex flex-col items-center relative w-full">
           {/* Connecting Line (From Circle to Circle) */}
           

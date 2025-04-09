@@ -116,6 +116,7 @@ export async function sendPaymentTransactionEmail(
         });
     } catch (error) {
         console.error('Failed to send email notification:', error);
+        return false;
     }
 }
 
@@ -161,9 +162,6 @@ export async function sendCrossBorderEmail(
                 UZAR Team
             `
         });
-
-
-        console.log('Sender details', senderDetails);
     }
     catch (error) {
         console.error('Failed to send email notification:', error);
@@ -374,30 +372,80 @@ export async function sendTransferEmail(
 
 // Type guard functions
 function isBankDetails(details: SenderDetails | ReceiverDetails): details is BankDetails {
-    return 'fullname' in details;
+    return (
+        typeof details === 'object' &&
+        details !== null &&
+        'fullname' in details &&
+        'phoneNumber' in details &&
+        'paymentMethod' in details &&
+        'bankCode' in details &&
+        'address' in details &&
+        'accountNumber' in details &&
+        'country' in details
+    );
 }
 
 function getSenderName(details: SenderDetails): string {
-    return isBankDetails(details) ? details.fullname : details.accountName;
-}
-
-function getSenderPhone(details: SenderDetails): string {
-    return details.phoneNumber;
-}
-
-function getSenderPaymentMethod(details: SenderDetails): string {
-    return isBankDetails(details) ? details.paymentMethod : details.network;
-}
-
-function getReceiverName(details: ReceiverDetails): string {
-    return isBankDetails(details) ? details.fullname : details.accountName;
-}
-
-function getReceiverPhone(details: ReceiverDetails): string {
-    return details.phoneNumber;
-}
-
-function getReceiverPaymentMethod(details: ReceiverDetails): string {
-    return isBankDetails(details) ? details.paymentMethod : details.network;
-}
-
+    if (typeof details !== 'object' || details === null) {
+      return 'Unknown Sender';
+    }
+    if (isBankDetails(details)) {
+      return details.fullname;
+    } else if ('accountName' in details) {
+      return details.accountName;
+    }
+    return 'Unknown Sender';
+  }
+  
+  function getSenderPhone(details: SenderDetails): string {
+    if (typeof details !== 'object' || details === null) {
+      return 'Unknown Phone';
+    }
+    return 'phoneNumber' in details ? details.phoneNumber : 'Unknown Phone';
+  }
+  
+  function getSenderPaymentMethod(details: SenderDetails): string {
+    if (typeof details !== 'object' || details === null) {
+      return 'Unknown Payment Method';
+    }
+    if (isBankDetails(details)) {
+      return details.paymentMethod;
+    } else if ('network' in details) {
+      return details.network;
+    }
+    return 'Unknown Payment Method';
+  }
+  
+  // Similar updates for receiver functions
+  function getReceiverName(details: ReceiverDetails): string {
+    if (typeof details !== 'object' || details === null) {
+      return 'Unknown Receiver';
+    }
+    if (isBankDetails(details)) {
+      return details.fullname;
+    } else if ('accountName' in details) {
+      return details.accountName;
+    }
+    return 'Unknown Receiver';
+  }
+  
+  function getReceiverPhone(details: ReceiverDetails): string {
+    if (typeof details !== 'object' || details === null) {
+      return 'Unknown Phone';
+    }
+    return 'phoneNumber' in details ? details.phoneNumber : 'Unknown Phone';
+  }
+  
+  function getReceiverPaymentMethod(details: ReceiverDetails): string {
+    if (typeof details !== 'object' || details === null) {
+      return 'Unknown Payment Method';
+    }
+    if (isBankDetails(details)) {
+      return details.paymentMethod;
+    } else if ('network' in details) {
+      return details.network;
+    }
+    return 'Unknown Payment Method';
+  }
+  
+  

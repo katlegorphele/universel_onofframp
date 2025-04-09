@@ -47,7 +47,7 @@ const OnOffRampForm = () => {
   };
 
   // Define step configuration
-  const stepsConfig: Record<number, { component: React.ElementType; props: any }> = {
+  const stepsConfig: Record<number, { component: React.ElementType; props: Record<string, unknown> }> = {
     1: { component: AmountStep, props: { onNext: handleNext } },
     2: { component: WalletStep, props: { onNext: handleNext, onBack: handleBack } },
     3: { component: VerifyStep, props: { onNext: handleNext, onBack: handleBack } },

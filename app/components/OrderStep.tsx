@@ -7,47 +7,14 @@ import { sendTransaction, toEther, toWei } from 'thirdweb';
 import { getBalance, allowance, approve, transfer } from 'thirdweb/extensions/erc20';
 import { getDynamicContract, getTokenAddress, validateTokenNetwork } from '../utils/helperFunctions';
 import { Loader2 } from 'lucide-react';
+import { bankCodes } from '../config/formOptions';
 
 const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const { formData } = useOnOffRampContext();
-  const {bankCodes} = require('../config/formOptions')
   const [loading, setLoading] = useState(false);
   const account = useActiveAccount()
 
-  interface BankDetails {
-    bankCode: string;
-    paymentMethod: string;
-    accountNumber?: string;
-    phoneNumber?: string;
-  }
 
-  interface MobileWallet {
-    phoneNumber: string;
-    network: string;
-  }
-
-  interface CrossBorderDetails {
-    sendCurrency: string;
-    receiveCurrency: string;
-    sendAmount: number;
-    receiveAmount: number;
-    exchangeRate: number;
-  }
-
-  interface FormData {
-    action: 'buy' | 'sell' | 'cross-border';
-    amount: number;
-    receiveAmount: number;
-    receiveCurrency: string;
-    chain: string;
-    walletAddress: string;
-    email: string;
-    currency: string;
-    bankDetails: BankDetails;
-    mobileWallet: MobileWallet;
-    totalFee: number;
-    crossBorder?: CrossBorderDetails;
-  }
 
   const bankName: string =
     bankCodes.find((bank: { value: string; label: string }) => bank.value === formData.bankDetails.bankCode)?.label ||
@@ -104,7 +71,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       });
 
       const txHash = await sendTransaction({ transaction, account });
-      console.log(toEther(toWei(fee_amount.toString())))
+
 
 
 
@@ -183,7 +150,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
       if (response.data.success) {
         alert('Transaction successful!');
       } else {
-        console.log(response)
+        
         alert('Transaction failed');
       }
     } catch (error) {

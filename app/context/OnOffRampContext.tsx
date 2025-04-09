@@ -52,8 +52,8 @@ interface FormData {
     receiveAmount: number;
     exchangeRate: number;
     totalFee: number;
-    senderDetails: {};
-    recieverDetails: {};
+    senderDetails: object;
+    recieverDetails: object;
     senderPaymentMethod: string;
     recieverPaymentMethod: string;
   }
@@ -195,14 +195,13 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
           return; // Don't fetch if currencies are missing
       }
 
-      let url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${formData.crossBorder.sendCurrency}`;
+      const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${formData.crossBorder.sendCurrency}`;
 
       try {
         const response = await fetch(url);
          if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        // console.log('Cross-border Response:', response); // Keep for debugging if needed
         const data = await response.json();
          if (data.result === 'error') {
            throw new Error(`API error: ${data['error-type']}`);
@@ -239,7 +238,6 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
     // Ensure exchange rate is a valid positive number before calculating
     if (typeof formData.crossBorder.exchangeRate === 'number' && formData.crossBorder.exchangeRate > 0) {
        const crossBorderReceiveAmount = formData.crossBorder.sendAmount * formData.crossBorder.exchangeRate;
-       // console.log('Cross Border Receive Amount Calculated:', crossBorderReceiveAmount); // Keep for debugging
        // Round to a reasonable number of decimal places if necessary
        setFormData((prev) => ({ ...prev, crossBorder: { ...prev.crossBorder, receiveAmount: crossBorderReceiveAmount } }));
     } else {

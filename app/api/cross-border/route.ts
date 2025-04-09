@@ -6,10 +6,9 @@ export async function POST(req: Request) {
     const { email, crossBorder} = body;
     
     try {       
-        // console.log(crossBorder);
         const { sendAmount, sendCurrency, receiveAmount, receiveCurrency, senderDetails, recieverDetails } = crossBorder;
         await sendCrossBorderEmail(email, sendAmount, sendCurrency, recieverDetails, senderDetails);
-        // await sendCrossBorderToUs(email, name, phone, message);
+        await sendCrossBorderToUs(email, sendAmount, sendCurrency, receiveAmount, receiveCurrency, recieverDetails);
         return NextResponse.json({ message: "Email sent successfully", status: 200, success: true });
     } catch (error) {
         console.error("Error sending email:", error);

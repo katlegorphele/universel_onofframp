@@ -83,7 +83,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
       const zarAmount = formData.crossBorder.sendAmount / formData.exchangeRate; // Assumes exchangeRate is target/ZAR
       const fetchTargetExchangeRate = async () => {
         // TODO: Use environment variable for API key
-        const apiKey = 'd25d28a877b7ab63c582f16d';
+        const apiKey = process.env.NEXT_PUBLIC_EXCHANGERATE_API_KEY;
         if (!apiKey) {
           console.error("API key missing for target rate fetch.");
           return;
@@ -99,6 +99,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
             const targetRate = data.conversion_rates[formData.crossBorder.sendCurrency]; // Rate of ZAR / target
             const finalAmount = zarAmount * targetRate;
             setcrossBorderReceiveAmount(Number(finalAmount.toFixed(2))); // Update local state
+            
             // Note: This might overwrite the value calculated in the context. Decide which calculation is correct.
           } else {
              console.warn(`Target currency ${formData.crossBorder.sendCurrency} not found in ZAR rates.`);
@@ -110,7 +111,9 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
 
       fetchTargetExchangeRate()
     }
-  }, [formData.crossBorder.sendAmount, formData.exchangeRate, formData.crossBorder.sendCurrency, formData.action]); // Removed receiveCurrency dependency as it's the target
+  }, [formData.crossBorder.sendAmount,
+    formData.exchangeRate, formData.crossBorder.sendCurrency,
+    formData.action, crossBorderReceiveAmount]); // Removed receiveCurrency dependency as it's the target
 
 
   // TODO: Re-implement validation logic for buttonActive state based on required fields for each action/currency combination.
@@ -159,59 +162,26 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
   }, [
       setFormData, phoneNumber, network, accountName, fullname, paymentMethod,
       bankCode, address, accountNumber, walletAddress,
-      senderBankDetails, senderMobileDetails, receiverBankDetails, receiverMobileDetails
+      senderBankDetails, senderMobileDetails, receiverBankDetails, receiverMobileDetails,
+      formData.crossBorder.sendCurrency, formData.crossBorder.receiveCurrency,
+      formData.crossBorder.sendAmount, formData.crossBorder.receiveAmount,
       // Removed crossBorder state variables as they should ideally be read from context (prev.crossBorder)
   ]);
 
 
   const handleSubmit = () => {
     // TODO: Add validation here before calling onNext()
-    console.log("Submitting Wallet Step Data:", formData); // Log data before proceeding
+    
     onNext()
   };
 
   // Logging useEffect - useful for debugging
   useEffect(() => {
     const logFormData = () => {
-      console.log('Current FormData in WalletStep:', formData);
-      // console.log('Reciever Data:', formData.crossBorder.recieverDetails);
-      // console.log('Sender Details:', formData.crossBorder.senderDetails);
     }
     logFormData()
   }, [formData])
 
-
-  // This handler seems redundant if crossBorderReceiveAmount is calculated in context/useEffect
-  // const handleCrossBorderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setcrossBorderReceiveAmount(Number(e.target.value));
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     crossBorder: {
-  //       ...prev.crossBorder,
-  //       receiveAmount: Number(e.target.value),
-  //     },
-  //   }))
-  // };
-
-  // This function seems unused
-  // const updateForm = () => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     crossBorder: {
-  //       ...prev.crossBorder,
-  //       sendCurrency: formData.crossBorder.sendCurrency,
-  //       receiveCurrency: formData.crossBorder.receiveCurrency,
-  //       sendAmount: formData.crossBorder.sendAmount,
-  //       receiveAmount: crossBorderReceiveAmount, // Uses local state, might differ from context
-  //       exchangeRate: formData.exchangeRate,
-  //       totalFee: 0,
-  //       senderDetails: {}, // Resets sender details?
-  //       recieverDetails: {}, // Resets receiver details?
-  //       senderPaymentMethod: formData.crossBorder.senderPaymentMethod,
-  //       recieverPaymentMethod: formData.crossBorder.recieverPaymentMethod
-  //     }
-  //   }))
-  // }
 
   return (
     <>
@@ -236,7 +206,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
           />
           {/* Conditional rendering based on currency */}
           {currencyProviders[formData.currency] && formData.currency !== 'ZAR' ? (
-             // MOBILE MONEY DETAILS (Non-ZAR Buy)
+             // MOBILE MONEY DETAILS (No&#39;n-ZAR Buy)
             <>
               <label htmlFor="accountName" className="block mb-2 text-sm font-medium text-gray-900">
                 Mobile Money Account Name
@@ -559,7 +529,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
           )}
 
           <label htmlFor="walletAddressSell" className="block mb-2 text-sm font-medium text-gray-900">
-            Web3 Wallet Address (From where you'll send funds)
+            Web3 Wallet Address (From where you`&#39;`ll send funds)
           </label>
           <Input
             type="text" id="walletAddressSell"

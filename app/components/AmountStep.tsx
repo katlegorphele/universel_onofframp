@@ -79,7 +79,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         setButtonActive(true)
       }
     }
-  }, [formData, amount, receiveAmount]);
+  }, [formData, amount, receiveAmount, crossBorderReceiveAmount, crossBorderSendAmount]);
 
   useEffect(() => {
     if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
@@ -93,7 +93,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         receiveAmount: amount * formData.exchangeRate,
       }));
     }
-  }, [amount, formData.exchangeRate, formData.action]);
+  }, [amount, formData.exchangeRate, formData.action, setFormData]);
 
 
   useEffect(() => {
@@ -133,6 +133,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
           ...prev,  
           receiveAmount: Number((receiveAmount).toFixed(2)),
         }));
+        setReceiveAmount(receiveAmount)
         onNext();
       } else {
         alert('Minimum Value of 25 UZAR')
@@ -166,8 +167,6 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       if (crossBorderSender && crossBorderSendAmount > 0) {
         const exchangeRate = formData.crossBorder.exchangeRate;
         const receiveAmount = crossBorderSendAmount * exchangeRate;
-        console.log('Exchange Rate:', exchangeRate);
-        console.log('Cross Border Receive Amount:', receiveAmount);
         setCrossBorderReceiveAmount(receiveAmount);
         setFormData((prev) => ({
           ...prev,
@@ -447,7 +446,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     defaultValue={formData.crossBorder.sendCurrency !== '' ? currencyProviders[formData.crossBorder.sendCurrency][0] : '' }
                   >
                     <SelectTrigger className='bg-white font-extrabold'>
-                      <SelectValue placeholder="Select Currency" />
+                      <SelectValue placeholder="Select Payment Method" />
                     </SelectTrigger>
                     <SelectContent>
                       {/* Add explicit type to option */}
@@ -494,6 +493,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   },
                 }))
                 setCrossBorderReciever(value)
+                
               }}
                 defaultValue={formData.crossBorder.receiveCurrency}
               >

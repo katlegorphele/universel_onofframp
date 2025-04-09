@@ -77,7 +77,6 @@ export async function POST(req: Request) {
           referenceId: tx_id
         })
       };
-      console.log(options)
     } else {
       options = {
         method: 'POST',
@@ -96,8 +95,6 @@ export async function POST(req: Request) {
           referenceId: tx_id
         })
       };
-
-      console.log(options)
     }
 
     const KotaniPayResponse = await fetch(url, options)

@@ -10,6 +10,7 @@ import { getDynamicContract, getTokenAddress } from '../utils/helperFunctions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import { Loader } from 'lucide-react';
+import { receiveCurrencyOptions, chainOptions } from '../config/formOptions';
 
 const transferContract = getContract({
   client: thirdwebClient,
@@ -21,7 +22,7 @@ const transferContract = getContract({
 
 
 const TransferStep = () => {
-  const { formData, setFormData, receiveCurrencyOptions, chainOptions } = useOnOffRampContext();
+  const { formData, setFormData} = useOnOffRampContext();
   const [addressTo, setAddressTo] = useState('')
   const [amount, setAmount] = useState(0)
   const [email, setEmail] = useState('')
