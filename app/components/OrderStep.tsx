@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useOnOffRampContext } from '../context/OnOffRampContext';
 import axios from 'axios';
 import { useActiveAccount } from 'thirdweb/react';
-import { sendTransaction, toEther, toWei } from 'thirdweb';
+import { sendTransaction, toEther } from 'thirdweb';
 import { getBalance, allowance, approve, transfer } from 'thirdweb/extensions/erc20';
 import { getDynamicContract, getTokenAddress, validateTokenNetwork } from '../utils/helperFunctions';
 import { Loader2 } from 'lucide-react';

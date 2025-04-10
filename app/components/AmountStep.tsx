@@ -77,6 +77,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         setButtonActive(false)
       } else {
         setButtonActive(true)
+        console.log(crossBorderReciever)
       }
     }
   }, [formData, amount, receiveAmount, crossBorderReceiveAmount, crossBorderSendAmount]);
