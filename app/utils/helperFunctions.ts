@@ -82,7 +82,7 @@ import { thirdwebClient } from "../config/client";
 
   export const fetchUSDRate = async (currency:string) => {
    
-    const url = 'https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/USD';
+    const url = 'https://v6.exchangerate-api.com/v6/041480e72bf42ef32a9cf9ae/latest/USD';
     
     const response = await fetch(url);
     const data = await response.json();

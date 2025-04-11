@@ -198,9 +198,9 @@ export const OnOffRampProvider: React.FC<OnOffRampProviderProps> = ({ children }
     const fetchExchangeRates = async () => {
       let url = '';
       if (formData.receiveCurrency === 'UZAR') {
-        url = 'https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR';
+        url = 'https://v6.exchangerate-api.com/v6/041480e72bf42ef32a9cf9ae/latest/ZAR';
       } else {
-        url = 'https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/USD';
+        url = 'https://v6.exchangerate-api.com/v6/041480e72bf42ef32a9cf9ae/latest/USD';
       }
       const response = await fetch(url);
       const data = await response.json();

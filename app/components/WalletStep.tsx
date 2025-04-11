@@ -37,7 +37,7 @@ const WalletStep = ({ onNext, onBack }: { onNext: () => void; onBack: () => void
     if (formData.crossBorder.sendAmount > 0 && formData.action == 'cross-border') {
       const zarAmount = formData.crossBorder.sendAmount / formData.exchangeRate;
       const fetchTargetExchangeRate = async () => {
-        const url = `https://v6.exchangerate-api.com/v6/6c2c521a02e3eb57efa066fa/latest/ZAR`;
+        const url = `https://v6.exchangerate-api.com/v6/041480e72bf42ef32a9cf9ae/latest/ZAR`;
         const response = await fetch(url);
         const data = await response.json();
         const targetRate = data.conversion_rates[formData.crossBorder.sendCurrency];
