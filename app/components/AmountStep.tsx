@@ -486,7 +486,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
 
 
             {/* RECIEVE STUFF  */}
-            <div>
+            <div className='flex flex-col gap-2 justify-items-between mt-4'>
               <div className='flex flex-col md:flex-row gap-2 md:gap-10 '>
               <div className='flex flex-col flex-nowrap md:w-1/2'>
 

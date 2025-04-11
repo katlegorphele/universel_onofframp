@@ -365,76 +365,7 @@ export async function sendTransferEmail(
 }
 
 // Type guard functions
-function isBankDetails(details: SenderDetails | ReceiverDetails): details is BankDetails {
-    return (
-        typeof details === 'object' &&
-        details !== null &&
-        'fullname' in details
-    );
-}
 
-function getSenderName(details: SenderDetails): string {
-    if (typeof details !== 'object' || details === null) {
-        return 'Unknown Sender';
-    }
-    if (isBankDetails(details)) {
-        return details.fullname;
-    } else if ('accountName' in details) {
-        return details.accountName;
-    }
-    return 'Unknown Sender';
-}
-
-function getSenderPhone(details: SenderDetails): string {
-    if (typeof details !== 'object' || details === null) {
-        return 'Unknown Phone';
-    }
-    return 'phoneNumber' in details ? details.phoneNumber : 'Unknown Phone';
-}
-
-//   function getSenderPaymentMethod(details: SenderDetails): string {
-//     if (typeof details !== 'object' || details === null) {
-//       return 'Unknown Payment Method';
-//     }
-//     if (isBankDetails(details)) {
-//       return details.paymentMethod;
-//     } else if ('network' in details) {
-//       return details.network;
-//     }
-//     return 'Unknown Payment Method';
-//   }
-
-// Similar updates for receiver functions
-function getReceiverName(details: ReceiverDetails): string {
-    if (typeof details !== 'object' || details === null) {
-        return 'Unknown Receiver';
-    }
-    if (isBankDetails(details)) {
-        return details.fullname;
-    } else if ('accountName' in details) {
-        return details.accountName;
-    }
-    return 'Unknown Receiver';
-}
-
-function getReceiverPhone(details: ReceiverDetails): string {
-    if (typeof details !== 'object' || details === null) {
-        return 'Unknown Phone';
-    }
-    return 'phoneNumber' in details ? details.phoneNumber : 'Unknown Phone';
-}
-
-function getReceiverPaymentMethod(details: ReceiverDetails): string {
-    if (typeof details !== 'object' || details === null) {
-        return 'Unknown Payment Method';
-    }
-    if (isBankDetails(details)) {
-        return details.paymentMethod;
-    } else if ('network' in details) {
-        return details.network;
-    }
-    return 'Unknown Payment Method';
-}
 
 function extractDetails(details: Record<string, any>): string {
     if (typeof details !== 'object' || details === null) {

@@ -19,6 +19,25 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
   const bankName: string =
     bankCodes.find((bank: { value: string; label: string }) => bank.value === formData.bankDetails.bankCode)?.label ||
     'Unknown Bank';
+
+    interface BankDetails {
+      fullname: string;
+      phoneNumber: string;
+      paymentMethod: string;
+      bankCode: string;
+      address: string;
+      accountNumber: string;
+      country: string;
+  }
+  
+  interface MobileWalletDetails {
+      phoneNumber: string;
+      network: string;
+      accountName: string;
+  }
+  
+  type SenderDetails = BankDetails | MobileWalletDetails;
+  type ReceiverDetails = BankDetails | MobileWalletDetails;
     
   const TransferToken = async () => {
 
@@ -255,6 +274,13 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     return transactionFee;
   }
 
+  function isBankDetails(details: SenderDetails | ReceiverDetails): details is BankDetails {
+    return (
+        typeof details === 'object' &&
+        details !== null &&
+        'fullname' in details
+    );
+}
 
   return (
     <>
@@ -348,6 +374,15 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
           {formData.action === 'cross-border' && (
             <>
+
+              <div>
+                <p><span className='font-bold'>Send Amount:</span> {(formData.crossBorder.sendAmount).toFixed(2)} {formData.crossBorder.sendCurrency}</p>
+                <p><span className='font-bold'>Receive Amount:</span> {(formData.crossBorder.receiveAmount).toFixed(2)} {formData.crossBorder.receiveCurrency}</p>
+                <p><span className='font-bold'>Receipient Details:</span></p>
+                
+                
+                
+              </div>
               
             </>
           )}
