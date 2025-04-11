@@ -348,12 +348,7 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
 
           {formData.action === 'cross-border' && (
             <>
-              <div>
-                <p><span className='font-bold'>Send Amount:</span> {formData.crossBorder?.sendAmount} {formData.crossBorder?.sendCurrency}</p>
-                <p><span className='font-bold'>Receive Amount:</span> {formData.crossBorder?.receiveAmount} {formData.crossBorder?.receiveCurrency}</p>
-                <p><span className='font-bold'>Receiver Details:</span> {JSON.stringify(formData.crossBorder?.recieverDetails)}</p>
-                <p><span className='font-bold'>Sender Details:</span> {JSON.stringify(formData.crossBorder?.senderDetails)}</p>
-              </div>
+              
             </>
           )}
         </div>

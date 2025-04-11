@@ -43,7 +43,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         formData.currency == '' ||
         formData.chain == '' ||
         formData.receiveCurrency == '' ||
-        amount <= 0 
+        amount <= 0
         // receiveAmount <= 0
       ) {
         setButtonActive(false)
@@ -72,7 +72,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         formData.crossBorder.sendCurrency == '' ||
         formData.crossBorder.receiveCurrency == '' ||
         crossBorderSendAmount <= 0 ||
-        crossBorderReceiveAmount <= 0
+        crossBorderReceiveAmount <= 0 ||
+        formData.crossBorder.senderPaymentMethod == '' ||
+        formData.crossBorder.recieverPaymentMethod == ''
       ) {
         setButtonActive(false)
       } else {
@@ -131,7 +133,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     if (formData.action == 'sell') {
       if (receiveAmount >= 25) {
         setFormData((prev) => ({
-          ...prev,  
+          ...prev,
           receiveAmount: Number((receiveAmount).toFixed(2)),
         }));
         setReceiveAmount(receiveAmount)
@@ -142,10 +144,10 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
 
     if (formData.action == 'cross-border') {
-      if (crossBorderSendAmount > 0) {
-        onNext();
-      } else {
+      if (crossBorderSendAmount <= 0) {
         alert('Please enter all details')
+      } else {
+        onNext();
       }
     }
 
@@ -158,7 +160,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         onNext();
       } else {
         alert('Minimum Value of 25 UZAR')
-      } 
+      }
     }
   };
 
@@ -255,6 +257,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               pattern="[0-9]*"
               onChange={handleInputChange}
               className="md:mb-4 bg-white font-extrabold"
+              placeholder="Enter Amount"
             />
 
             <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
@@ -277,7 +280,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               </Button>
             </div>
 
-            
+
             <div className='flex justify-center mt-2'>
               _______________________________
             </div>
@@ -399,8 +402,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
           {/* Fields for Cross Border */}
           <div className="p-6 flex flex-col sm:w-full">
             <div className='flex flex-col gap-2 justify-items-between'>
-              <div>
-                <div className='flex flex-col flex-nowrap md:w-1/3'>
+              <div className='flex flex-col md:flex-row gap-2 md:gap-10 '>
+                <div className='flex flex-col flex-nowrap md:w-1/2'>
                   <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
                     You Send
                   </label>
@@ -430,7 +433,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   </Select>
                 </div>
 
-                <div className='flex flex-col flex-nowrap md:w-1/3'>
+                <div className='flex flex-col flex-nowrap md:w-1/2'>
                   <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
                     Using
                   </label>
@@ -444,7 +447,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                     }))
                     // setCrossBorderSender(value)
                   }}
-                    defaultValue={formData.crossBorder.sendCurrency !== '' ? currencyProviders[formData.crossBorder.sendCurrency][0] : '' }
+                    defaultValue={formData.crossBorder.sendCurrency !== '' ? currencyProviders[formData.crossBorder.sendCurrency][0] : ''}
                   >
                     <SelectTrigger className='bg-white font-extrabold'>
                       <SelectValue placeholder="Select Payment Method" />
@@ -469,7 +472,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               </div>
 
               <label htmlFor="crossBorderSendamount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                {formData.crossBorder.sendCurrency !== '' ? `Amount (in ${formData.crossBorder.sendCurrency})` : 'They Recieve'}
+                {formData.crossBorder.sendCurrency !== '' ? `Amount (in ${formData.crossBorder.sendCurrency})` : 'Send Amount'}
               </label>
               <Input
                 type="number"
@@ -478,92 +481,96 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                 onChange={handleCrossBorderInputChange}
                 className="md:mb-4 bg-white font-extrabold"
               />
-
-              {/* RECIEVE STUFF  */}
-              <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                {/* {formData.crossBorder.receiveCurrency !== '' ? `They Recieve (in ${formData.receiveCurrency})` : 'They Recieve'} */}
-                They Receive
-              </label>
-
-              <Select onValueChange={(value) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  crossBorder: {
-                    ...prev.crossBorder,
-                    receiveCurrency: value,
-                  },
-                }))
-                setCrossBorderReciever(value)
-                
-              }}
-                defaultValue={formData.crossBorder.receiveCurrency}
-              >
-                <SelectTrigger className='bg-white font-extrabold'>
-                      <SelectValue placeholder="Select Currency" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {/* Add explicit type to option */}
-                      {currencyOptions.map((option: SelectOption) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
-                {formData.crossBorder.receiveCurrency !== '' ? `Receive Amount (in ${formData.crossBorder.receiveCurrency})` : 'Recieve Amount'}
-              </label>
-
-
-              <Input
-                type="number"
-                id="receiveAmount"
-                value={formData.crossBorder.receiveAmount > 0 ? Number((crossBorderReceiveAmount).toFixed(2)) : 0}
-                readOnly
-                className="mb-4 bg-white font-extrabold"
-                disabled={true}
-              />
               {/* <p className='font-semibold text-sm'>1 {formData.crossBorder.sendCurrency} = {Number((formData.crossBorder.exchangeRate).toFixed(2))} {formData.crossBorder.receiveCurrency}</p>        */}
             </div>
 
-            {formData.crossBorder.receiveCurrency !== '' && (
-              <>
-                <label htmlFor="recieveMethod" className="block mb-2 text-sm font-medium text-gray-900">
-                  Using
-                </label>
-                <Select onValueChange={(value) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    crossBorder: {
-                      ...prev.crossBorder,
-                      recieverPaymentMethod: value,
-                    },
-                  }))
 
-                }}>
-                  <SelectTrigger className='bg-white font-extrabold'>
-                    <SelectValue placeholder="Select Method" />
-                  </SelectTrigger>
-                    <SelectContent defaultValue={formData.crossBorder.recieverPaymentMethod}>
-                      {/* Add explicit type to option */}
-                      {formData.crossBorder.receiveCurrency !== '' ? (
-                        currencyProviders[formData.crossBorder.receiveCurrency].map((option: string) => (
-                          <SelectItem key={option} value={option} defaultValue={formData.crossBorder.recieverPaymentMethod}>
-                            {option}
-                          </SelectItem>
-                        ))
-                      ) : (
-                        <SelectItem value="default" disabled>
-                          Select a currency first
-                        </SelectItem>
-                      )}
+            {/* RECIEVE STUFF  */}
+            <div>
+              <div className='flex flex-col md:flex-row gap-2 md:gap-10 '>
+              <div className='flex flex-col flex-nowrap md:w-1/2'>
 
-                    </SelectContent>
-                </Select>
-              </>
-            )}
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              {/* {formData.crossBorder.receiveCurrency !== '' ? `They Recieve (in ${formData.receiveCurrency})` : 'They Recieve'} */}
+              They Receive
+            </label>
 
+            <Select onValueChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                crossBorder: {
+                  ...prev.crossBorder,
+                  receiveCurrency: value,
+                },
+              }))
+              setCrossBorderReciever(value)
+
+            }}
+              defaultValue={formData.crossBorder.receiveCurrency}
+            >
+              <SelectTrigger className='bg-white font-extrabold'>
+                <SelectValue placeholder="Select Currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {/* Add explicit type to option */}
+                {currencyOptions.map((option: SelectOption) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            </div>
+
+            <div className='flex flex-col flex-nowrap md:w-1/2'>
+
+            <label htmlFor="recieveMethod" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              Using
+            </label>
+            <Select onValueChange={(value) => {
+              setFormData((prev) => ({
+                ...prev,
+                crossBorder: {
+                  ...prev.crossBorder,
+                  recieverPaymentMethod: value,
+                },
+              }))
+
+            }}>
+              <SelectTrigger className='bg-white font-extrabold'>
+                <SelectValue placeholder="Select Payment Method" />
+              </SelectTrigger>
+              <SelectContent defaultValue={formData.crossBorder.recieverPaymentMethod}>
+                {/* Add explicit type to option */}
+                {formData.crossBorder.receiveCurrency !== '' ? (
+                  currencyProviders[formData.crossBorder.receiveCurrency].map((option: string) => (
+                    <SelectItem key={option} value={option} defaultValue={formData.crossBorder.recieverPaymentMethod}>
+                      {option}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="default" disabled>
+                    Select a currency first
+                  </SelectItem>
+                )}
+
+              </SelectContent>
+            </Select>
+            </div>
+            </div>
+
+            <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
+              {formData.crossBorder.receiveCurrency !== '' ? `Receive Amount (in ${formData.crossBorder.receiveCurrency})` : 'Recieve Amount'}
+            </label>
+            <Input
+              type="number"
+              id="receiveAmount"
+              value={formData.crossBorder.receiveAmount > 0 ? Number((crossBorderReceiveAmount).toFixed(2)) : 0}
+              readOnly
+              className="mb-4 bg-white font-extrabold"
+              disabled={true}
+            />
+            </div>
 
             <div className='mt-2'>
               <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4 m-auto">
@@ -577,13 +584,20 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             <label htmlFor="amount" className="block mb-2 mt-4 text-sm font-extrabold text-gray-900">
               Transaction Fee (3%): <span className='font-light'>{(Number((amount).toFixed(2)) * (3 / 100)).toFixed(2)} {formData.currency}</span>
             </label>
-
           </div>
+
+
+
+
+
+
+
+
 
         </>
       )}
 
-      
+
     </>
   );
 }

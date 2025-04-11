@@ -152,6 +152,7 @@ Receiver Details:
 
 Thank you for using our service
 Regards
+The UZAR Team
 `.trim()
 
         await transporter.sendMail({
@@ -195,6 +196,7 @@ Receiver Details:
 
 Thank you for using our service
 Regards
+The UZAR Team
 `.trim()
 
         await transporter.sendMail({
