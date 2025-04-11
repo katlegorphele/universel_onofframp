@@ -367,7 +367,7 @@ export async function sendTransferEmail(
 // Type guard functions
 
 
-function extractDetails(details: Record<string, any>): string {
+function extractDetails(details: Partial<BankDetails | MobileWalletDetails>): string {
     if (typeof details !== 'object' || details === null) {
         return 'No details provided';
     }

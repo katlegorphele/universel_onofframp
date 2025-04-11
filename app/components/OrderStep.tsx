@@ -20,24 +20,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     bankCodes.find((bank: { value: string; label: string }) => bank.value === formData.bankDetails.bankCode)?.label ||
     'Unknown Bank';
 
-    interface BankDetails {
-      fullname: string;
-      phoneNumber: string;
-      paymentMethod: string;
-      bankCode: string;
-      address: string;
-      accountNumber: string;
-      country: string;
-  }
-  
-  interface MobileWalletDetails {
-      phoneNumber: string;
-      network: string;
-      accountName: string;
-  }
-  
-  type SenderDetails = BankDetails | MobileWalletDetails;
-  type ReceiverDetails = BankDetails | MobileWalletDetails;
     
   const TransferToken = async () => {
 
@@ -274,13 +256,6 @@ const OrderStep = ({ onBack }: { onBack: () => void }) => {
     return transactionFee;
   }
 
-  function isBankDetails(details: SenderDetails | ReceiverDetails): details is BankDetails {
-    return (
-        typeof details === 'object' &&
-        details !== null &&
-        'fullname' in details
-    );
-}
 
   return (
     <>

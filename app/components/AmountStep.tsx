@@ -82,7 +82,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
         console.log(crossBorderReciever)
       }
     }
-  }, [formData, amount, receiveAmount, crossBorderReceiveAmount, crossBorderSendAmount]);
+  }, [formData, amount, receiveAmount, crossBorderReceiveAmount, crossBorderSendAmount, crossBorderReciever]);
 
   useEffect(() => {
     if (formData.exchangeRate && amount > 0 && formData.action == 'buy') {
