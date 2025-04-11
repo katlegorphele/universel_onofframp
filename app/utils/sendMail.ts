@@ -125,42 +125,40 @@ export async function sendCrossBorderEmail(
     recipientEmail: string | undefined,
     sendAmount: number,
     sendCurrency: string,
-    recieverDetails: ReceiverDetails ,
-    senderDetails: SenderDetails ,
+    receiveAmount: number,
+    receiveCurrency: string,
+    senderDetails: ReceiverDetails,
+    recieverDetails: SenderDetails,
 ) {
     if (!recipientEmail) return;
     try {
-        const senderName = getSenderName(senderDetails);
-        const senderPhone = getSenderPhone(senderDetails);
-        const senderPaymentMethod = getSenderPaymentMethod(senderDetails);
+        const senderInfo = extractDetails(senderDetails);
+        const receiverInfo = extractDetails(recieverDetails);
 
-        const receiverName = getReceiverName(recieverDetails);
-        const receiverPhone = getReceiverPhone(recieverDetails);
-        const receiverPaymentMethod = getReceiverPaymentMethod(recieverDetails);
+        const emailMessage = `
+Dear valued customer,
+
+We are processing your cross-border transaction with the following details:
+
+Transaction Details:
+- Amount Sent: ${sendAmount} ${sendCurrency}
+- Amount Recieved: ${receiveAmount} ${receiveCurrency}
+
+Your Details:
+    ${senderInfo}
+
+Receiver Details:
+    ${receiverInfo}
+
+Thank you for using our service
+Regards
+`.trim()
 
         await transporter.sendMail({
             from: 'UZAR Team',
-            to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+            to: recipientEmail,
             subject: `Cross Border Transaction`,
-            text: `
-                New cross-border transaction initiated:
-                
-                Sender Details:
-                Name: ${senderName}
-                Phone: ${senderPhone}
-                Payment Method: ${senderPaymentMethod}
-                
-                Receiver Details:
-                Name: ${receiverName}
-                Phone: ${receiverPhone}
-                Payment Method: ${receiverPaymentMethod}
-                
-                Transaction:
-                - Sent: ${sendAmount} ${sendCurrency}
-                
-                Regards
-                UZAR Team
-            `
+            text: emailMessage
         });
     }
     catch (error) {
@@ -169,7 +167,7 @@ export async function sendCrossBorderEmail(
 
 }
 
-export async function sendCrossBorderToUs(
+export async function sendCrossBorderToAdmin(
     sendAmount: number,
     sendCurrency: string,
     receiveAmount: number,
@@ -178,40 +176,34 @@ export async function sendCrossBorderToUs(
     receiverDetails: ReceiverDetails,
 ) {
     try {
-        const senderName = getSenderName(senderDetails);
-        const senderPhone = getSenderPhone(senderDetails);
-        const senderPaymentMethod = getSenderPaymentMethod(senderDetails);
+        const senderInfo = extractDetails(senderDetails);
+        const receiverInfo = extractDetails(receiverDetails);
 
-        const receiverName = getReceiverName(receiverDetails);
-        const receiverPhone = getReceiverPhone(receiverDetails);
-        const receiverPaymentMethod = getReceiverPaymentMethod(receiverDetails);
+        const emailMessage = `
+Dear UZAR Team,
+A new cross-border transaction has been initiated:
 
+Transaction Details:
+- Send Amount: ${sendAmount} ${sendCurrency}
+- Receive Amount: ${receiveAmount} ${receiveCurrency}
+
+Sender Details:
+    ${senderInfo}
+
+Receiver Details:
+    ${receiverInfo}
+
+Thank you for using our service
+Regards
+`.trim()
 
         await transporter.sendMail({
             from: 'UZAR Team',
             to: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
             subject: `Cross Border Transaction`,
-            text: `
-                New cross-border transaction initiated:
-                
-                Sender Details:
-                Name: ${senderName}
-                Phone: ${senderPhone}
-                Payment Method: ${senderPaymentMethod}
-                
-                Receiver Details:
-                Name: ${receiverName}
-                Phone: ${receiverPhone}
-                Payment Method: ${receiverPaymentMethod}
-                
-                Transaction Details:
-                - Amount Sent: ${sendAmount} ${sendCurrency}
-                - Amount Received: ${receiveAmount} ${receiveCurrency}
-                
-                Regards
-                UZAR Team
-            `
+            text: emailMessage
         });
+
     } catch (error) {
         console.error('Failed to send email notification:', error);
     }
@@ -375,77 +367,82 @@ function isBankDetails(details: SenderDetails | ReceiverDetails): details is Ban
     return (
         typeof details === 'object' &&
         details !== null &&
-        'fullname' in details &&
-        'phoneNumber' in details &&
-        'paymentMethod' in details &&
-        'bankCode' in details &&
-        'address' in details &&
-        'accountNumber' in details &&
-        'country' in details
+        'fullname' in details
     );
 }
 
 function getSenderName(details: SenderDetails): string {
     if (typeof details !== 'object' || details === null) {
-      return 'Unknown Sender';
+        return 'Unknown Sender';
     }
     if (isBankDetails(details)) {
-      return details.fullname;
+        return details.fullname;
     } else if ('accountName' in details) {
-      return details.accountName;
+        return details.accountName;
     }
     return 'Unknown Sender';
-  }
-  
-  function getSenderPhone(details: SenderDetails): string {
+}
+
+function getSenderPhone(details: SenderDetails): string {
     if (typeof details !== 'object' || details === null) {
-      return 'Unknown Phone';
+        return 'Unknown Phone';
     }
     return 'phoneNumber' in details ? details.phoneNumber : 'Unknown Phone';
-  }
-  
-  function getSenderPaymentMethod(details: SenderDetails): string {
+}
+
+//   function getSenderPaymentMethod(details: SenderDetails): string {
+//     if (typeof details !== 'object' || details === null) {
+//       return 'Unknown Payment Method';
+//     }
+//     if (isBankDetails(details)) {
+//       return details.paymentMethod;
+//     } else if ('network' in details) {
+//       return details.network;
+//     }
+//     return 'Unknown Payment Method';
+//   }
+
+// Similar updates for receiver functions
+function getReceiverName(details: ReceiverDetails): string {
     if (typeof details !== 'object' || details === null) {
-      return 'Unknown Payment Method';
+        return 'Unknown Receiver';
     }
     if (isBankDetails(details)) {
-      return details.paymentMethod;
-    } else if ('network' in details) {
-      return details.network;
-    }
-    return 'Unknown Payment Method';
-  }
-  
-  // Similar updates for receiver functions
-  function getReceiverName(details: ReceiverDetails): string {
-    if (typeof details !== 'object' || details === null) {
-      return 'Unknown Receiver';
-    }
-    if (isBankDetails(details)) {
-      return details.fullname;
+        return details.fullname;
     } else if ('accountName' in details) {
-      return details.accountName;
+        return details.accountName;
     }
     return 'Unknown Receiver';
-  }
-  
-  function getReceiverPhone(details: ReceiverDetails): string {
+}
+
+function getReceiverPhone(details: ReceiverDetails): string {
     if (typeof details !== 'object' || details === null) {
-      return 'Unknown Phone';
+        return 'Unknown Phone';
     }
     return 'phoneNumber' in details ? details.phoneNumber : 'Unknown Phone';
-  }
-  
-  function getReceiverPaymentMethod(details: ReceiverDetails): string {
+}
+
+function getReceiverPaymentMethod(details: ReceiverDetails): string {
     if (typeof details !== 'object' || details === null) {
-      return 'Unknown Payment Method';
+        return 'Unknown Payment Method';
     }
     if (isBankDetails(details)) {
-      return details.paymentMethod;
+        return details.paymentMethod;
     } else if ('network' in details) {
-      return details.network;
+        return details.network;
     }
     return 'Unknown Payment Method';
-  }
-  
-  
+}
+
+function extractDetails(details: Record<string, any>): string {
+    if (typeof details !== 'object' || details === null) {
+        return 'No details provided';
+    }
+    const detailStrings = Object.entries(details).map(([key, value]) => {
+        // Format key to be more readable (e.g., camelCase to Title Case)
+        const formattedKey = key.replace(/([A-Z])/g, ' $1').trim().toLowerCase();
+        return `${formattedKey.charAt(0).toUpperCase() + formattedKey.slice(1)}: ${value}`;
+    });
+    return detailStrings.join('\n');
+}
+

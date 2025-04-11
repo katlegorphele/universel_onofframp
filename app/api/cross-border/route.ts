@@ -1,4 +1,4 @@
-import { sendCrossBorderEmail, sendCrossBorderToUs } from "@/app/utils/sendMail";
+import { sendCrossBorderEmail, sendCrossBorderToAdmin } from "@/app/utils/sendMail";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -7,8 +7,8 @@ export async function POST(req: Request) {
     
     try {       
         const { sendAmount, sendCurrency, receiveAmount, receiveCurrency, senderDetails, recieverDetails } = crossBorder;
-        await sendCrossBorderEmail(email, sendAmount, sendCurrency, recieverDetails, senderDetails);
-        await sendCrossBorderToUs(email, sendAmount, sendCurrency, receiveAmount, receiveCurrency, recieverDetails);
+        await sendCrossBorderEmail(email, sendAmount, sendCurrency, receiveAmount, receiveCurrency, senderDetails, recieverDetails);
+        await sendCrossBorderToAdmin(sendAmount, sendCurrency, receiveAmount, receiveCurrency, senderDetails,recieverDetails);
         return NextResponse.json({ message: "Email sent successfully", status: 200, success: true });
     } catch (error) {
         console.error("Error sending email:", error);
