@@ -34,8 +34,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
     }
   }, [amount, formData.exchangeRate, formData.action]);
 
-  useEffect(()=> {
-    switch(formData.chain) {
+  useEffect(() => {
+    switch (formData.chain) {
       case 'ARBITRUM':
         wallet(defineChain(42161));
         break;
@@ -65,15 +65,41 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
   };
 
   const handleSubmit = () => {
-    if (receiveAmount >= 25) {
-      setFormData((prev) => ({
-        ...prev,
-        receiveAmount,
-      }));
-      onNext();
-    } else {
-      alert('Minimum Value of 25 UZAR')
+    const minAmount = formData.receiveCurrency === 'UZAR' ? 25 : 1;
+    const minSellAmount = formData.receiveCurrency === 'UZAR' ? 25 : 1;
+    const minBuyAmount = 30;
+
+    if (formData.action === 'buy') {
+      if (amount >= minBuyAmount) {
+        if (receiveAmount >= minAmount) {
+          setFormData((prev) => ({
+            ...prev,
+            receiveAmount
+          }));
+          onNext();
+        } else {
+          alert(`Minimum purchase amount is ${minAmount} ${formData.receiveCurrency}`);
+        }
+      } else {
+        alert(`Minimum spend amount is ${minBuyAmount} ${formData.currency}`);
+      }
     }
+
+    if (formData.action === 'sell') {
+      if (amount >= minSellAmount) {
+        setFormData((prev) => ({
+          ...prev,
+          receiveAmount
+        }));
+        onNext();
+
+      } else {
+        alert(`Minimum sell amount is ${minSellAmount} ${formData.receiveCurrency}`);
+      }
+    }
+
+
+
   };
 
   useEffect(() => {
@@ -104,8 +130,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
       bankDetails: {
         fullname,
         phoneNumber,
-        paymentMethod:'',
-        bankCode:'',
+        paymentMethod: '',
+        bankCode: '',
         address,
         accountNumber,
         country: ''
@@ -186,7 +212,8 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               id="amount"
               pattern="[0-9]*"
               // value with currency symbols
-              
+              value={amount}
+
               onChange={handleInputChange}
               className="md:mb-4 bg-white font-extrabold"
             />
@@ -204,11 +231,11 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
             />
             <p className='font-semibold text-sm'>1 {formData.receiveCurrency} = {Number((formData.exchangeRate).toFixed(2))} {formData.currency}</p>
             {/* disabled if the amount is 0 */}
-            
+
             <div className='mt-2'>
-            <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4 m-auto">
-              Next
-            </Button>
+              <Button disabled={!buttonActive} onClick={handleSubmit} className="mt-4 m-auto">
+                Next
+              </Button>
             </div>
             <div className='flex justify-center mt-2'>
               _______________________________
@@ -290,7 +317,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
               type="number"
               id="amount"
               // value with currency symbols
-              // value={amount}
+              value={amount}
               onChange={handleInputChange}
               className="mb-4 bg-white font-extrabold"
             />
@@ -365,7 +392,7 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   className="mb-4 bg-white"
                 />
 
-                
+
                 <p className='font-bold mb-2'>Bank Details</p>
 
                 <label htmlFor="bankCode" className="block mb-2 text-sm font-medium text-gray-900">
@@ -431,9 +458,9 @@ const AmountStep = ({ onNext }: { onNext: () => void }) => {
                   className="mb-4 bg-white"
                 />
 
-                
 
-                
+
+
               </>
             )
             }

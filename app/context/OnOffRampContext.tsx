@@ -81,7 +81,7 @@ const receiveCurrencyOptions = [
   // { value: 'USDT', label: 'USDT' },
 ];
 
-const paymentMethodsZAR = ['CARD', 'BANK'];
+const paymentMethodsZAR = ['CARD', 'PAYBYBANK'];
 const paymentMethodsZARforSelling = ['E-WALLET / CASH SEND', 'BANK TRANSFER'];
 
 
